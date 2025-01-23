@@ -7,4 +7,4 @@ from controllers.all_routes.routes import routes
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-routes(app)
+routes(app) # funcao que chama todas as rotas existentes
