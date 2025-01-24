@@ -8,6 +8,7 @@ from databases.ecommerce_config.database import SessionLocal  # Importando a ses
 
 route_ecom = APIRouter()
 
+# criar mais endpoint para as categorias
 # documentar cada endpoint e o que cada coisa faz
 
 # Dependência para obter a sessão do banco de dados
