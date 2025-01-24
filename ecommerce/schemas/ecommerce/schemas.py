@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+# melhorar esse schema
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
 class ProductBase(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook"])
