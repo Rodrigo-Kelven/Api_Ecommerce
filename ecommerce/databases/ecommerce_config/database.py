@@ -15,7 +15,7 @@ if not os.path.exists(db_directory):
 # URL do banco de dados SQLite dentro da pasta 'databases'
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{db_ecommerce_path}"
 
-# Criando o engine para conectar ao banco de dados
+# Criando o engine para conectar ao banco de dados, aqui esta criando uma ponte para ai sim conectar a aplicacao ao DB e executar as operacoes
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
 # Testando a conexão
@@ -25,7 +25,7 @@ try:
 except Exception as e:
     print(f"Erro de conexão: {e}")
 
-# Sessão para interagir com o banco de dados
+# Sessão para interagir com o banco de dados, essa sesao é muito importante, ela é responsavel por 'manter uma sessao'
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base para definir os modelos

@@ -27,7 +27,7 @@ def get_db():
         description="Create product",
         name="Route create product"
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+def create_product(product: ProductCreate, db: Session = Depends(get_db)): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     db_product = Product(**product.dict())  # Usando o modelo SQLAlchemy
     db.add(db_product)
     db.commit()
