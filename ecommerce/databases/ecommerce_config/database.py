@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Definindo o caminho do banco de dados SQLite
-db_path = "./ecommerce/databases/DB/ecommerce.db"
+db_path = "./ecommerce/databases/DB_ecommerce/ecommerce.db"
 
 # Verificar se a pasta existe, caso contrário, criar
 db_directory = os.path.dirname(db_path)  # Pega a pasta do caminho do DB
