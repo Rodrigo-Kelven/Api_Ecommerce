@@ -5,3 +5,4 @@ revisar: entradas de dados, adicionar forms, upload files para envio de iages do
 
 criar separar e documentar rotas por categorias
 criar schemas de cada categoria
+criar models de cada categorias de produtos
