@@ -8,7 +8,7 @@ from schemas.ecommerce.schemas import * # Importando o schema Pydantic para vali
 from databases.ecommerce_config.database import SessionLocal  # Importando a sessão do banco de dados
 
 
-route_ecom = APIRouter()
+route_eletronicos = APIRouter()
 
 # criar mais endpoint para as categorias
 # documentar cada endpoint e o que cada coisa faz
@@ -22,8 +22,8 @@ def get_db():
         db.close()
 
 # Rota para criar um produto
-@route_ecom.post(
-        path="/products/", 
+@route_eletronicos.post(
+        path="/category/eletronic/", 
         response_model=ProductCreate,
         status_code=status.HTTP_201_CREATED,
         description="Create product",
@@ -37,7 +37,7 @@ def create_product(product: ProductCreate, db: Session = Depends(get_db)): # db 
     return db_product
 
 # Rota para listar todos os produtos
-@route_ecom.get(path="/products/", 
+@route_eletronicos.get(path="/category/eletronic/", 
                 response_model=list[ProductCreate],
                 status_code=status.HTTP_200_OK,
                 description="List all producst",
@@ -48,7 +48,7 @@ def read_products(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
     return products
 
 # Rota para consultar um produto pelo ID
-@route_ecom.get(path="/products/{product_id}",
+@route_eletronicos.get(path="/category/eletronic/{product_id}",
                 response_model=ProductCreate,
                 status_code=status.HTTP_200_OK,
                 description="Search product with ID",
@@ -62,8 +62,8 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
 
 
 # Rota para deletar produto pelo ID
-@route_ecom.delete(
-    path="/product-delete/{product_id}",
+@route_eletronicos.delete(
+    path="/category-delete/eletronic/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     description="Delete product for ID",
     name="Route delete product for ID"

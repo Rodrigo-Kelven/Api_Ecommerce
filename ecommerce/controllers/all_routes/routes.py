@@ -1,16 +1,21 @@
 from enum import Enum
-from controllers.routes_ecommrece.routes import route_ecom
+from controllers.routes_ecommrece.eletronics.route import route_eletronicos
+from controllers.routes_ecommrece.Moda.route import route_moda
+from controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
 
 # tags para ficar mais organizado
 class Tags(Enum):
-    ecommerce = "Ecommerce"
-    products = "Products"
+    eletronicos = "Eletronicos"
+    moda = "Moda"
+    casa_decoracao = "Casa e decoracao"
     users = "Users"
 
 # adicionar mais rotas neste ecommerce
 
 def routes(app):
-    app.include_router(route_ecom, tags=[Tags.ecommerce], prefix="/ecoomerce")
+    app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecoomerce")
+    app.include_router(route_moda, tags=[Tags.moda], prefix="/ecoomerce")
+    app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecoomerce")
 
 # atalho
 """

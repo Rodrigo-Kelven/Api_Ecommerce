@@ -1,29 +1,47 @@
 from pydantic import BaseModel, Field
+from typing_extensions import Literal 
 
-# melhorar todos os schema
-# nao esquecer de criar os exemplos no Body() -> se for melhor
+# melhorar e revisar todos os schema
+
 
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
 class ProductBase(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
-    price: float = Field(..., title="Price Product", description="Price of product",examples=["2500.00"])
-    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=["1"])
-    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=["0.1"])
-    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=["5.0"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[2500.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
     color: str = Field(..., title="color product", description="Color of product", examples=["Black"])
 
-class ProductModa(BaseModel):
-    pass
+
+class ProductModaFeminina(BaseModel):
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Calça cintura alta"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Jeans"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    details: str = Field(None, title="details products", description="details of products", examples=["rasgado leve"])
+    
+
 
 class ProductCasaeDecoracao(BaseModel):
-    pass
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Vaso para decoração"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Branco"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    
+
 
 class ProductBelezaeCuidados(BaseModel):
-    pass
-
-class ProductAlimentosBebidas(BaseModel):
     pass
 
 class ProductEsporteLazer(BaseModel):
@@ -41,20 +59,30 @@ class ProductLivrosPapelaria(BaseModel):
 class ProductAutomotivo(BaseModel):
     pass
 
+
+
+
 # Especificacoes dos produtos
 class EspecificacoesEletronicos(BaseModel):
     pass
 
-class EspecificacoesModa(BaseModel):
-    pass
+class EspecificacoesModaFeminina(ProductModaFeminina):
+    category: Literal["Moda"] = "Moda" # somente passando a Litral é suficiente para setar o valor desejado
 
-class EspecificacoesCasaeDecoracao(BaseModel):
-    pass
+    
+class EspecificacoesCasaeDecoracao(ProductCasaeDecoracao):
+    category: Literal["Casa e decoracao"] = "Casa e decoracao" # somente passando a Litral é suficiente para setar o valor desejado
+
+""" # Este método valida que o campo "category" não seja modificado
+    def dict(self, *args, **kwargs):
+        kwargs['exclude_unset'] = True
+        original = super().dict(*args, **kwargs)
+        if 'category' in original:
+            original['category'] = self.category
+        return original
+ """   
 
 class EspecificacoesBelezaCuidados(BaseModel):
-    pass
-
-class EspecificacoesAlimentosBebidas(BaseModel):
     pass
 
 class EspecificacoesEsporteLazer(BaseModel):
@@ -141,13 +169,6 @@ class Product(ProductBase):
         Artigos de Camping e Aventura
         Materiais de Esportes (futebol, basquete, etc.)
 
-7. Informática
-
-    Subcategorias:
-        Componentes (placas mãe, processadores, memória RAM)
-        Periféricos (teclados, mouses, impressoras)
-        Softwares e Licenças
-        Acessórios para Computador
 
 8. Brinquedos e Jogos
 
@@ -179,19 +200,4 @@ class Product(ProductBase):
         Pneus e Rodas
         Produtos de Manutenção (óleos, lubrificantes)
         Ferramentas Automotivas
-
-12. Serviços
-
-    Subcategorias:
-        Viagens e Turismo
-        Cursos e Treinamentos
-        Assinaturas (streaming de filmes, música, etc.)
-        Serviços de Tecnologia (hospedagem de sites, cloud, etc.)
-
-13. Produtos Sustentáveis e Ecológicos
-
-    Subcategorias:
-        Produtos Orgânicos
-        Produtos Recicláveis
-        Itens Zero Waste (sem desperdício)
 """
