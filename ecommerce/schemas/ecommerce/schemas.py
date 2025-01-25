@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 
 # melhorar todos os schema
+# nao esquecer de criar os exemplos no Body() -> se for melhor
+
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
 class ProductBase(BaseModel):
