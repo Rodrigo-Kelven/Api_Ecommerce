@@ -1,8 +1,10 @@
 # controllers/routes_ecommrece/routes.py
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
+from pydantic import BaseModel
+from typing import Union
 from sqlalchemy.orm import Session
 from models.ecommerce.models import Product  # Importando o modelo SQLAlchemy
-from schemas.ecommerce.schemas import ProductCreate  # Importando o schema Pydantic para validação
+from schemas.ecommerce.schemas import * # Importando o schema Pydantic para validação
 from databases.ecommerce_config.database import SessionLocal  # Importando a sessão do banco de dados
 
 
@@ -74,3 +76,6 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(product_delete)
     return f"Product with {product_id} removed succesfull"
+
+
+
