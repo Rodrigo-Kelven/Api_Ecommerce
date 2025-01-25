@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 
 # Definindo o caminho do banco de dados SQLite
 db_ecommerce_path = "./ecommerce/databases/DB_ecommerce/ecommerce.db" # -> banco de dados dos produtos
-# db_path = "./ecommerce/databases/DB_users/users_ecommerce.db" -> banco de dados de usuarios 
+# db_path = "./ecommerce/databases/DB_users/users_ecommerce.db" -> banco de dados de usuarios
+# criptografar os dados, armazenar os dados dos usuarios criptografados
 
 # Verificar se a pasta existe, caso contrário, criar
 db_directory = os.path.dirname(db_ecommerce_path)  # Pega a pasta do caminho do DB
