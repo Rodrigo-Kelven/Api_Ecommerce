@@ -4,3 +4,4 @@ load balnacer
 revisar: entradas de dados, adicionar forms, upload files para envio de iages dos produtos, schemas e models de products e user, assincronismo, responsividade, agilidade
 
 criar separar e documentar rotas por categorias
+criar schemas de cada categoria
