@@ -39,3 +39,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+"""
+Como implementar Redis?
+Como implementar dois banco de dados: NoSQL e SQL
+    Qual o melhor para armazenar os produtos e dados de usuarios?
+"""
