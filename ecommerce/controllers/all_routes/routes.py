@@ -11,6 +11,10 @@ class Tags(Enum):
     users = "Users"
 
 # adicionar mais rotas neste ecommerce
+# adicionar rotas para procurar pelo:
+#   nome
+#   categoria
+#   preco -> media de preco, intervalo de preco
 
 def routes(app):
     app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecoomerce")

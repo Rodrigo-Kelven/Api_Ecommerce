@@ -6,39 +6,39 @@ from typing_extensions import Literal
 
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
-class ProductBase(BaseModel):
-    name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook"])
-    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
-    price: float = Field(..., title="Price Product", description="Price of product",examples=[2500.00])
-    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
-    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
-    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
-    color: str = Field(..., title="color product", description="Color of product", examples=["Black"])
 
+class ProductEletronicos(BaseModel):
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook asus"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Branco"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    details: str = Field(None, title="details products", description="details of products", examples=["Full Led"])
 
 class ProductModaFeminina(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Calça cintura alta"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
     quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
-    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
     stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
     color: str = Field(..., title="color product", description="Color of product", examples=["Jeans"])
     size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
     details: str = Field(None, title="details products", description="details of products", examples=["rasgado leve"])
     
-
-
 class ProductCasaeDecoracao(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Vaso para decoração"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
     quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
-    taxa: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
     stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
     color: str = Field(..., title="color product", description="Color of product", examples=["Branco"])
     size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
-    
+    details: str = Field(None, title="details products", description="details of products", examples=["Brilhante"])
 
 
 class ProductBelezaeCuidados(BaseModel):
@@ -60,17 +60,53 @@ class ProductAutomotivo(BaseModel):
     pass
 
 
+# retornar com ID em todos
+class ProductEletronicosID(BaseModel):
+    id: int
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[2500.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Black"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    details: str = Field(None, title="details products", description="details of products", examples=["Full Led"])
+
+class ProductModaFemininaID(BaseModel):
+    id: int
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Calça cintura alta"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Jeans"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    details: str = Field(None, title="details products", description="details of products", examples=["rasgado leve"])
+
+class ProductCasaeDecoracaoID(BaseModel):
+    id: int
+    name: str = Field(..., title="Name Product",description="Name of product",examples=["Vaso para decoração"])
+    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
+    price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
+    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
+    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
+    color: str = Field(..., title="color product", description="Color of product", examples=["Branco"])
+    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
+    details: str = Field(None, title="details products", description="details of products", examples=["Brilhante"])
+
 
 
 # Especificacoes dos produtos
-class EspecificacoesEletronicos(BaseModel):
-    pass
+class EspecificacoesEletronicos(ProductEletronicosID):
+    categoty: Literal["Eletronicos"] = "Eletronicos"
 
-class EspecificacoesModaFeminina(ProductModaFeminina):
-    category: Literal["Moda"] = "Moda" # somente passando a Litral é suficiente para setar o valor desejado
-
+class EspecificacoesModaFeminina(ProductModaFemininaID):
+    category: Literal["Moda"] = "Moda" 
     
-class EspecificacoesCasaeDecoracao(ProductCasaeDecoracao):
+class EspecificacoesCasaeDecoracao(ProductCasaeDecoracaoID):
     category: Literal["Casa e decoracao"] = "Casa e decoracao" # somente passando a Litral é suficiente para setar o valor desejado
 
 """ # Este método valida que o campo "category" não seja modificado
@@ -101,16 +137,14 @@ class EspecificacoesAutomotivo(BaseModel):
     pass
 
 
-# modelos/classes aninhadas -> Herdando outra class
-class ProductCreate(ProductBase):
-    pass
-
-
-class Product(ProductBase):
+"""
+class Product(ProductEletronicos):
     id: int
 
     class Config:
         orm_mode = True
+
+"""
 
 """ criar um schema especifico para cada produto
 1. Eletrônicos
