@@ -27,6 +27,14 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 ## Melhorias da API
 - ### Arquitetura do Ecommerce
     - Micro-Services
+ 
+- ### Rotas
+    - Adicionar rotas para pesquisas de produtos baseado em:
+        -  nome do produto
+        -  categoria do produto
+        -  preço do produto
+            - media de preço dos produtos
+       - quantidade de estrelas dos produtos -> média
       
 - ### Criação de um painel administrativo -> (Baseado no Django)
     - Controle de:
