@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
 from typing_extensions import Literal 
 
-# melhorar e revisar todos os schema
-
+# melhorar "detalhar" e revisar todos os schema para garantir maior precisao e documentacao sobre os produtos
+# criar as subcategorias das categorias
 
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
