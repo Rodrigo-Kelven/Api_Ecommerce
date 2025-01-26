@@ -1,8 +1,0 @@
-somente para lembrar que caso o DB nao esteja, é criado automaticamente
-como colocar o redis?
-load balnacer
-revisar: entradas de dados, adicionar forms, upload files para envio de iages dos produtos, schemas e models de products e user, assincronismo, responsividade, agilidade
-
-criar separar e documentar rotas por categorias
-criar e revisar schemas de cada categoria
-criar e revisar models de cada categorias de produtos
