@@ -10,7 +10,7 @@ class Tags(Enum):
     casa_decoracao = "Casa e decoracao"
     users = "Users"
 
-
+# definir todas as configuracoes de todas as rotas aqui, para deixar mais organizado possivel
 def routes(app):
     app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecoomerce")
     app.include_router(route_moda, tags=[Tags.moda], prefix="/ecoomerce")
