@@ -18,7 +18,7 @@ class Products_Eletronics(Base):
     color = Column(String, nullable=False)  # Cor é obrigatória
     size = Column(Integer, nullable=False)  # Tamanho é obrigatório
     details = Column(String, nullable=True)  # Detalhes opcionais
-
+    category = Column(String, nullable=False, default='Eletronicos')
 
 # modelo para Moda Feminina
 class Products_Moda_Feminina(Base):
@@ -33,7 +33,8 @@ class Products_Moda_Feminina(Base):
     stars = Column(Float, nullable=True)  
     color = Column(String, nullable=False)  
     size = Column(Integer, nullable=False)  
-    details = Column(String, nullable=True) 
+    details = Column(String, nullable=True)
+    category = Column(String, nullable=False, default='Moda-Feminina')
 
 
 class Product_Casa_Decoracao(Base):
@@ -49,3 +50,4 @@ class Product_Casa_Decoracao(Base):
     color = Column(String, nullable=False)  
     size = Column(Integer, nullable=False)  
     details = Column(String, nullable=True)
+    category = Column(String, nullable=False, default='Casa-e-decoracao')

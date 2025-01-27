@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Body, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao
 from models.ecommerce.models import Product_Casa_Decoracao
+from schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
 from databases.ecommerce_config.database import get_db
 
 
@@ -13,10 +13,10 @@ route_cada_decoracao = APIRouter()
 @route_cada_decoracao.post(
     path="/category/casa-e-decoracao/",
     status_code=status.HTTP_201_CREATED,
-    description="Create product home and decorations",
-    name="route create product",
     response_model=EspecificacoesCasaeDecoracao,
-    response_description="Informations product"
+    response_description="Informations product",
+    description="Create product home and decorations",
+    name="Route create product",
     )
 async def create_product(product: ProductCasaeDecoracao = Body(embed=True), db: Session = Depends(get_db)):
     db_product = Product_Casa_Decoracao(**product.dict())
@@ -70,3 +70,33 @@ async def delete_product_id(product_id: int, db: Session = Depends(get_db)):
     # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
     print("Produto deletado!!")
     return f"Product with {product_id} removed succesfull"
+
+
+# Rota para atualizar os produtos pelo ID
+@route_cada_decoracao.put(
+    path="/category/casa-e-decoracao/{product_id}/",
+    status_code=status.HTTP_200_OK,
+    response_model=EspecificacoesCasaeDecoracao,
+    response_description="Informations product",
+    description="Route for update products",
+    name="Route create product"
+)
+async def update_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    product_data: ProductBase = Body(embed=True)
+    ):
+    product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
+
+    # Verifica se o produto existe
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Atualiza os campos do produto com os dados recebidos
+    for key, value in product_data.dict().items():
+        setattr(product, key, value)
+
+    # Salva as alterações no banco de dados
+    db.commit()
+    db.refresh(product)
+    return product

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
 from models.ecommerce.models import Products_Moda_Feminina
-from schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina
+from schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
 from databases.ecommerce_config.database import get_db
 
 
@@ -68,3 +68,33 @@ async def delete_product(product_id: int, db: Session = Depends(get_db)):
     # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
     print("Produto deletado!!")
     return f"Product with {product_id} removed succesfull"
+
+
+# Rota para atualizar os produtos
+@route_moda.put(
+    path="/category/moda-feminina/{product_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=EspecificacoesModaFeminina,
+    response_description="Informations of product",
+    description="Update product for ID",
+    name="Route update product for ID"
+    )
+async def update_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    product_data: ProductBase = Body(embed=True),
+):
+    product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
+
+    # Verifica se o produto existe
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Atualiza os campos do produto com os dados recebidos
+    for key, value in product_data.dict().items():
+        setattr(product, key, value)
+
+    # Salva as alterações no banco de dados
+    db.commit()
+    db.refresh(product)
+    return product

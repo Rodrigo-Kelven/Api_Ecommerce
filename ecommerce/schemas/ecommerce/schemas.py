@@ -7,6 +7,19 @@ from typing_extensions import Literal
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
 
+class ProductBase(BaseModel):
+    name: str = Field(..., title="Name Product",description="Name of product")
+    description: str = Field(None, title="Description product", description="Description of products")
+    price: float = Field(..., title="Price Product", description="Price of product")
+    quantity: int = Field(..., title="Amount of product", description="Amount of product")
+    tax: float = Field(None, title="Tax Product", description="Tax of product")
+    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product")
+    color: str = Field(..., title="color product", description="Color of product")
+    size: int = Field(..., title="size product", description="size product in CM")
+    details: str = Field(None, title="details products", description="details of products")
+    category: str
+
+
 class ProductEletronicos(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook asus"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
@@ -101,14 +114,14 @@ class ProductCasaeDecoracaoID(BaseModel):
 
 # Especificacoes dos produtos
 class EspecificacoesEletronicos(ProductEletronicosID):
-    categoty: Literal["Eletronicos"] = "Eletronicos"
-
+    category: Literal["Eletronicos"] = "Eletronicos"
+    
 class EspecificacoesModaFeminina(ProductModaFemininaID):
-    category: Literal["Moda"] = "Moda" 
+    category: Literal["Moda-Feminina"] = "Moda-Feminina" 
     
 class EspecificacoesCasaeDecoracao(ProductCasaeDecoracaoID):
-    category: Literal["Casa e decoracao"] = "Casa e decoracao" # somente passando a Litral é suficiente para setar o valor desejado
-
+    category: Literal["Casa-e-decoracao"] = "Casa-e-decoracao" # somente passando a Litral é suficiente para setar o valor desejado
+    
 """ # Este método valida que o campo "category" não seja modificado
     def dict(self, *args, **kwargs):
         kwargs['exclude_unset'] = True

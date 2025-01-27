@@ -2,6 +2,7 @@ from enum import Enum
 from controllers.routes_ecommrece.eletronics.route import route_eletronicos
 from controllers.routes_ecommrece.Moda.route import route_moda
 from controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
+from controllers.all_routes.route_all import route_all 
 
 # tags para ficar mais organizado
 class Tags(Enum):
@@ -9,12 +10,14 @@ class Tags(Enum):
     moda = "Moda"
     casa_decoracao = "Casa e decoracao"
     users = "Users"
+    all_products = "All Products"
 
 # definir todas as configuracoes de todas as rotas aqui, para deixar mais organizado possivel
 def routes(app):
     app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecoomerce")
     app.include_router(route_moda, tags=[Tags.moda], prefix="/ecoomerce")
     app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecoomerce")
+    app.include_router(route_all, tags=[Tags.all_products], prefix="/ecoomerce")
 
 # atalho
 """
