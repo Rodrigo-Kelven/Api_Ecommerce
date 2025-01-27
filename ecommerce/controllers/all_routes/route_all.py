@@ -29,6 +29,7 @@ async def all_products(
         products_casa_decoracao +
         products_moda_feminina
     )
+    # usando assim, os dados dos produtos sao retornados como um dicionario, que suas suas categorias
     all = {
         "Produtos eletronicos":products_eletronics,
         "Produtos Casa e decoracao":products_casa_decoracao,
