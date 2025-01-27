@@ -8,6 +8,7 @@ from databases.ecommerce_config.database import  get_db  # Importando a sessão 
 route_eletronicos = APIRouter()
 
 
+
 # Rota para criar um produto
 @route_eletronicos.post(
         path="/category/eletronic/", 
@@ -107,8 +108,11 @@ async def update_product(
     for key, value in product_data.dict().items():
         setattr(product, key, value)
 
+    # Corrige o valor da categoria se necessário
+    product.category = "Eletronicos"  # Defina o valor da categoria como "Eletronicos"
+
+
     # Salva as alterações no banco de dados
     db.commit()
     db.refresh(product)
     return product
-

@@ -42,6 +42,7 @@ async def list_products(skip: int = 0, limit: int = 10, db: Session = Depends(ge
 # Rota para consultar um produto pelo ID
 @route_cada_decoracao.get(
     path="/category/casa-e-decoracao/{product_id}",
+    response_model=EspecificacoesCasaeDecoracao,
     status_code=status.HTTP_200_OK,
     description="Search product with ID",
     name="Route search product with ID"

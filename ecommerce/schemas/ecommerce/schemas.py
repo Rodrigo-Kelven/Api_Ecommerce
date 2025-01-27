@@ -18,6 +18,9 @@ class ProductBase(BaseModel):
     color: str = Field(..., title="color product", description="Color of product")
     size: int = Field(..., title="size product", description="size product in CM")
     details: str = Field(None, title="details products", description="details of products")
+    
+
+class ProductBase_2(ProductBase):
     category: str
 
 

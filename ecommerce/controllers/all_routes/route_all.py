@@ -1,6 +1,5 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas.ecommerce.schemas import ProductBase
 from models.ecommerce.models import Product_Casa_Decoracao, Products_Eletronics, Products_Moda_Feminina
 from databases.ecommerce_config.database import get_db
 
@@ -22,7 +21,6 @@ async def all_products(
     products_moda_feminina = db.query(Products_Moda_Feminina).all()
     
     # Combine todos os produtos em uma única lista
-
     # usando assim, sera retornado somnete uma lista com os produtos e suas indormacoes
     all_products = (
         products_eletronics +
