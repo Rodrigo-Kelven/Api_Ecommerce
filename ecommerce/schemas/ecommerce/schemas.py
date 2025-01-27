@@ -7,6 +7,7 @@ from typing_extensions import Literal
 # eschemas de cada categoria de produtos
 # o schema serve basicamente como um intermediario entre voce e o modelo que ira para o DB
 
+# nao esquecer de adicionar outros campos nesta class e caso seja adicionado em alguma outra categoria
 class ProductBase(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product")
     description: str = Field(None, title="Description product", description="Description of products")
