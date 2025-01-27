@@ -52,7 +52,7 @@ async def read_products(
                 description="Search product with ID",
                 name="Route search product with ID"
             )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-async def read_product(
+async def read_product_id(
     product_id: int,
     db: Session = Depends(get_db
 )):
@@ -69,7 +69,7 @@ async def read_product(
     description="Delete product for ID",
     name="Route delete product for ID"
     )
-async def delete_product(
+async def delete_product_id(
     product_id: int, 
     db: Session = Depends(get_db)
 ):

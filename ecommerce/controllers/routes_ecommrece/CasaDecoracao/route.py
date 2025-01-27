@@ -34,7 +34,10 @@ async def create_product(product: ProductCasaeDecoracao = Body(embed=True), db: 
     description="List all products",
     name="Route list products"
 )
-async def list_products(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+async def list_products(
+    skip: int = 0, limit: int = 10,
+    db: Session = Depends(get_db)
+):
     product = db.query(Product_Casa_Decoracao).offset(skip).limit(limit).all()
     return product
 
@@ -47,7 +50,10 @@ async def list_products(skip: int = 0, limit: int = 10, db: Session = Depends(ge
     description="Search product with ID",
     name="Route search product with ID"
 )
-async def search_product(product_id: int, db: Session = Depends(get_db)):
+async def search_product(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
     product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()  # Usando o modelo de SQLAlchemy
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -61,7 +67,10 @@ async def search_product(product_id: int, db: Session = Depends(get_db)):
     description="Delete product for ID",
     name="Route delete product for ID"
 )
-async def delete_product_id(product_id: int, db: Session = Depends(get_db)):
+async def delete_product_id(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
     product_delete = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
     if product_delete is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
