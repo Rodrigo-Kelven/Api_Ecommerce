@@ -3,7 +3,8 @@ from databases.ecommerce_config.database import Base
 
 # criar os modelos das outras categorias
 
-# modelo do que vai para o DB
+# modelo do que vai para o DB, nao esquecer de passar todos os dados de forma correta!
+
 # modelo para produtos eletronicos
 class Products_Eletronics(Base):
     __tablename__ = "products_eletronics"
