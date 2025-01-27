@@ -114,6 +114,7 @@ class ProductCasaeDecoracaoID(BaseModel):
 
 
 # Especificacoes dos produtos
+# o nome que estiver aqui em category, seve estar em category em models tambem
 class EspecificacoesEletronicos(ProductEletronicosID):
     category: Literal["Eletronicos"] = "Eletronicos"
     
