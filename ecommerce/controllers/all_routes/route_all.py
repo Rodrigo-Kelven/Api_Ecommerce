@@ -23,6 +23,7 @@ async def all_products(
     
     # Combine todos os produtos em uma única lista
 
+    # usando assim, sera retornado somnete uma lista com os produtos e suas indormacoes
     all_products = (
         products_eletronics +
         products_casa_decoracao +
