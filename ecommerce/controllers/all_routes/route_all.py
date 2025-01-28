@@ -6,7 +6,7 @@ from databases.ecommerce_config.database import get_db
 route_all = APIRouter()
 
 @route_all.get(
-    path="all-products/",
+    path="/all-products/",
     status_code=status.HTTP_200_OK,
     #response_model=list[ProductBase], Criar um model ou deixar assim mesmo, se desconmentar nao funciona porque esta retornando uma lista com todos os produtos por categorias
     response_description="Informations products",
