@@ -11,6 +11,7 @@ templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administr
 
 # adicionar validacoes de parametros nos forms, field
 # deixar as operacoes mais rapidas
+# dividir o painel entre usuarios e produtos
 
 # Rota GET -> lista os usuarios 
 @router.get(
