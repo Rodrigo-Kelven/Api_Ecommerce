@@ -6,6 +6,9 @@ from databases.ecommerce_config.database import get_db
 
 route_users = APIRouter()
 
+# adicionar mais validacoes
+# adicionar protecao contra ataques de sqlinjection
+# preparar o sistema de admin e usuarios
 
 # Rota para criar usuarios
 @route_users.post(
