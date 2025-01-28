@@ -7,7 +7,7 @@ from databases.ecommerce_config.database import get_db
 route_users = APIRouter()
 
 
-# Rota para criar um produto
+# Rota para criar usuarios
 @route_users.post(
         path="/users/",
         status_code=status.HTTP_201_CREATED,
