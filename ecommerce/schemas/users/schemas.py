@@ -17,3 +17,4 @@ class UserResponse(BaseModel):
     fullname: str
     username: str
     email: EmailStr
+

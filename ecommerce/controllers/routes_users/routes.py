@@ -12,7 +12,7 @@ route_users = APIRouter()
 
 # Rota para criar usuarios
 @route_users.post(
-        path="/users/create/",
+        path="/user-create/",
         status_code=status.HTTP_201_CREATED,
         response_model=UserResponse,
         response_model_exclude=["password"],
@@ -54,7 +54,7 @@ async def list_users(
     return users
 
 # Rota para consultar um usuario pelo ID
-@route_users.get(path="/user/{user_id}",
+@route_users.get(path="/user-informations/{user_id}",
                 response_model=UserResponse,
                 status_code=status.HTTP_200_OK,
                 description="Search user with ID",
@@ -72,7 +72,7 @@ async def read_user_id(
 
 # Rota para atualizar informacoes de um usuarios -> pensar em caso esqueca a senha, ataques de phishing
 @route_users.put(
-        path="/users/{user_id}", 
+        path="/user-update-informations/{user_id}", 
         status_code=status.HTTP_200_OK,
         response_model=UserResponse,
         description="Route list informations users",
@@ -99,7 +99,7 @@ def update_user(
 
 # Rota para deletar usuario pelo ID
 @route_users.delete(
-        path="/user/{user_id}",
+        path="/user-delete/{user_id}",
         status_code=status.HTTP_204_NO_CONTENT,
         description="Delete users for ID",
         name="Route delete users for ID"

@@ -4,6 +4,7 @@ from controllers.routes_ecommrece.Moda.route import route_moda
 from controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
 from controllers.all_routes.route_all import route_all
 from controllers.routes_users.routes import route_users
+from controllers.Painel_Administrativo.route import router
 
 # tags para ficar mais organizado
 class Tags(Enum):
@@ -11,15 +12,17 @@ class Tags(Enum):
     moda = "Moda"
     casa_decoracao = "Casa e decoracao"
     users = "Users"
+    user2 = "Teste Painel ADM"
     all_products = "All Products"
 
 # definir todas as configuracoes de todas as rotas aqui, para deixar mais organizado possivel
 def routes(app):
-    app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecoomerce")
-    app.include_router(route_moda, tags=[Tags.moda], prefix="/ecoomerce")
-    app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecoomerce")
-    app.include_router(route_all, tags=[Tags.all_products], prefix="/ecoomerce")
-    app.include_router(route_users, tags=[Tags.users], prefix="/ecoomerce")
+    app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecommerce")
+    app.include_router(route_moda, tags=[Tags.moda], prefix="/ecommerce")
+    app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
+    app.include_router(route_all, tags=[Tags.all_products], prefix="/ecommerce")
+    #app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce")
+    app.include_router(router, tags=[Tags.user2], prefix="/ecommerce")
 
 # atalho
 """

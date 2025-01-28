@@ -3,7 +3,7 @@ from models.ecommerce.models import Base
 from databases.ecommerce_config.database import engine_ecommerce_products, engine_ecommerce_users
 from controllers.all_routes.routes import routes
 
-# Criar as tabelas
+# Criar as tabelas no banco de dados
 Base.metadata.create_all(bind=engine_ecommerce_users)
 Base.metadata.create_all(bind=engine_ecommerce_products)
 
