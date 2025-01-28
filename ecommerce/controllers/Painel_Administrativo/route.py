@@ -9,6 +9,9 @@ from fastapi.templating import Jinja2Templates
 router = APIRouter()
 templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administrativo/templates")
 
+# adicionar validacoes de parametros nos forms, field
+
+
 # Rota GET -> lista os usuarios 
 @router.get(
         path="/users/",
