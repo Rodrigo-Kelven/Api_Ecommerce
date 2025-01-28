@@ -12,7 +12,7 @@ route_users = APIRouter()
 
 # Rota para criar usuarios
 @route_users.post(
-        path="/users/",
+        path="/users/create/",
         status_code=status.HTTP_201_CREATED,
         response_model=UserResponse,
         response_model_exclude=["password"],
@@ -40,7 +40,7 @@ async def create_user(
 
 # Rota para listar todos os usuarios, "usar isso apenas como admin"
 @route_users.get(
-    path="/users/registred/",
+    path="/users/list/",
     status_code=status.HTTP_200_OK,
     response_model=list[UserResponse],
     description="Route list informations users",
@@ -52,3 +52,67 @@ async def list_users(
 ):
     users = db.query(User).offset(skip).limit(limit).all()
     return users
+
+# Rota para consultar um usuario pelo ID
+@route_users.get(path="/user/{user_id}",
+                response_model=UserResponse,
+                status_code=status.HTTP_200_OK,
+                description="Search user with ID",
+                name="Route search user with ID"
+            )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+async def read_user_id(
+    user_id: int,
+    db: Session = Depends(get_db
+)):
+    user = db.query(User).filter(User.id == user_id).first()  # Usando o modelo de SQLAlchemy
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+# Rota para atualizar informacoes de um usuarios -> pensar em caso esqueca a senha, ataques de phishing
+@route_users.put(
+        path="/users/{user_id}", 
+        status_code=status.HTTP_200_OK,
+        response_model=UserResponse,
+        description="Route list informations users",
+        name="Route list informatinos users"
+)
+
+def update_user(
+    user_id: int,
+    user: UserCreate,
+    db: Session = Depends(get_db)
+    ):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    for key, value in user.dict().items():
+        setattr(db_user, key, value)
+
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+
+# Rota para deletar usuario pelo ID
+@route_users.delete(
+        path="/user/{user_id}",
+        status_code=status.HTTP_204_NO_CONTENT,
+        description="Delete users for ID",
+        name="Route delete users for ID"
+    )
+
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User  not found")
+    db.delete(db_user)
+    db.commit()
