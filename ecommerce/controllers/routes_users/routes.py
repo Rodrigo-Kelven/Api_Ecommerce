@@ -4,7 +4,7 @@ from models.users.models import User
 from sqlalchemy.orm import Session
 from databases.ecommerce_config.database import get_db
 
-route_users = APIRouter()
+route_users = APIRouter(deprecated=True) # corrigir
 
 # adicionar mais validacoes
 # adicionar protecao contra ataques de sqlinjection
