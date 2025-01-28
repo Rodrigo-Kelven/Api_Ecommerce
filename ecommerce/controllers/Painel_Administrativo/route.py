@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administr
 # deixar as operacoes mais rapidas
 # dividir o painel entre usuarios e produtos
 # adicionar ao painel as informacoes nescesarias: estoque, produtos, usuarios, estatistias e etc
-
+#
 # Rota GET -> lista os usuarios 
 @router.get(
         path="/users/",
