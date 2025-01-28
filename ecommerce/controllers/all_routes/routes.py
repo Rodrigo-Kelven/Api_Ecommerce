@@ -21,7 +21,7 @@ def routes(app):
     app.include_router(route_moda, tags=[Tags.moda], prefix="/ecommerce")
     app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
     app.include_router(route_all, tags=[Tags.all_products], prefix="/ecommerce")
-    #app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce")
+    #app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce") # porque essa esta dando conflico com o painel?
     app.include_router(router, tags=[Tags.user2], prefix="/ecommerce")
 
 # atalho
