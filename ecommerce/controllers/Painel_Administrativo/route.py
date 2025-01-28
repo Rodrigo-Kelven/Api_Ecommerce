@@ -10,7 +10,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administrativo/templates")
 
 # adicionar validacoes de parametros nos forms, field
-
+# deixar as operacoes mais rapidas
 
 # Rota GET -> lista os usuarios 
 @router.get(
