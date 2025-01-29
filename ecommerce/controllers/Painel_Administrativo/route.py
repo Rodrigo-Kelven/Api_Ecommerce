@@ -71,7 +71,7 @@ async def create_user(
     # Redireciona para a página inicial após a criação do usuário
     return RedirectResponse(url="/ecommerce/admin/users/", status_code=303)
 
-# Rota GET -> pag update informations users
+# Rota GET (renderiza a pagina)-> pag update informations users
 @router.get(
         path="/user/update/{user_id}",
         status_code=status.HTTP_200_OK,
