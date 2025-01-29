@@ -41,7 +41,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - ### Criação de um painel administrativo -> (Baseado no Django)
     - Controle de:
         - Estoque
-        - Usuarios
+        - Usuarios -> Update
         - Produtos
         - Análise de vendas
           
