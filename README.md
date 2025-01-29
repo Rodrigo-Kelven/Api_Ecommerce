@@ -27,6 +27,8 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 ## Melhorias da API
 - ### Arquitetura do Ecommerce
     - Micro-Services
+        - Criar um sistema de validação separado da API principal
+        - Separar: (visualização, validação, regras de negócio)
  
 - ### Rotas
     - Adicionar rotas para pesquisas de produtos baseado em:
