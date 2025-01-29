@@ -30,8 +30,8 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
         - Criar um sistema de validação separado da API principal
         - Separar: (visualização, validação, regras de negócio)
  
-- ### Rotas
-    - Adicionar rotas para pesquisas de produtos baseado em:
+- ### Painel Admin
+    - Adicionar pesquisa de produtos baseado em:
         -  nome do produto
         -  categoria do produto
         -  preço do produto
