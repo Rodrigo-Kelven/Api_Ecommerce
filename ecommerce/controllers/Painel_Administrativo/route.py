@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administr
 # dividir o painel entre usuarios e produtos
 # adicionar ao painel as informacoes nescesarias: estoque, produtos, usuarios, estatistias e etc
 
-# Rota GET -> lista os usuarios 
+# Rota GET (renderiza a pagina) -> lista os usuarios 
 @router.get(
         path="/users/",
         status_code=status.HTTP_200_OK,
@@ -29,7 +29,7 @@ def list_users(
     users = db.query(User).all()
     return templates.TemplateResponse("user_list.html", {"request": request, "users": users})
 
-# Rota GET -> pag criar users
+# Rota GET (renderiza a pagina) -> pag criar users
 @router.get(
         path="/user/create",
         status_code=status.HTTP_200_OK,
