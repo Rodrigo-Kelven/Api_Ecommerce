@@ -6,6 +6,7 @@ from databases.ecommerce_config.database import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+
 router = APIRouter()
 templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administrativo/templates") # separar uma pasta somente para os paineis e templates ate criar o frontend
 
@@ -28,6 +29,7 @@ def list_users(
 ):
     users = db.query(User).all()
     return templates.TemplateResponse("user_list.html", {"request": request, "users": users})
+
 
 # Rota GET (renderiza a pagina) -> pag criar users
 @router.get(
@@ -71,6 +73,7 @@ async def create_user(
     # Redireciona para a página inicial após a criação do usuário
     return RedirectResponse(url="/ecommerce/admin/users/", status_code=303)
 
+
 # Rota GET (renderiza a pagina)-> pag update informations users
 @router.get(
         path="/user/update/{user_id}",
@@ -87,8 +90,11 @@ def update_user_form(request: Request, user_id: int, db: Session = Depends(get_d
 
 
 # Rota POST (envia os dados para o banco de dados)-> Update informations
-@router.post("/user-update/{user_id}")
-
+@router.post(
+        path="/user-update/{user_id}",
+        status_code=status.HTTP_201_CREATED,description="Renderiza o Painel de Admin Users",
+        name="Route Admin Users",
+)
 async def update_user(
     user_id: int,
     name: str = Form(...),
