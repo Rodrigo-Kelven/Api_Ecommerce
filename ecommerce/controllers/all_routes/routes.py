@@ -22,7 +22,7 @@ def routes(app):
     app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
     app.include_router(route_all, tags=[Tags.all_products], prefix="/ecommerce")
     app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce")
-    app.include_router(router, tags=[Tags.user2], prefix="/ecommerce/admin")
+    app.include_router(router, tags=[Tags.user2], prefix="/ecommerce/admin") # se for mudar a rota aqui, mude em todos as paginas HTML
 
 # atalho
 """
