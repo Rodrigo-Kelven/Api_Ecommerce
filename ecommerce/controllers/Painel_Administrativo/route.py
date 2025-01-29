@@ -114,7 +114,7 @@ async def update_user(
     return RedirectResponse(url="/ecommerce/admin/users/", status_code=303)
     
 
-# Rota GET -> pag delete user
+# Rota GET (renderiza a pagina)-> pag delete user
 @router.get(
         path="/user/delete/{user_id}",
         status_code=status.HTTP_200_OK,
