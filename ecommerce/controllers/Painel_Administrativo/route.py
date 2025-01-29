@@ -86,7 +86,7 @@ def update_user_form(request: Request, user_id: int, db: Session = Depends(get_d
     return templates.TemplateResponse("user_update.html", {"request": request, "user": user})
 
 
-# Rota POST -> Update informations
+# Rota POST (envia os dados para o banco de dados)-> Update informations
 @router.post("/user-update/{user_id}")
 
 async def update_user(
