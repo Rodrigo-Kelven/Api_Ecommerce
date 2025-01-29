@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Lista de Usuários</h2>
-<a href="/ecommerce/user/create" class="btn btn-primary">Criar Novo Usuário</a>
+<a href="/ecommerce/admin/user/create" class="btn btn-primary">Criar Novo Usuário</a>
 <table class="table">
     <thead>
         <tr>
@@ -21,8 +21,8 @@
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
-                <a href="/ecommerce/user/update/{{ user.id }}" class="btn btn-warning">Editar</a>
-                <a href="/ecommerce/user/delete/{{ user.id }}" class="btn btn-danger">Deletar</a>
+                <a href="/ecommerce/admin/user/update/{{ user.id }}" class="btn btn-warning">Editar</a>
+                <a href="/ecommerce/admin/user/delete/{{ user.id }}" class="btn btn-danger">Deletar</a>
             </td>
         </tr>
         {% endfor %}

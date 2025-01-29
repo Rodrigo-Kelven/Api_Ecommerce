@@ -51,19 +51,25 @@ def create_user_form(request: Request):
 async def create_user(
 
     name: str = Form(...),
-    username: str = Form(...),
     fullname: str = Form(...),
+    username: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    db_user = User(name=name, username=username, fullname=fullname, email=email, password=password)
+    db_user = User(
+        name=name,
+        fullname=fullname,
+        username=username,
+        email=email,
+        password=password
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
 
     # Redireciona para a página inicial após a criação do usuário
-    return RedirectResponse(url="/ecommerce/users/", status_code=303)
+    return RedirectResponse(url="/ecommerce/admin/users/", status_code=303)
 
 # Rota GET -> pag update informations users
 @router.get(
@@ -105,7 +111,7 @@ async def update_user(
     db.refresh(db_user)
 
     # Redireciona para a lista de usuários após a atualização
-    return RedirectResponse(url="/ecommerce/users/", status_code=303)
+    return RedirectResponse(url="/ecommerce/admin/users/", status_code=303)
     
 
 # Rota GET -> pag delete user
@@ -141,4 +147,4 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.delete(db_user)
     db.commit()
 
-    return RedirectResponse(url="/ecommerce/users", status_code=303)
+    return RedirectResponse(url="/ecommerce/admin/users", status_code=303)

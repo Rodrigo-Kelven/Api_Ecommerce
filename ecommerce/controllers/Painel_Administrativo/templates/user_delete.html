@@ -3,8 +3,8 @@
 {% block content %}
 <h2>Deletar Usuário</h2>
 <p>Você tem certeza que deseja deletar o usuário {{ user.name }}?</p>
-<form method="post" action="/ecommerce/user-delete/{{ user.id }}">
+<form method="post" action="/ecommerce/admin/user-delete/{{ user.id }}">
     <button type="submit" class="btn btn-danger">Deletar</button>
-    <a href="/ecommerce/users/" class="btn btn-secondary">Cancelar</a>
+    <a href="/ecommerce/admin/users/" class="btn btn-secondary">Cancelar</a>
 </form>
 {% endblock %}
