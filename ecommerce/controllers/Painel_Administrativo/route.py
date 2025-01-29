@@ -41,7 +41,7 @@ def create_user_form(request: Request):
     return templates.TemplateResponse("user_create.html", {"request": request})
 
 
-# Rota POST -> create users
+# Rota POST (envia os dados para o banco de dados) -> create users
 @router.post(
         path="/user-create/",
         status_code=status.HTTP_201_CREATED,
