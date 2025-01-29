@@ -133,7 +133,7 @@ def delete_user_form(
     return templates.TemplateResponse("user_delete.html", {"request": request, "user": user})
 
 
-# Rota POST -> delete user
+# Rota POST (envia os dados para o banco de dados)-> delete user
 @router.post(
     path="/user-delete/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
