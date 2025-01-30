@@ -7,6 +7,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 
+# adicionar validacoes de parametros nos forms, field
+# deixar as operacoes mais rapidas
+# dividir o painel entre usuarios e produtos
+# adicionar ao painel as informacoes nescesarias: estoque, produtos, usuarios, estatistias e etc
 
 router = APIRouter()
 templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administrativo/templates") # separar uma pasta somente para os paineis e templates ate criar o frontend
