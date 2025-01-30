@@ -9,7 +9,7 @@ from databases.ecommerce_config.database import get_db
 route_cada_decoracao = APIRouter()
 
 
-# Rota para criar um produto
+
 @route_cada_decoracao.post(
     path="/category/casa-e-decoracao/",
     status_code=status.HTTP_201_CREATED,
@@ -26,7 +26,7 @@ async def create_product(product: ProductCasaeDecoracao = Body(embed=True), db: 
     return db_product
 
 
-# Rota para listar todos os produtos
+
 @route_cada_decoracao.get(
     path="/category/casa-e-decoracao/",
     status_code=status.HTTP_200_OK,
@@ -42,7 +42,7 @@ async def list_products(
     return product
 
 
-# Rota para consultar um produto pelo ID
+
 @route_cada_decoracao.get(
     path="/category/casa-e-decoracao/{product_id}",
     response_model=EspecificacoesCasaeDecoracao,
@@ -60,7 +60,7 @@ async def search_product(
     return product
 
 
-# Rota para deletar produto pelo ID
+
 @route_cada_decoracao.delete(
     path="/category/casa-e-decoracao/{product_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -82,7 +82,7 @@ async def delete_product_id(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota para atualizar os produtos pelo ID
+
 @route_cada_decoracao.put(
     path="/category/casa-e-decoracao/{product_id}/",
     status_code=status.HTTP_200_OK,
