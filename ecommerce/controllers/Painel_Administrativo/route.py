@@ -6,6 +6,7 @@ from databases.ecommerce_config.database import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+# separar esta pasta em produtos e usuarios, todo o front será separado do back
 
 router = APIRouter()
 templates = Jinja2Templates(directory="../ecommerce/controllers/Painel_Administrativo/templates") # separar uma pasta somente para os paineis e templates ate criar o frontend
