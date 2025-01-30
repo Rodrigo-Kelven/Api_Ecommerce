@@ -58,35 +58,35 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
     - Centralizar a autorização para controlar o acesso a diferentes serviços
 
 - ### Otimização do Roteamento:
-    - Utilize técnicas de balanceamento de carga para distribuir as solicitações entre múltiplos serviços, melhorando a eficiência e a resiliência.
+    - Utilizar técnicas de balanceamento de carga para distribuir as solicitações entre múltiplos serviços, melhorando a eficiência e a resiliência.
     - Implementação de um mecanismo de fallback para redirecionar solicitações em caso de falha de um serviço.
 
 - ### Caching:
-    - Adicione caching para respostas frequentes, utilizando Redis ou Memcached, para reduzir a latência e a carga nos serviços de backend.
+    - Adicionar caching para respostas frequentes, utilizando Redis ou Memcached, para reduzir a latência e a carga nos serviços de backend.
     - Definir políticas de expiração para garantir que os dados em cache sejam atualizados conforme necessário.
 
 - ### Monitoramento e Logging:
-    - Integre ferramentas de monitoramento, como Prometheus ou Grafana, para acompanhar o desempenho da API e identificar gargalos.
+    - Integrar ferramentas de monitoramento, como Prometheus ou Grafana, para acompanhar o desempenho da API e identificar gargalos.
     - Implementar um sistema de logging detalhado para registrar erros e eventos importantes, facilitando a depuração.
 
 - ### Documentação:
-    - Utilize ferramentas como Swagger ou Redoc para gerar documentação interativa da API, facilitando o uso por desenvolvedores.
+    - Utilizar ferramentas como Swagger ou Redoc para gerar documentação interativa da API, facilitando o uso por desenvolvedores.
     - Manter a documentação atualizada com exemplos de uso e descrições claras dos endpoints.
 
 - ### Testes Automatizados:
-    - Crie uma suíte de testes automatizados para garantir que a API funcione conforme esperado e para detectar regressões rapidamente.
+    - Criar uma suíte de testes automatizados para garantir que a API funcione conforme esperado e para detectar regressões rapidamente.
     - Realizar testes de carga para avaliar como a API se comporta sob diferentes níveis de tráfego.
 
 - ### Tratamento de Erros:
-    - Implemente um sistema de tratamento de erros que retorne mensagens de erro claras e significativas para os usuários.
+    - Implementar um sistema de tratamento de erros que retorne mensagens de erro claras e significativas para os usuários.
     - Utilizar códigos de status HTTP apropriados para diferentes tipos de falhas.
 
 - ### Versionamento da API:
-    - Considere implementar versionamento na API para permitir atualizações sem quebrar a compatibilidade com clientes existentes.
+    - Considerar implementar versionamento na API para permitir atualizações sem quebrar a compatibilidade com clientes existentes.
     - Utilizar um padrão de URL que inclua a versão, como /api/v1/....
 
 - ### Segurança:
-    - Aplique práticas de segurança, como validação de entrada e proteção contra ataques comuns (ex: SQL Injection, XSS).
+    - Apliquar práticas de segurança, como validação de entrada e proteção contra ataques comuns (ex: SQL Injection, XSS).
     - Considerar o uso de HTTPS para proteger a comunicação entre clientes e a API.
 
 - ### Feedback do Usuário:
