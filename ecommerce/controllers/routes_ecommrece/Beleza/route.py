@@ -7,7 +7,7 @@ from databases.ecommerce_config.database import get_db
 route_Beleza = APIRouter()
 
 
-# Rota POST
+
 @route_Beleza.post(
     path="/category/beleza-e-saude/product",
     status_code=status.HTTP_202_ACCEPTED,
@@ -27,7 +27,7 @@ async def create_product(
     return product
 
 
-# Rota GET
+
 @route_Beleza.get(
     path="/category/beleza-e-cuidados/products",
     status_code=status.HTTP_200_OK,
@@ -45,7 +45,7 @@ async def list_products(
     return product
 
 
-# Rota GET with ID
+
 @route_Beleza.get(
     path="/category/beleza-e-cuidados/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -62,7 +62,7 @@ async def searchProduct_id(
     return product
 
 
-# Rota delete
+
 @route_Beleza.delete(
     path="/category/beleza-e-cuidados/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -83,7 +83,7 @@ async def delete_product(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota PUT 
+
 @route_Beleza.put(
     path="/category/beleza-e-cuidados/{product_id}",
     status_code=status.HTTP_200_OK,
