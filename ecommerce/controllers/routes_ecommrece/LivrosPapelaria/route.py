@@ -8,7 +8,7 @@ from databases.ecommerce_config.database import get_db
 route_livros_papelaria = APIRouter()
 
 
-# Rota POST
+
 @route_livros_papelaria.post(
     path="/category/livros-papelaria/product",
     status_code=status.HTTP_201_CREATED,
@@ -28,7 +28,7 @@ async def create_product(
     return db_product
 
 
-# Rota GET
+
 @route_livros_papelaria.get(
     path="/category/livros-papelaria/products",
     status_code=status.HTTP_200_OK,
@@ -46,7 +46,7 @@ async def get_products(
     return db_product
 
 
-# Rota GET with ID
+
 @route_livros_papelaria.get(
     path="/category/livros-papelaria/product/{product_id}",
     status_code=status.HTTP_201_CREATED,
@@ -65,7 +65,7 @@ async def get_product_id(
     return db_product
 
 
-# Rota DELETE with ID
+
 @route_livros_papelaria.delete(
     path="/category/livros-papelaria/product/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -86,7 +86,7 @@ async def delete_product_id(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota PUT
+
 @route_livros_papelaria.put(
     path="/category/livros-papelaria/product/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -100,11 +100,11 @@ async def update_product(
     product_data: ProductBase = Body(embed=True),
 ):
     product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
-    # Verifica se o produto existe
+
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Atualiza os campos do produto com os dados recebidos
+
     for key, value in product_data.dict().items():
         setattr(product, key, value)
 
