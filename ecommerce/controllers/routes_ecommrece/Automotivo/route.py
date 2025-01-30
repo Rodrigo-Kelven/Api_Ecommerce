@@ -8,7 +8,7 @@ from databases.ecommerce_config.database import get_db
 route_automotivo = APIRouter()
 
 
-# Rota POST
+
 @route_automotivo.post(
     path="/category/automotivo",
     status_code=status.HTTP_201_CREATED,
