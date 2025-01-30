@@ -10,7 +10,7 @@ route_brinquedos_jogos = APIRouter()
 # Rota POST
 @route_brinquedos_jogos.post(
     path="/category/brinquedos-jogos/product",
-    status_code=status.HTTP_202_ACCEPTED,
+    status_code=status.HTTP_201_CREATED,
     response_model=EspecificacoesBrinquedosJogos,
     response_description="Informations product",
     description="Route create product",

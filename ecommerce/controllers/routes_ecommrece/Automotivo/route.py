@@ -18,7 +18,7 @@ route_automotivo = APIRouter()
     name="Route Create product"
 )
 async def create_product(
-    product: ProductAutomotivo,
+    product: ProductAutomotivo = Body(embed=True),
     db: Session = Depends(get_db)
 ):
     db_product = Product_Automotivo(**product.dict())
@@ -49,7 +49,7 @@ async def get_products(
 # Rota GET with ID
 @route_automotivo.get(
     path="/category/automotivo/product/{product_id}",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
     response_model=EspecificacoesAutomotivo,
     response_description="Information products",
     description="Route get product for id",
@@ -83,7 +83,7 @@ async def delete_product_id(
     db.delete(product_delete)
     db.commit()
     print("Produto deletado!!")
-    return f"Product with {product_id} removed succesfull"
+    return 
 
 
 # Rota PUT
