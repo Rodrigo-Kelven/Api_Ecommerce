@@ -23,6 +23,10 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 ```bash
   fastapi dev ecommerce/main.py --reload --port 8000
 ```
+### Painel admin de usuários (Ainda está em fase de desenvolvimento)
+```bash
+  http://127.0.0.1:8000/ecommerce/admin/users/
+```
 
 ## Melhorias da API
 - ### Arquitetura do Ecommerce
