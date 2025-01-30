@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
-from models.ecommerce.models import Products_Eletronics  # Importando o modelo SQLAlchemy
-from schemas.ecommerce.schemas import ProductEletronicos, EspecificacoesEletronicos, ProductBase # Importando o schema Pydantic para validação
-from databases.ecommerce_config.database import  get_db  # Importando a sessão do banco de dados
+from models.ecommerce.models import Products_Eletronics  
+from schemas.ecommerce.schemas import ProductEletronicos, EspecificacoesEletronicos, ProductBase 
+from databases.ecommerce_config.database import  get_db  
 
 
 route_eletronicos = APIRouter()
 
 
 
-# Rota para criar um produto
+
 @route_eletronicos.post(
         path="/category/eletronic/", 
         status_code=status.HTTP_201_CREATED,
@@ -23,14 +23,14 @@ async def create_product(
     db: Session = Depends(get_db)
     ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     
-    db_product = Products_Eletronics(**product.dict())  # Usando o modelo SQLAlchemy
+    db_product = Products_Eletronics(**product.dict()) 
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
     return db_product
 
 
-# Rota para listar todos os produtos
+
 @route_eletronicos.get(path="/category/eletronic/", 
                 response_model=list[EspecificacoesEletronicos],
                 status_code=status.HTTP_200_OK,
@@ -45,7 +45,7 @@ async def read_products(
     return products
 
 
-# Rota para consultar um produto pelo ID
+
 @route_eletronicos.get(path="/category/eletronic/{product_id}",
                 response_model=EspecificacoesEletronicos,
                 status_code=status.HTTP_200_OK,
@@ -56,13 +56,13 @@ async def read_product_id(
     product_id: int,
     db: Session = Depends(get_db
 )):
-    product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()  # Usando o modelo de SQLAlchemy
+    product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
 
-# Rota para deletar produto pelo ID
+
 @route_eletronicos.delete(
     path="/category/eletronic/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -84,7 +84,7 @@ async def delete_product_id(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota para atualizar os produtos
+
 @route_eletronicos.put(
     path="/category/eletronic/{product_id}",
     response_model=EspecificacoesEletronicos,
@@ -97,14 +97,13 @@ async def update_product(
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
 ):
-    # Busca o produto pelo ID
+
     product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
 
-    # Verifica se o produto existe
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Atualiza os campos do produto com os dados recebidos
+
     for key, value in product_data.dict().items():
         setattr(product, key, value)
 
@@ -112,7 +111,7 @@ async def update_product(
     #product.category = "Eletronicos"  # Defina o valor da categoria como "Eletronicos"
 
 
-    # Salva as alterações no banco de dados
+
     db.commit()
     db.refresh(product)
     return product
