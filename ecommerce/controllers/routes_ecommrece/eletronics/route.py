@@ -109,7 +109,7 @@ async def update_product(
         setattr(product, key, value)
 
     # Corrige o valor da categoria se necessário
-    product.category = "Eletronicos"  # Defina o valor da categoria como "Eletronicos"
+    #product.category = "Eletronicos"  # Defina o valor da categoria como "Eletronicos"
 
 
     # Salva as alterações no banco de dados
