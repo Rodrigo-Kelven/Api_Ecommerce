@@ -1,5 +1,5 @@
-# Usar a imagem base do Python, procurar uma imagem mais leve
-FROM python:3.9
+# Usar a imagem base 'leve' do Python,
+FROM python:3.11-slim
 
 # Definir o diretório de trabalho
 WORKDIR /ecommerce
