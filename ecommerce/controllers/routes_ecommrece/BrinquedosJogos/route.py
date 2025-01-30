@@ -7,7 +7,7 @@ from databases.ecommerce_config.database import get_db
 route_brinquedos_jogos = APIRouter()
 
 
-# Rota POST
+
 @route_brinquedos_jogos.post(
     path="/category/brinquedos-jogos/product",
     status_code=status.HTTP_201_CREATED,
@@ -27,7 +27,7 @@ async def create_product(
     return product
 
 
-# Rota GET
+
 @route_brinquedos_jogos.get(
     path="/category/brinquedos-jogos/products",
     status_code=status.HTTP_200_OK,
@@ -45,7 +45,7 @@ async def list_products(
     return product
 
 
-# Rota GET with ID
+
 @route_brinquedos_jogos.get(
     path="/category/brinquedos-jogos/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -62,7 +62,7 @@ async def searchProduct_id(
     return product
 
 
-# Rota delete
+
 @route_brinquedos_jogos.delete(
     path="/category/brinquedos-jogos/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -83,7 +83,7 @@ async def delete_product(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota PUT 
+
 @route_brinquedos_jogos.put(
     path="/category/brinquedos-jogos/{product_id}",
     status_code=status.HTTP_200_OK,
