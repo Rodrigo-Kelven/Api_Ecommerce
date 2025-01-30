@@ -8,7 +8,7 @@ from databases.ecommerce_config.database import get_db
 route_moda = APIRouter()
 
 
-# Rota para criar um produto
+
 @route_moda.post(
     path="/category/moda-feminina/",
     status_code=status.HTTP_201_CREATED,
@@ -28,7 +28,7 @@ async def create_product(
     return db_product
 
 
-# Rota para listar todos os produtos
+
 @route_moda.get(path="/category/moda-feminina/", 
                 response_model=list[EspecificacoesModaFeminina],
                 status_code=status.HTTP_200_OK,
