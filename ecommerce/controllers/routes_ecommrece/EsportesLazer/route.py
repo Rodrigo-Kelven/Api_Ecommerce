@@ -7,7 +7,7 @@ from databases.ecommerce_config.database import get_db
 route_esporte_lazer = APIRouter()
 
 
-# Rota POST
+
 @route_esporte_lazer.post(
     path="/category/esporte-lazer/product",
     status_code=status.HTTP_202_ACCEPTED,
@@ -27,7 +27,7 @@ async def create_product(
     return product
 
 
-# Rota GET
+
 @route_esporte_lazer.get(
     path="/category/esporte-lazer/products",
     status_code=status.HTTP_200_OK,
@@ -45,7 +45,7 @@ async def list_products(
     return product
 
 
-# Rota GET with ID
+
 @route_esporte_lazer.get(
     path="/category/esporte-lazer/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -62,7 +62,7 @@ async def searchProduct_id(
     return product
 
 
-# Rota delete
+
 @route_esporte_lazer.delete(
     path="/category/esporte-lazer/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -83,7 +83,7 @@ async def delete_product(
     return f"Product with {product_id} removed succesfull"
 
 
-# Rota PUT 
+
 @route_esporte_lazer.put(
     path="/category/esporte-lazer/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -98,11 +98,11 @@ async def update_products(
     db: Session = Depends(get_db),
 ):
     product = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
-    # Verifica se o produto existe
+
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Atualiza os campos do produto com os dados recebidos
+
     for key, value in product_data.dict().items():
         setattr(product, key, value)
 
