@@ -54,7 +54,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
   - Usar algum framework -> (React, Vue, etc)
     
 - ### Autenticação e Autorização:
-    - Implemente um sistema de autenticação, como OAuth2 ou JWT, para garantir que apenas usuários autorizados possam acessar a API.
+    - Implementar um sistema de autenticação, como OAuth2 ou JWT, para garantir que apenas usuários autorizados possam acessar a API.
     - Centralizar a autorização para controlar o acesso a diferentes serviços
 
 - ### Otimização do Roteamento:
