@@ -28,7 +28,7 @@ async def create_product(
     return db_product
 
 
-# Rota GET
+
 @route_automotivo.get(
     path="/category/automotivo",
     status_code=status.HTTP_200_OK,
@@ -46,7 +46,7 @@ async def get_products(
     return db_product
 
 
-# Rota GET with ID
+
 @route_automotivo.get(
     path="/category/automotivo/product/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -65,7 +65,7 @@ async def get_product_id(
     return db_product
 
 
-# Rota DELETE with ID
+
 @route_automotivo.delete(
     path="/category/automotivo/product/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -86,7 +86,7 @@ async def delete_product_id(
     return 
 
 
-# Rota PUT
+
 @route_automotivo.put(
     path="/category/automotivo/product/{product_id}",
     status_code=status.HTTP_200_OK,
