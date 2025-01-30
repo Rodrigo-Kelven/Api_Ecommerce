@@ -1,4 +1,4 @@
-# Usar a imagem base do Python
+# Usar a imagem base do Python, procurar uma imagem mais leve
 FROM python:3.9
 
 # Definir o diretório de trabalho
@@ -16,5 +16,5 @@ COPY . .
 # Expor a porta que a aplicação vai usar
 EXPOSE 8000
 
-# Comando para executar a aplicação usando Uvicorn
+# Comando para executar a aplicação usando Uvicorn, se nao colocar o host, a aplicacao nao aparece
 CMD ["fastapi","dev", "main.py", "--host","0.0.0.0", "--reload", "--port", "8000"]
