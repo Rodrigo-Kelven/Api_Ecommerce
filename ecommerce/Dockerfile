@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r /code/requirements.txt
 
 # Copiar o restante dos arquivos da aplicação
 COPY ./main.py /code/
-
+# copiar tudo para o diretorio criado no workdir
 COPY . .
 
 # Expor a porta que a aplicação vai usar
