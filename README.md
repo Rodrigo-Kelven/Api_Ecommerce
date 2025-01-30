@@ -11,6 +11,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - [SQLAlchemy](https://www.sqlalchemy.org/) - ORM para interagir com o banco de dados
 - [SQLite](https://www.sqlite.org/index.html) - Banco de dados leve
 - [Pydantic](https://pydantic-docs.helpmanual.io/) - Validação de dados
+- [Docker](https://www.docker.com/) - Conteirização da aplicação
 
 
 ## Instalação
