@@ -35,6 +35,10 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
         - Refazer toda arquitetura e modulariza-la
         - Criar um sistema de validação separado da API principal
         - Separar: (visualização, validação, regras de negócio)
+   - Modelo de dados mais flexivel para todos os tipos de dados
+       - Banco de dados:
+           - NoSQL
+           - Redis
  
 - ### Painel Admin
     - Adicionar pesquisa de produtos baseado em:
