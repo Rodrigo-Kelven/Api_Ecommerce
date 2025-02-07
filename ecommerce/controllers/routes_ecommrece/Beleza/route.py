@@ -9,7 +9,7 @@ route_Beleza = APIRouter()
 
 
 @route_Beleza.post(
-    path="/category/beleza-e-saude/product",
+    path="/category/beleza-e-cuidados/product",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=EspecificacoesBelezaCuidados,
     response_description="Informations product",
@@ -34,7 +34,7 @@ async def create_product(
     response_model=list[EspecificacoesBelezaCuidados],
     response_description="Informations Products",
     description="Route list products",
-    name="Route list products"
+    name="Route list products category"
 )
 async def list_products(
     skip: int = 0,
@@ -52,7 +52,7 @@ async def list_products(
     response_model=EspecificacoesBelezaCuidados,
     response_description="Informations Products",
     description="Route list products",
-    name="Route list products"
+    name="Route list products category"
 )
 async def searchProduct_id(
     product_id: int,
@@ -67,8 +67,8 @@ async def searchProduct_id(
     path="/category/beleza-e-cuidados/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     response_description="Informations Products",
-    description="Route list products",
-    name="Route list products"
+    description="Route delete product for ID",
+    name="Route DELETE products for ID"
 )
 async def delete_product(
     product_id: int,
@@ -79,7 +79,7 @@ async def delete_product(
         raise HTTPException(status_code=404, detail="Product not found")
     db.delete(product_delete)
     db.commit()
-    print("Produto deletado!!")
+    print("Product deletado!!")
     return f"Product with {product_id} removed succesfull"
 
 
@@ -89,8 +89,8 @@ async def delete_product(
     status_code=status.HTTP_200_OK,
     response_model=EspecificacoesBelezaCuidados,
     response_description="Informations Products",
-    description="Route list products",
-    name="Route list products"
+    description="Route update product for ID",
+    name="Route PUT products for ID"
 )
 async def update_products(
     product_id: int,

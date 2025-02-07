@@ -15,7 +15,7 @@ route_automotivo = APIRouter()
     response_model=EspecificacoesAutomotivo,
     response_description="Informations product",
     description="Route create product",
-    name="Route Create product"
+    name="Route Create product category"
 )
 async def create_product(
     product: ProductAutomotivo = Body(embed=True),
@@ -53,7 +53,7 @@ async def get_products(
     response_model=EspecificacoesAutomotivo,
     response_description="Information products",
     description="Route get product for id",
-    name="Route GET products ID"
+    name="Route GET products for ID"
 )
 async def get_product_id(
     product_id: int,
@@ -71,7 +71,7 @@ async def get_product_id(
     status_code=status.HTTP_204_NO_CONTENT,
     response_description="Information products",
     description="Route get product for id",
-    name="Route GET products ID"
+    name="Route DELETE products for ID"
 )
 async def delete_product_id(
     product_id: int,
@@ -92,7 +92,7 @@ async def delete_product_id(
     status_code=status.HTTP_200_OK,
     response_model=EspecificacoesAutomotivo,
     description="Route PUT product",
-    name="Route PUT product"
+    name="Route PUT product for ID"
 )
 async def update_product(
     product_id: int,

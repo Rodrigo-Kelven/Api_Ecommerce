@@ -51,8 +51,8 @@ async def list_products(
     status_code=status.HTTP_200_OK,
     response_model=EspecificacoesEsporteLazer,
     response_description="Informations Products",
-    description="Route list products",
-    name="Route list products"
+    description="Route get product for ID",
+    name="Route GET product for ID"
 )
 async def searchProduct_id(
     product_id: int,
@@ -67,8 +67,8 @@ async def searchProduct_id(
     path="/category/esporte-lazer/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     response_description="Informations Products",
-    description="Route list products",
-    name="Route list products"
+    description="Route delete product for ID",
+    name="Route DELETE product for ID"
 )
 async def delete_product(
     product_id: int,
@@ -89,8 +89,8 @@ async def delete_product(
     status_code=status.HTTP_200_OK,
     response_model=EspecificacoesEsporteLazer,
     response_description="Informations Products",
-    description="Route list products",
-    name="Route list products"
+    description="Route put product for ID",
+    name="Route PUT product for ID"
 )
 async def update_products(
     product_id: int,
