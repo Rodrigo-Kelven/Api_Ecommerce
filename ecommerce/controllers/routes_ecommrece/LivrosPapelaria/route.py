@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends, HTTPException, Body
-from schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
 from sqlalchemy.orm import Session
-from models.ecommerce.models import Product_Livros_Papelaria
-from databases.ecommerce_config.database import get_db
+from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
+from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
+from ecommerce.databases.ecommerce_config.database import get_db
 
 
 route_livros_papelaria = APIRouter()

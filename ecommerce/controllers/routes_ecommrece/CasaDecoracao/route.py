@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Body, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.ecommerce.models import Product_Casa_Decoracao
-from schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
-from databases.ecommerce_config.database import get_db
+from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
+from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
+from ecommerce.databases.ecommerce_config.database import get_db
 
 
 

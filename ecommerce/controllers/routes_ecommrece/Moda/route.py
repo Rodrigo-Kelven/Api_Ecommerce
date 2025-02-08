@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
-from models.ecommerce.models import Products_Moda_Feminina
-from schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
-from databases.ecommerce_config.database import get_db
+from ecommerce.models.ecommerce.models import Products_Moda_Feminina
+from ecommerce.schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
+from ecommerce.databases.ecommerce_config.database import get_db
 
 
 route_moda = APIRouter()

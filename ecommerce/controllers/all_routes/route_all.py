@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
-from databases.ecommerce_config.database import get_db
-from models.ecommerce.models import (
+from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.models.ecommerce.models import (
     Products_Eletronics,
     Product_Casa_Decoracao,
     Products_Moda_Feminina,

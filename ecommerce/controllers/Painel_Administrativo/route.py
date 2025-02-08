@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Form, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from models.users.models import User
-from databases.ecommerce_config.database import get_db
+from ecommerce.models.users.models import User
+from ecommerce.databases.ecommerce_config.database import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 

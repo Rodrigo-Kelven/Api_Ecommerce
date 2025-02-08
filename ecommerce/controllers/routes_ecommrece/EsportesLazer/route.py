@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, HTTPException, Body, Depends
-from models.ecommerce.models import Product_Esporte_Lazer
-from schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
 from sqlalchemy.orm import Session
-from databases.ecommerce_config.database import get_db
+from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
+from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
+from ecommerce.databases.ecommerce_config.database import get_db
 
 route_esporte_lazer = APIRouter()
 

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Form, Body, Query, status, Depends, HTTPException
-from schemas.users.schemas import UserCreate, UserResponse
-from models.users.models import User
+from ecommerce.schemas.users.schemas import UserCreate, UserResponse
+from ecommerce.models.users.models import User
 from sqlalchemy.orm import Session
-from databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db
 
 route_users = APIRouter() 
 

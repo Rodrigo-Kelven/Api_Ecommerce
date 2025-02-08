@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float
-from databases.ecommerce_config.database import Base
+from ecommerce.databases.ecommerce_config.database import Base
 
 # criar os modelos das outras categorias
 

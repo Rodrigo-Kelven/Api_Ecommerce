@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String
-from databases.ecommerce_config.database import Base
+from ecommerce.databases.ecommerce_config.database import Base
 
 
 class User(Base):
 
-    __tablename__ = 'users'
+    __tablename__ = 'users_test'
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)

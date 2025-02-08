@@ -1,16 +1,18 @@
 from enum import Enum
-from controllers.routes_ecommrece.eletronics.route import route_eletronicos
-from controllers.routes_ecommrece.Moda.route import route_moda
-from controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
-from controllers.routes_ecommrece.Automotivo.route import route_automotivo
-from controllers.routes_ecommrece.Beleza.route import route_Beleza
-from controllers.routes_ecommrece.BrinquedosJogos.route import route_brinquedos_jogos
-from controllers.routes_ecommrece.EsportesLazer.route import route_esporte_lazer
-from controllers.routes_ecommrece.LivrosPapelaria.route import route_livros_papelaria
+from ecommerce.controllers.routes_ecommrece.eletronics.route import route_eletronicos
+from ecommerce.controllers.routes_ecommrece.Moda.route import route_moda
+from ecommerce.controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
+from ecommerce.controllers.routes_ecommrece.Automotivo.route import route_automotivo
+from ecommerce.controllers.routes_ecommrece.Beleza.route import route_Beleza
+from ecommerce.controllers.routes_ecommrece.BrinquedosJogos.route import route_brinquedos_jogos
+from ecommerce.controllers.routes_ecommrece.EsportesLazer.route import route_esporte_lazer
+from ecommerce.controllers.routes_ecommrece.LivrosPapelaria.route import route_livros_papelaria
 
-from controllers.all_routes.route_all import route_all
-from controllers.routes_users.routes import route_users
-from controllers.Painel_Administrativo.route import router
+from ecommerce.controllers.all_routes.route_all import route_all
+from ecommerce.controllers.routes_users.routes import route_users
+from ecommerce.controllers.Painel_Administrativo.route import router
+
+from ecommerce.auth.routes.routes import routes_auth_auten
 
 # tags para ficar mais organizado
 class Tags(Enum):
@@ -25,6 +27,7 @@ class Tags(Enum):
     brinquedos_jogos = "Brinquedos Jogos"
     esporte_lazer = "Esporte Lazer"
     livros_papelaria = "Livros Papelaria"
+    OAth2 = "Autenticação e Autorização"
 
 
 
@@ -41,7 +44,9 @@ def routes(app):
     app.include_router(route_Beleza, tags=[Tags.beleza], prefix="/ecommerce") 
     app.include_router(route_brinquedos_jogos, tags=[Tags.brinquedos_jogos], prefix="/ecommerce") 
     app.include_router(route_esporte_lazer, tags=[Tags.esporte_lazer], prefix="/ecommerce") 
-    app.include_router(route_livros_papelaria, tags=[Tags.livros_papelaria], prefix="/ecommerce") 
+    app.include_router(route_livros_papelaria, tags=[Tags.livros_papelaria], prefix="/ecommerce")
+    app.include_router(routes_auth_auten, tags=[Tags.OAth2], prefix="/api-auten_auth") 
+
 
 
 # atalho
