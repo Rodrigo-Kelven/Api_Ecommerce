@@ -8,7 +8,7 @@
    - Modelo de dados mais flexivel para todos os tipos de dados
        - Banco de dados:
            - NoSQL
-           - Redis
+
  
 - ### Painel Admin
     - Adicionar pesquisa de produtos baseado em:
