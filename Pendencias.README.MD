@@ -1,7 +1,5 @@
 
 ## Melhorias da API
-- ### Arquitetura do Ecommerce
-
 
 - ### Painel Admin
     - Adicionar pesquisa de produtos baseado em:
