@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Body
-from sqlalchemy.orm import Session
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
+from fastapi import APIRouter, status, Depends, HTTPException, Body
 from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
 from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
 
 
 route_livros_papelaria = APIRouter()
@@ -43,8 +44,15 @@ async def get_products(
     db: Session = Depends(get_db)
 ):
     db_product = db.query(Product_Livros_Papelaria).offset(skip).limit(limit).all()
-    return db_product
-
+    
+    if db_product:
+        logger.info(msg="Produtos sendo listado!")
+        products_listed = [Product_Livros_Papelaria.from_orm(product) for product in db_product]
+        return products_listed
+    
+    if not db_product:
+        logger.info(msg="Nenhum produto inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
 
 
 @route_livros_papelaria.get(
@@ -60,9 +68,15 @@ async def get_product_id(
     db: Session = Depends(get_db)
 ):
     db_product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
+    
+    if db_product:
+        logger.info(msg="Produto encontrado!")
+        product = Product_Livros_Papelaria.from_orm(db_product)
+        return product
+
     if db_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return db_product
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 
@@ -78,12 +92,16 @@ async def delete_product_id(
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
+    
+    if product_delete:
+        logger.info(msg="Produto encontrado!")
+        db.delete(product_delete)
+        db.commit()
+        print("Produto deletado!!")
+        return f"Product with {product_id} removed succesfull"
+
     if product_delete is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    db.delete(product_delete)
-    db.commit()
-    print("Produto deletado!!")
-    return f"Product with {product_id} removed succesfull"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 
@@ -101,17 +119,19 @@ async def update_product(
 ):
     product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
 
+    if product:
+        for key, value in product_data.dict().items():
+            setattr(product, key, value)
+
+        # Corrige o valor da categoria se necessário
+        #product.category = "Livros_Papelaria"  
+
+        # Salva as alterações no banco de dados
+        db.commit()
+        db.refresh(product)
+        return product
+
+
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
-
-    for key, value in product_data.dict().items():
-        setattr(product, key, value)
-
-    # Corrige o valor da categoria se necessário
-    #product.category = "Livros_Papelaria"  
-
-    # Salva as alterações no banco de dados
-    db.commit()
-    db.refresh(product)
-    return product

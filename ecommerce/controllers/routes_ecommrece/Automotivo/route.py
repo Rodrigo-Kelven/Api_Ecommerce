@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from ecommerce.models.ecommerce.models import Product_Automotivo
 from ecommerce.databases.ecommerce_config.database import get_db
 
+from ecommerce.config.config import logger
+
 
 route_automotivo = APIRouter()
 
@@ -42,8 +44,18 @@ async def get_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
+    
     db_product = db.query(Product_Automotivo).offset(skip).limit(limit).all()
-    return db_product
+
+    if db_product:
+        logger.info(msg="Produtos automotivos listados!")
+        # Convert db_product (list of Product_Automotivo) to a list of Product_Automotivo
+        products = [Product_Automotivo.from_orm(product) for product in db_product]
+        return products
+    
+    if not db_product:
+        logger.info(msg="Nenhum produto automotivo inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
 
 
 

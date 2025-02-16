@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status, Body, Depends, HTTPException
-from sqlalchemy.orm import Session
-from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
+from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
+from fastapi import APIRouter, status, Body, Depends, HTTPException
 from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
 
 
 
@@ -38,9 +39,17 @@ async def list_products(
     skip: int = 0, limit: int = 10,
     db: Session = Depends(get_db)
 ):
-    product = db.query(Product_Casa_Decoracao).offset(skip).limit(limit).all()
-    return product
+    products = db.query(Product_Casa_Decoracao).offset(skip).limit(limit).all()
+    
+    if products:
+        logger.info(msg="Produtos sendo listados")
+        products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
+        return products_listed
 
+    if not products:
+        logger.info(msg="Nenhum produto inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+    
 
 
 @route_cada_decoracao.get(
@@ -54,10 +63,18 @@ async def search_product(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()  # Usando o modelo de SQLAlchemy
-    if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+    products = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()  # Usando o modelo de SQLAlchemy
+    
+    if products:
+        logger.info(msg="Produto encontrado!")
+        product = Product_Casa_Decoracao.from_orm(products)
+        return product
+    
+
+    if products is None:
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
+
 
 
 
@@ -72,14 +89,17 @@ async def delete_product_id(
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
+    
+    if product_delete:
+        db.delete(product_delete)
+        db.commit()
+        logger.info(msg="Produto deletado!")
+        #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
+        # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
+
     if product_delete is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-    db.delete(product_delete)
-    db.commit()
-    #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
-    # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
-    print("Produto deletado!!")
-    return f"Product with {product_id} removed succesfull"
+
 
 
 
@@ -98,15 +118,20 @@ async def update_product(
     ):
     product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
 
+    if product:
+        # Atualiza os campos do produto com os dados recebidos
+        for key, value in product_data.dict().items():
+            setattr(product, key, value)
+
+        # Salva as alterações no banco de dados
+        db.commit()
+        db.refresh(product)
+        logger.info(msg="Produto atualizado")
+        return product
+
+
     # Verifica se o produto existe
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
-    # Atualiza os campos do produto com os dados recebidos
-    for key, value in product_data.dict().items():
-        setattr(product, key, value)
-
-    # Salva as alterações no banco de dados
-    db.commit()
-    db.refresh(product)
-    return product

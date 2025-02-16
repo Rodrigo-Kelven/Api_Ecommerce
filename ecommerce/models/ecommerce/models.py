@@ -21,6 +21,27 @@ class Products_Eletronics(Base):
     details = Column(String, nullable=True)  # Detalhes opcionais
     category = Column(String, nullable=False, default='Eletronicos')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Products_Eletronics":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+    
+
 # modelo para Moda Feminina
 class Products_Moda_Feminina(Base):
     __tablename__ = "products_moda_feminina"
@@ -37,6 +58,26 @@ class Products_Moda_Feminina(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Moda-Feminina')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Products_Moda_Feminina":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+    
 
 class Product_Casa_Decoracao(Base):
     __tablename__ = "products_casa_decoracao"
@@ -53,6 +94,26 @@ class Product_Casa_Decoracao(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Casa-e-decoracao')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Casa_Decoracao":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+    
 
 class Product_Automotivo(Base):
     __tablename__ = "products_automotivo"
@@ -68,6 +129,26 @@ class Product_Automotivo(Base):
     size = Column(Integer, nullable=False)  
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Automotivo')
+
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Automotivo":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
 
 
 class Product_Beleza_e_cuidados(Base):
@@ -85,6 +166,26 @@ class Product_Beleza_e_cuidados(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Beleza_e_cuidados')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Beleza_e_cuidados":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+    
 
 class Product_Esporte_Lazer(Base):
     __tablename__ = "products_esporte_lazer"
@@ -100,6 +201,26 @@ class Product_Esporte_Lazer(Base):
     size = Column(Integer, nullable=False)  
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Esporte_Lazer')
+
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Esporte_Lazer":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
 
 
 class Product_Brinquedos_Jogos(Base):
@@ -117,6 +238,27 @@ class Product_Brinquedos_Jogos(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Brinquedos_Jogos')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Brinquedos_Jogos":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+
+
 class Product_Saude_Medicamentos(Base):
     __tablename__ = "products_saude_medicamentos"
 
@@ -132,6 +274,26 @@ class Product_Saude_Medicamentos(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Saude_Medicamentos')
 
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Saude_Medicamentos":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )
+    
 
 class Product_Livros_Papelaria(Base):
     __tablename__ = "products_livros_papelaria"
@@ -147,3 +309,23 @@ class Product_Livros_Papelaria(Base):
     size = Column(Integer, nullable=False)  
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Livros_Papelaria')
+
+    class Config:
+        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
+
+    @classmethod
+    def from_orm(cls, product) -> "Product_Livros_Papelaria":
+        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
+        return cls(
+            id=product.id,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            quantity=product.quantity,
+            tax=product.tax,
+            stars=product.stars,
+            color=product.color,
+            size=product.size,
+            details=product.details,
+            category=product.category
+        )

@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Body
 from schemas.ecommerce.schemas import EspecificacoesSaudeMedicamentos, ProductSaudeMedicamentos, ProductBase
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, status, Depends, HTTPException, Body
 from models.ecommerce.models import Product_Saude_Medicamentos
 from databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
 
 
 route_saude_medicamentos = APIRouter()
@@ -43,8 +44,16 @@ async def get_products(
     db: Session = Depends(get_db)
 ):
     db_product = db.query(Product_Saude_Medicamentos).offset(skip).limit(limit).all()
-    return db_product
 
+    if db_product:
+        logger.info(msg="Produtos sendo listados")
+        products_listed = Product_Saude_Medicamentos.from_orm(db_product)
+        return products_listed
+    
+    if not db_product:
+        logger.info("Nenhum produto inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+    
 
 # Rota GET with ID
 @route_saude_medicamentos.get(

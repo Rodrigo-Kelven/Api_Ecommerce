@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 # NÃO PODE SUBIR SUAS CHAVES PRIVADAS PARA O REPOSITORIO!!
 SECRET_KEY = "5c7a5a32eb63f623434d6118f23868c63f64d219897a8e8ec80c6bd658c2eea8db20123744551a33e51b9c2d943e7c164e6ba19500f2ff68c39eddd23a190d74"
 ALGORITHM = "HS256" # algoritmo para a criptografia dos passwords
-ACCESS_TOKEN_EXPIRE_MINUTES = 15 # tempo de expiracao do token
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 # tempo de expiracao do token
 
 # Inicialização de FastAPI e outras configurações
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

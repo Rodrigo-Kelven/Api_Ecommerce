@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
-from sqlalchemy.orm import Session
-from ecommerce.models.ecommerce.models import Products_Moda_Feminina
 from ecommerce.schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
+from ecommerce.models.ecommerce.models import Products_Moda_Feminina
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
 
 
 route_moda = APIRouter()
@@ -40,7 +41,15 @@ def read_products(
     db: Session = Depends(get_db)
 ):
     products = db.query(Products_Moda_Feminina).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
-    return products
+    
+    if products:
+        logger.info(msg="Produtos de moda sendo listado!")
+        products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
+        return products_listed
+
+    if not products:
+        logger.info(msg="Nenhum produto de moda nao encontardo!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
 
 
 
@@ -55,9 +64,16 @@ def read_product_id(
     db: Session = Depends(get_db)
 ):
     product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()  # Usando o modelo de SQLAlchemy
+    
+    if product:
+        logger.info(msg="Produto de moda listado")
+        product_listed = Products_Moda_Feminina.from_orm(product)
+        return product_listed
+    
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+        logger.info(msg="Produto de moda encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
+
 
 
 
@@ -72,14 +88,18 @@ async def delete_product(
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
+    
+    if product_delete:
+        logger.info(msg="Produto deletado!")
+        db.delete(product_delete)
+        db.commit()
+        #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
+        # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
+
+
     if product_delete is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-    db.delete(product_delete)
-    db.commit()
-    #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
-    # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
-    print("Produto deletado!!")
-    return f"Product with {product_id} removed succesfull"
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 
@@ -98,15 +118,19 @@ async def update_product(
 ):
     product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
 
+    if product:
+        for key, value in product_data.dict().items():
+            setattr(product, key, value)
+
+        # Salva as alterações no banco de dados
+        logger.info(msg="Produto atualizado")
+        db.commit()
+        db.refresh(product)
+        return product
+
 
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
 
-    for key, value in product_data.dict().items():
-        setattr(product, key, value)
-
-    # Salva as alterações no banco de dados
-    db.commit()
-    db.refresh(product)
-    return product

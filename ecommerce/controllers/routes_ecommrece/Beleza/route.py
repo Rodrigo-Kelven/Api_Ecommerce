@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status, HTTPException, Body, Depends
-from sqlalchemy.orm import Session
-from ecommerce.models.ecommerce.models import Product_Beleza_e_cuidados
 from ecommerce.schemas.ecommerce.schemas import ProductBelezaeCuidados, EspecificacoesBelezaCuidados, ProductBase
+from ecommerce.models.ecommerce.models import Product_Beleza_e_cuidados
+from fastapi import APIRouter, status, HTTPException, Body, Depends
 from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
 
 route_Beleza = APIRouter()
 
@@ -41,8 +42,16 @@ async def list_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
-    product = db.query(Product_Beleza_e_cuidados).offset(skip).limit(limit).all()
-    return product
+    products = db.query(Product_Beleza_e_cuidados).offset(skip).limit(limit).all()
+    
+    if products:
+        logger.info(msg="Produto sendo listado!")
+        products_listed = [Product_Beleza_e_cuidados.from_orm(product) for product in products]
+        return products_listed
+
+    if not products:
+        logger.info(msg="Nenhum produto inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
 
 
 
@@ -58,8 +67,16 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product = db.query(Product_Beleza_e_cuidados).filter(Product_Beleza_e_cuidados.id == product_id).first()
-    return product
+    products = db.query(Product_Beleza_e_cuidados).filter(Product_Beleza_e_cuidados.id == product_id).first()
+
+    if products:
+        logger.info(msg="Produto encontrado")
+        products_listed = Product_Beleza_e_cuidados.from_orm(products)
+        return products_listed
+    
+    if not products:
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 
@@ -75,12 +92,17 @@ async def delete_product(
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Beleza_e_cuidados).filter(Product_Beleza_e_cuidados.id == product_id).first()
+    
+    if product_delete:
+        db.delete(product_delete)
+        db.commit()
+        logger.info(msg="Produto deletado!")
+
+
     if product_delete is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    db.delete(product_delete)
-    db.commit()
-    print("Product deletado!!")
-    return f"Product with {product_id} removed succesfull"
+        logger.info(msg="Produto nao encontado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encnotrado!")
+    
 
 
 
@@ -98,18 +120,24 @@ async def update_products(
     db: Session = Depends(get_db),
 ):
     product = db.query(Product_Beleza_e_cuidados).filter(Product_Beleza_e_cuidados.id == product_id).first()
+    
+    if product:
+        # Atualiza os campos do produto com os dados recebidos
+        for key, value in product_data.dict().items():
+            setattr(product, key, value)
+
+        # Corrige o valor da categoria se necessário
+        #product.category = "Beleza_e_cuidados"  
+
+        # Salva as alterações no banco de dados
+        db.commit()
+        db.refresh(product)
+        logger.info(msg="Produto atualziado")
+        return product
+
+
     # Verifica se o produto existe
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        logger.info(msg="Produto nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
-    # Atualiza os campos do produto com os dados recebidos
-    for key, value in product_data.dict().items():
-        setattr(product, key, value)
-
-    # Corrige o valor da categoria se necessário
-    #product.category = "Beleza_e_cuidados"  
-
-    # Salva as alterações no banco de dados
-    db.commit()
-    db.refresh(product)
-    return product

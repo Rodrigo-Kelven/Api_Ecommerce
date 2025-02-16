@@ -66,3 +66,31 @@ async def rate_limit_middleware(request: Request, call_next):
 # Se o número de requisições exceder o RATE_LIMIT, uma exceção HTTPException é levantada com o código de status 429 (Too Many Requests)1.
 # Os cabeçalhos X-RateLimit-Limit, X-RateLimit-Remaining e X-RateLimit-Reset são adicionados à resposta para informar o cliente sobre o limite de requisições1.
 """
+
+# atualizar e confighurar
+def cors(app):
+    from fastapi.middleware.cors import CORSMiddleware
+
+    origins = [
+        "http://localhost.tiangolo.com",
+        "https://localhost.tiangolo.com",
+        "http://localhost:5173/", # react
+        "http://localhost:8080",
+    ]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+
+
+# Configurar o registro
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler()])
+
+logger = logging.getLogger(__name__)
