@@ -4,7 +4,7 @@
     - Micro-Services
         - Refazer toda arquitetura e modulariza-la
         - Criar um sistema de validação separado da API principal
-        - Separar: (visualização, validação, regras de negócio)
+
 
 
  
