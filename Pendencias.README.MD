@@ -1,13 +1,8 @@
 
 ## Melhorias da API
 - ### Arquitetura do Ecommerce
-    - Micro-Services
-        - Refazer toda arquitetura e modulariza-la
 
 
-
-
- 
 - ### Painel Admin
     - Adicionar pesquisa de produtos baseado em:
         -  nome do produto
