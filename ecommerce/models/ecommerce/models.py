@@ -58,6 +58,7 @@ class Products_Moda_Feminina(Base):
     details = Column(String, nullable=True)
     category = Column(String, nullable=False, default='Moda-Feminina')
 
+
     class Config:
         orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
 
@@ -77,7 +78,7 @@ class Products_Moda_Feminina(Base):
             details=product.details,
             category=product.category
         )
-    
+
 
 class Product_Casa_Decoracao(Base):
     __tablename__ = "products_casa_decoracao"

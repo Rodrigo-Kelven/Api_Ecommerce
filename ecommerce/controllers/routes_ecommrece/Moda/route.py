@@ -1,9 +1,11 @@
 from ecommerce.schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
 from ecommerce.models.ecommerce.models import Products_Moda_Feminina
 from fastapi import APIRouter, Depends, HTTPException, status, Body
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
+
+import json
 
 
 route_moda = APIRouter()
@@ -26,8 +28,27 @@ async def create_product(
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
-    return db_product
 
+    # Convert the SQLAlchemy model instance to a dictionary
+    product_data = {
+        "id": db_product.id,
+        "name": db_product.name,
+        "description": db_product.description,
+        "price": db_product.price,
+        "quantity": db_product.quantity,
+        "tax": db_product.tax,
+        "stars": db_product.stars,
+        "color": db_product.color,
+        "size": db_product.size,
+        "details": db_product.details,
+        "category": db_product.category
+    }
+
+    # armazena o modelo convertido de sqlachemy para dicionario no redis
+    redis_client.set(f"product:{db_product.id}", json.dumps(product_data))
+    logger.info(msg="Produto armazenado no redis")
+   
+    return db_product
 
 
 @route_moda.get(path="/category/moda-feminina/", 
@@ -53,28 +74,48 @@ def read_products(
 
 
 
-@route_moda.get(path="/category/moda-feminina/{product_id}",
-                response_model=EspecificacoesModaFeminina,
-                status_code=status.HTTP_200_OK,
-                description="Search product with ID",
-                name="Route search product with ID"
-            )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-def read_product_id(
-    product_id: int,
-    db: Session = Depends(get_db)
-):
-    product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()  # Usando o modelo de SQLAlchemy
+@route_moda.get(
+    path="/category/moda-feminina/{product_id}",
+    response_model=EspecificacoesModaFeminina,
+    status_code=status.HTTP_200_OK,
+    description="Get product by ID",
+    name="Route get product by ID"
+)
+async def get_product(product_id: int, db: Session = Depends(get_db)):
     
+    # Tenta pegar produto pelo redis
+    product_data = redis_client.get(f"product:{product_id}")
+
+    if product_data:
+        # Se encontrar no redis retorna
+        logger.info(msg="Retornou do redis")
+        return json.loads(product_data)
+
+    # senao encontrar, retorna do db
+    product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
+
     if product:
-        logger.info(msg="Produto de moda listado")
-        product_listed = Products_Moda_Feminina.from_orm(product)
-        return product_listed
-    
-    if product is None:
-        logger.info(msg="Produto de moda encontrado!")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
+        # converte de modelo SqlAlchemy para um dicionario
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "quantity": product.quantity,
+            "tax": product.tax,
+            "stars": product.stars,
+            "color": product.color,
+            "size": product.size,
+            "details": product.details,
+            "category": product.category
+        }
 
+        # guarda no redis para melhorar performance d buscas
+        redis_client.set(f"product:{product.id}", json.dumps(product_data))
 
+        return product_data
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
 
 @route_moda.delete(

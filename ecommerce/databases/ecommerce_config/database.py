@@ -1,7 +1,8 @@
 # app/database/database.py
-from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+import redis
 import os
 
 
@@ -66,3 +67,7 @@ def get_db_users():
         yield db_users
     finally:
         db_users.close()
+
+    
+# Redis
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
