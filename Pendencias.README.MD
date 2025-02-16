@@ -6,8 +6,7 @@
         - Criar um sistema de validação separado da API principal
         - Separar: (visualização, validação, regras de negócio)
    - Modelo de dados mais flexivel para todos os tipos de dados
-       - Banco de dados:
-           - NoSQL
+
 
  
 - ### Painel Admin
