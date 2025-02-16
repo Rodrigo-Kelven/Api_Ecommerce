@@ -13,7 +13,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - [Pydantic](https://pydantic-docs.helpmanual.io/) - Validação de dados
 - [Docker](https://www.docker.com/) - Conteirização da aplicação
 
-## Versão: 0.0.10
+## Versão: 0.0.12
 
 
 ## Instalação
