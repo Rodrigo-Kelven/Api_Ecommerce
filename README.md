@@ -12,6 +12,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - [SQLite](https://www.sqlite.org/index.html) - Banco de dados leve
 - [Pydantic](https://pydantic-docs.helpmanual.io/) - Validação de dados
 - [Docker](https://www.docker.com/) - Conteirização da aplicação
+- [Redis](https://hub.docker.com/_/redis) - Conteirização do banco de dados caching
 
 ## Versão: 0.0.12
 
