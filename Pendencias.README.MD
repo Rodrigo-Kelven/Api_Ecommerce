@@ -3,7 +3,7 @@
 - ### Arquitetura do Ecommerce
     - Micro-Services
         - Refazer toda arquitetura e modulariza-la
-        - Criar um sistema de validação separado da API principal
+
 
 
 
