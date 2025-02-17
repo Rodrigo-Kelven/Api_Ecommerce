@@ -1,10 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
 from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
 from fastapi import APIRouter, status, Body, Depends, HTTPException
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
-
+import json
 
 
 route_cada_decoracao = APIRouter()

@@ -1,13 +1,12 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEletronicos, EspecificacoesEletronicos, ProductBase 
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from ecommerce.models.ecommerce.models import Products_Eletronics  
-from ecommerce.databases.ecommerce_config.database import  get_db
+from ecommerce.databases.ecommerce_config.database import  get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
-
+import json
 
 route_eletronicos = APIRouter()
-
 
 
 
@@ -28,6 +27,24 @@ async def create_product(
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
+
+    product_data = {
+        "id": db_product.id,
+        "name": db_product.name,
+        "description": db_product.description,
+        "price": db_product.price,
+        "quantity": db_product.quantity,
+        "tax": db_product.tax,
+        "stars": db_product.stars,
+        "color": db_product.color,
+        "size": db_product.size,
+        "details": db_product.details,
+        "category": db_product.category
+    }
+
+    redis_client.set(f"product: {db_product.id}", json.dumps(product_data))
+    logger.info(msg="Produto armazenado no Redis")
+
     return db_product
 
 
@@ -65,11 +82,38 @@ async def read_product_id(
     product_id: int,
     db: Session = Depends(get_db
 )):
+    # primeiro procura no redis
+    product_data = redis_client.get(f"product: {product_id}")
+
+    # retorna do redis se tiver no redis
+    if product_data:
+        logger.info(msg="Retornou do Redis!")
+        return json.loads(product_data)
+    
+    # senao, procura no db e retorna
     product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
 
+    # no db, procura se existir, e transforma para ser armazenado no redis
     if product:
         logger.info(msg="Produto eletronico sendo listado")
         product_listed = Products_Eletronics.from_orm(product)
+
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "quantity": product.quantity,
+            "tax": product.tax,
+            "stars": product.stars,
+            "color": product.color,
+            "size": product.size,
+            "details": product.details,
+            "category": product.category
+        }
+        logger.info(msg="Produto inserido no redis!")
+        redis_client.set(f"product: {product.id}", json.dumps(product_data))
+        # retorna do db
         return product_listed
 
 

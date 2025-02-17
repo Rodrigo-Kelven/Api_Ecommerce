@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Body
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
-
 import json
 
 
