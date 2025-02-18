@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Form, Body, Query, status, Depends, HTTPException
 from ecommerce.schemas.users.schemas import UserCreate, UserResponse
+from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.config.config import logger
 from ecommerce.models.users.models import User
 from sqlalchemy.orm import Session
-from ecommerce.databases.ecommerce_config.database import get_db
 
 route_users = APIRouter() 
 
@@ -28,13 +29,14 @@ async def create_user(
     existing_user = db.query(User).filter(User.username == user.username).first()
 
     if existing_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Este username já está registrado!")
 
     # Cria um novo usuário
     db_user = User(**user.dict())
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    logger.info(msg=f"Usuario cadastrado: ID{db_user.id}")
     return db_user  # Retorna o usuário criado
 
 
@@ -66,7 +68,7 @@ async def read_user_id(
 )):
     user = db.query(User).filter(User.id == user_id).first()  # Usando o modelo de SQLAlchemy
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrado!")
     return user
 
 
@@ -86,7 +88,7 @@ def update_user(
     ):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrado!")
 
     for key, value in user.dict().items():
         setattr(db_user, key, value)
@@ -113,6 +115,7 @@ def delete_user(
     db_user = db.query(User).filter(User.id == user_id).first()
 
     if db_user is None:
-        raise HTTPException(status_code=404, detail="User  not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrado!")
     db.delete(db_user)
     db.commit()
+    logger.info(msg="Usuario deletado!")
