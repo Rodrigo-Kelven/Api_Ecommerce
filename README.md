@@ -20,12 +20,13 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 ## Instalação
 ```bash
   git clone https://github.com/Rodrigo-Kelven/Api_Ecommerce
-  cd Api_Ecommerce
+  cd Api_Ecommerce/ecommerce
   pip install -r requirements.txt
 ```
 ### Atençao a esta parte! Ela é crucial para o funcionamento da API.
 ```bash
-  fastapi dev ecommerce/main.py --reload --port 8000
+  chmod +x * ./scr.sh
+  ./scr.sh
 ```
 ### Painel admin de usuários (Ainda está em fase de desenvolvimento)
 ```bash
