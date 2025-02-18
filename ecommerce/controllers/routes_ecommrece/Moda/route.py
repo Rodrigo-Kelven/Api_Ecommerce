@@ -5,6 +5,7 @@ from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
 
 
 route_moda = APIRouter()
@@ -23,11 +24,15 @@ async def create_product(
     product: ProductModaFeminina = Body(embed=True),
     db: Session = Depends(get_db)
 ):
-    db_product = Products_Moda_Feminina(**product.dict())  # Usando o modelo SQLAlchemy
+    # Gera um UUID para o novo produto
+    product_id = str(uuid.uuid4())
+
+    # Cria uma instância do modelo com o UUID
+    db_product = Products_Moda_Feminina(id=product_id, **product.dict())  # Adiciona o UUID ao modelo
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
-   
+
     return db_product
 
 
@@ -122,7 +127,7 @@ def read_products(
     description="Get product by ID",
     name="Route get product by ID"
 )
-async def get_product(product_id: int, db: Session = Depends(get_db)):
+async def get_product(product_id: str, db: Session = Depends(get_db)):
     
     # Tenta pegar produto pelo redis
     product_data = redis_client.get(f"produto_moda:{product_id}")
@@ -170,7 +175,7 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
     name="Route delete product for ID"
     )
 async def delete_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
@@ -198,7 +203,7 @@ async def delete_product(
     name="Route update product for ID"
     )
 async def update_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):

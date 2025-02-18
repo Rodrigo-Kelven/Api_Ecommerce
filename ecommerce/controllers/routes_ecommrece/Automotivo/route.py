@@ -5,6 +5,7 @@ from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
 
 
 route_automotivo = APIRouter()
@@ -23,7 +24,10 @@ async def create_product(
     product: ProductAutomotivo = Body(embed=True),
     db: Session = Depends(get_db)
 ):
-    db_product = Product_Automotivo(**product.dict())
+    # gera uuid 
+    product_id = str(uuid.uuid4())
+    # coloca o uuid como id em formato str
+    db_product = Product_Automotivo(id=product_id, **product.dict())
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -131,7 +135,7 @@ def read_products(
     name="Route GET products for ID"
 )
 async def get_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     # primeiro procura no redis
@@ -187,7 +191,7 @@ async def get_product_id(
     name="Route DELETE products for ID"
 )
 async def delete_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
@@ -208,7 +212,7 @@ async def delete_product_id(
     name="Route PUT product for ID"
 )
 async def update_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):

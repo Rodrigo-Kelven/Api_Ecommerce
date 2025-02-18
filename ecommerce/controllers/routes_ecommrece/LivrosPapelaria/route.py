@@ -5,10 +5,10 @@ from fastapi import APIRouter, status, Depends, HTTPException, Body, Query
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
 
 
 route_livros_papelaria = APIRouter()
-
 
 
 @route_livros_papelaria.post(
@@ -23,7 +23,9 @@ async def create_product(
     product: ProductLivrosPapelaria,
     db: Session = Depends(get_db)
 ):
-    db_product = Product_Livros_Papelaria(**product.dict())
+    product_id = str(uuid.uuid4())
+
+    db_product = Product_Livros_Papelaria(id=product_id, **product.dict())
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -128,7 +130,7 @@ def read_products(
     name="Route GET products ID"
 )
 async def get_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     
@@ -178,7 +180,7 @@ async def get_product_id(
     name="Route GET products ID"
 )
 async def delete_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
@@ -203,7 +205,7 @@ async def delete_product_id(
     name="Route PUT product"
 )
 async def update_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):

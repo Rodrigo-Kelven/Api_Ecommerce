@@ -5,10 +5,10 @@ from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
 
 
 route_casa_decoracao = APIRouter()
-
 
 
 @route_casa_decoracao.post(
@@ -19,8 +19,13 @@ route_casa_decoracao = APIRouter()
     description="Create product home and decorations",
     name="Route create product",
     )
-async def create_product(product: ProductCasaeDecoracao = Body(embed=True), db: Session = Depends(get_db)):
-    db_product = Product_Casa_Decoracao(**product.dict())
+async def create_product(
+    product: ProductCasaeDecoracao = Body(embed=True), 
+    db: Session = Depends(get_db)
+):
+    product_id = str(uuid.uuid4())
+
+    db_product = Product_Casa_Decoracao(id=product_id, **product.dict())
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -122,7 +127,7 @@ def read_products(
     name="Route search product with ID"
 )
 async def search_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_data = redis_client.get(f"produto_casa_decoracao:{product_id}")
@@ -174,7 +179,7 @@ async def search_product(
     name="Route delete product for ID"
 )
 async def delete_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
@@ -201,7 +206,7 @@ async def delete_product_id(
     name="Route create product"
 )
 async def update_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
     ):

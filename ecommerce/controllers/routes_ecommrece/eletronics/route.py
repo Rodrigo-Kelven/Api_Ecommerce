@@ -5,6 +5,7 @@ from ecommerce.databases.ecommerce_config.database import  get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
 
 route_eletronicos = APIRouter()
 
@@ -21,9 +22,11 @@ route_eletronicos = APIRouter()
 async def create_product(
     product: ProductEletronicos = Body(embed=True),
     db: Session = Depends(get_db)
-    ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
+): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     
-    db_product = Products_Eletronics(**product.dict()) 
+    product_id = str(uuid.uuid4())
+
+    db_product = Products_Eletronics(id=product_id, **product.dict()) 
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -124,7 +127,7 @@ def read_products(
                 name="Route search product with ID"
             )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def read_product_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db
 )):
     # primeiro procura no redis
@@ -178,7 +181,7 @@ async def read_product_id(
     name="Route delete product for ID"
     )
 async def delete_product_id(
-    product_id: int, 
+    product_id: str, 
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
@@ -205,7 +208,7 @@ async def delete_product_id(
     name="Route update product with ID"
 )
 async def update_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
 ):

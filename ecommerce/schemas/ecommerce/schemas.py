@@ -135,7 +135,7 @@ class ProductLivrosPapelaria(BaseModel):
 
 # retornar com ID em todos
 class ProductEletronicosID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Notbook"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[2500.00])
@@ -148,7 +148,7 @@ class ProductEletronicosID(BaseModel):
 
 
 class ProductModaFemininaID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Calça cintura alta"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
@@ -161,7 +161,7 @@ class ProductModaFemininaID(BaseModel):
 
 
 class ProductCasaeDecoracaoID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Vaso para decoração"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[250.00])
@@ -174,7 +174,7 @@ class ProductCasaeDecoracaoID(BaseModel):
 
 
 class ProductAutomotivoID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Cera para painel"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[20.00])
@@ -187,7 +187,7 @@ class ProductAutomotivoID(BaseModel):
 
 
 class ProductBelezaeCuidadosID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Blush"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[50.00])
@@ -200,7 +200,7 @@ class ProductBelezaeCuidadosID(BaseModel):
 
 
 class ProductEsporteLazerID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Saco de Pancada"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[60.00])
@@ -213,7 +213,7 @@ class ProductEsporteLazerID(BaseModel):
 
 
 class ProductBrinquedosJogosID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Velocipe"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[50.00])
@@ -225,7 +225,7 @@ class ProductBrinquedosJogosID(BaseModel):
     details: str = Field(None, title="details products", description="details of products", examples=["Policia"])
 
 class ProductSaudeMedicamentosID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Raspador de Lingua"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[15.00])
@@ -238,7 +238,7 @@ class ProductSaudeMedicamentosID(BaseModel):
 
 
 class ProductLivrosPapelariaID(BaseModel):
-    id: int
+    id: str
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Livro algoritimos"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
     price: float = Field(..., title="Price Product", description="Price of product",examples=[25.00])

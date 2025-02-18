@@ -5,9 +5,10 @@ from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
+import uuid
+
 
 route_esporte_lazer = APIRouter()
-
 
 
 @route_esporte_lazer.post(
@@ -22,7 +23,9 @@ async def create_product(
     product: ProductEsporteLazer = Body(embed=True),
     db: Session = Depends(get_db)
 ):
-    db_product = Product_Esporte_Lazer(**product.dict())
+    product_id = str(uuid.uuid4())
+
+    db_product = Product_Esporte_Lazer(id=product_id, **product.dict())
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -128,7 +131,7 @@ def read_products(
     name="Route GET product for ID"
 )
 async def searchProduct_id(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_data = redis_client.get(f"produto_esporte_lazer:{product_id}")
@@ -179,7 +182,7 @@ async def searchProduct_id(
     name="Route DELETE product for ID"
 )
 async def delete_product(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     product_delete = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
@@ -205,7 +208,7 @@ async def delete_product(
     name="Route PUT product for ID"
 )
 async def update_products(
-    product_id: int,
+    product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_db),
 ):

@@ -9,7 +9,7 @@ from ecommerce.databases.ecommerce_config.database import Base
 class Products_Eletronics(Base):
     __tablename__ = "products_eletronics"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  # Nome do produto é obrigatório
     description = Column(String, nullable=True)  # Descrição opcional
     price = Column(Float, nullable=False)  # Preço é obrigatório
@@ -46,7 +46,7 @@ class Products_Eletronics(Base):
 class Products_Moda_Feminina(Base):
     __tablename__ = "products_moda_feminina"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -83,7 +83,7 @@ class Products_Moda_Feminina(Base):
 class Product_Casa_Decoracao(Base):
     __tablename__ = "products_casa_decoracao"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -119,7 +119,7 @@ class Product_Casa_Decoracao(Base):
 class Product_Automotivo(Base):
     __tablename__ = "products_automotivo"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -157,7 +157,7 @@ class Product_Automotivo(Base):
 class Product_Esporte_Lazer(Base):
     __tablename__ = "products_esporte_lazer"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -193,7 +193,7 @@ class Product_Esporte_Lazer(Base):
 class Product_Brinquedos_Jogos(Base):
     __tablename__ = "products_brinquedos_jogos"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -229,7 +229,7 @@ class Product_Brinquedos_Jogos(Base):
 class Product_Saude_Medicamentos(Base):
     __tablename__ = "products_saude_medicamentos"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
@@ -265,7 +265,7 @@ class Product_Saude_Medicamentos(Base):
 class Product_Livros_Papelaria(Base):
     __tablename__ = "products_livros_papelaria"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False)  
     description = Column(String, nullable=True)  
     price = Column(Float, nullable=False)  
