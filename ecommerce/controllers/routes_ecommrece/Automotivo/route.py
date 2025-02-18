@@ -1,5 +1,5 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesAutomotivo, ProductAutomotivo, ProductBase
-from fastapi import APIRouter, status, Depends, HTTPException, Body
+from fastapi import APIRouter, status, Depends, HTTPException, Body, Query
 from ecommerce.models.ecommerce.models import Product_Automotivo
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
@@ -57,6 +57,68 @@ async def get_products(
     if not db_product:
         logger.info(msg="Nenhum produto automotivo inserido!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+
+
+# rota de filtragem de buscas 
+@route_automotivo.get(
+    path="/category/automotivo/search-filters/",
+    response_model=list[EspecificacoesAutomotivo],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Product_Automotivo)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Product_Automotivo.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Product_Automotivo.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Product_Automotivo.stars >= stars)
+    
+    if color:
+        query = query.filter(Product_Automotivo.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Product_Automotivo.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Product_Automotivo.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+
+
+    if min_price is not None:
+        query = query.filter(Product_Automotivo.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product_Automotivo.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Product_Automotivo.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
 
 
 

@@ -1,17 +1,17 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
-from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
-from fastapi import APIRouter, status, Body, Depends, HTTPException
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from fastapi import APIRouter, status, Body, Depends, HTTPException, Query
+from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
 
 
-route_cada_decoracao = APIRouter()
+route_casa_decoracao = APIRouter()
 
 
 
-@route_cada_decoracao.post(
+@route_casa_decoracao.post(
     path="/category/casa-e-decoracao/",
     status_code=status.HTTP_201_CREATED,
     response_model=EspecificacoesCasaeDecoracao,
@@ -29,7 +29,7 @@ async def create_product(product: ProductCasaeDecoracao = Body(embed=True), db: 
 
 
 
-@route_cada_decoracao.get(
+@route_casa_decoracao.get(
     path="/category/casa-e-decoracao/",
     status_code=status.HTTP_200_OK,
     response_model=list[EspecificacoesCasaeDecoracao],
@@ -50,10 +50,71 @@ async def list_products(
     if not products:
         logger.info(msg="Nenhum produto inserido!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+
+
+# rota de filtragem de buscas 
+@route_casa_decoracao.get(
+    path="/category/casa-e-decoracao/search-filters/",
+    response_model=list[EspecificacoesCasaeDecoracao],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Product_Casa_Decoracao)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Product_Casa_Decoracao.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Product_Casa_Decoracao.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Product_Casa_Decoracao.stars >= stars)
     
+    if color:
+        query = query.filter(Product_Casa_Decoracao.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Product_Casa_Decoracao.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Product_Casa_Decoracao.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
 
 
-@route_cada_decoracao.get(
+    if min_price is not None:
+        query = query.filter(Product_Casa_Decoracao.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product_Casa_Decoracao.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+
+
+@route_casa_decoracao.get(
     path="/category/casa-e-decoracao/{product_id}",
     response_model=EspecificacoesCasaeDecoracao,
     status_code=status.HTTP_200_OK,
@@ -106,7 +167,7 @@ async def search_product(
 
 
 
-@route_cada_decoracao.delete(
+@route_casa_decoracao.delete(
     path="/category/casa-e-decoracao/{product_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
     description="Delete product for ID",
@@ -131,7 +192,7 @@ async def delete_product_id(
 
 
 
-@route_cada_decoracao.put(
+@route_casa_decoracao.put(
     path="/category/casa-e-decoracao/{product_id}/",
     status_code=status.HTTP_200_OK,
     response_model=EspecificacoesCasaeDecoracao,

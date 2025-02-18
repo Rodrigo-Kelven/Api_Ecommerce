@@ -1,7 +1,7 @@
 from ecommerce.schemas.ecommerce.schemas import ProductBrinquedosJogos, EspecificacoesBrinquedosJogos, ProductBase
-from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
-from fastapi import APIRouter, status, HTTPException, Body, Depends
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from fastapi import APIRouter, status, HTTPException, Body, Depends, Query
+from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
@@ -54,6 +54,69 @@ async def list_products(
     if not products:
         logger.info(msg="Nenhum produto inserido!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+
+
+# rota de filtragem de buscas 
+@route_brinquedos_jogos.get(
+    path="/category/brinquedos-jogos/search-filters/",
+    response_model=list[EspecificacoesBrinquedosJogos],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Product_Brinquedos_Jogos)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Product_Brinquedos_Jogos.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Product_Brinquedos_Jogos.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Product_Brinquedos_Jogos.stars >= stars)
+    
+    if color:
+        query = query.filter(Product_Brinquedos_Jogos.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Product_Brinquedos_Jogos.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Product_Brinquedos_Jogos.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+
+
+    if min_price is not None:
+        query = query.filter(Product_Brinquedos_Jogos.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product_Brinquedos_Jogos.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Product_Brinquedos_Jogos.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+
 
 
 @route_brinquedos_jogos.get(

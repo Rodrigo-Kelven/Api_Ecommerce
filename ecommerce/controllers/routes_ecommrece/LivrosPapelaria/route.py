@@ -1,7 +1,7 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
-from fastapi import APIRouter, status, Depends, HTTPException, Body
-from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
+from fastapi import APIRouter, status, Depends, HTTPException, Body, Query
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 import json
@@ -54,6 +54,69 @@ async def get_products(
     if not db_product:
         logger.info(msg="Nenhum produto inserido!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+
+
+# rota de filtragem de buscas 
+@route_livros_papelaria.get(
+    path="/category/livros-papelaria/search-filters/",
+    response_model=list[EspecificacoesLivrosPapelaria],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Product_Livros_Papelaria)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Product_Livros_Papelaria.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Product_Livros_Papelaria.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Product_Livros_Papelaria.stars >= stars)
+    
+    if color:
+        query = query.filter(Product_Livros_Papelaria.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Product_Livros_Papelaria.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Product_Livros_Papelaria.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+
+
+    if min_price is not None:
+        query = query.filter(Product_Livros_Papelaria.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product_Livros_Papelaria.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+
 
 
 @route_livros_papelaria.get(

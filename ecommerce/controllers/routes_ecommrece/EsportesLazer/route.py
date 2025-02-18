@@ -1,5 +1,5 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
-from fastapi import APIRouter, status, HTTPException, Body, Depends
+from fastapi import APIRouter, status, HTTPException, Body, Depends, Query
 from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
@@ -12,7 +12,7 @@ route_esporte_lazer = APIRouter()
 
 @route_esporte_lazer.post(
     path="/category/esporte-lazer/product",
-    status_code=status.HTTP_202_ACCEPTED,
+    status_code=status.HTTP_201_CREATED,
     response_model=EspecificacoesEsporteLazer,
     response_description="Informations product",
     description="Route create product",
@@ -54,6 +54,69 @@ async def list_products(
     if not products:
         logger.info(msg="Nenhum  produto inserido!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+
+
+# rota de filtragem de buscas 
+@route_esporte_lazer.get(
+    path="/category/esporte-lazer/search-filters/",
+    response_model=list[EspecificacoesEsporteLazer],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Product_Esporte_Lazer)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Product_Esporte_Lazer.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Product_Esporte_Lazer.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Product_Esporte_Lazer.stars >= stars)
+    
+    if color:
+        query = query.filter(Product_Esporte_Lazer.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Product_Esporte_Lazer.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Product_Esporte_Lazer.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+
+
+    if min_price is not None:
+        query = query.filter(Product_Esporte_Lazer.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product_Esporte_Lazer.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+
 
 
 @route_esporte_lazer.get(

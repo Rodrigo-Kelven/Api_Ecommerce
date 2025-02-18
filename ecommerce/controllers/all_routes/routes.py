@@ -1,7 +1,7 @@
 from enum import Enum
 from ecommerce.controllers.routes_ecommrece.eletronics.route import route_eletronicos
 from ecommerce.controllers.routes_ecommrece.Moda.route import route_moda
-from ecommerce.controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
+from ecommerce.controllers.routes_ecommrece.CasaDecoracao.route import route_casa_decoracao
 from ecommerce.controllers.routes_ecommrece.Automotivo.route import route_automotivo
 from ecommerce.controllers.routes_ecommrece.BrinquedosJogos.route import route_brinquedos_jogos
 from ecommerce.controllers.routes_ecommrece.EsportesLazer.route import route_esporte_lazer
@@ -42,7 +42,7 @@ def routes(app):
     app.include_router(route_automotivo, tags=[Tags.automotivo], prefix="/ecommerce") 
     app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecommerce")
     app.include_router(route_esporte_lazer, tags=[Tags.esporte_lazer], prefix="/ecommerce") 
-    app.include_router(route_cada_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
+    app.include_router(route_casa_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
     app.include_router(route_brinquedos_jogos, tags=[Tags.brinquedos_jogos], prefix="/ecommerce") 
     app.include_router(route_livros_papelaria, tags=[Tags.livros_papelaria], prefix="/ecommerce")
     #app.include_router(route_saude_medicamentos, tags=[Tags.saude_medicamentos], prefix="/ecommerce") # talvez nao implementar
