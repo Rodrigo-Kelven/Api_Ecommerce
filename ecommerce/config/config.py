@@ -1,7 +1,7 @@
 from starlette.middleware.base import BaseHTTPMiddleware
-import logging
 from fastapi import Request, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import status
+import logging
 import time
 
 
@@ -21,7 +21,7 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
         return response
     
 
-RATE_LIMIT = 65 # Número máximo de requisições por minuto
+RATE_LIMIT = 200 # Número máximo de requisições por minuto
 TIME_WINDOW = 60  # Janela de tempo em segundos (1 minuto)
 request_counts = {}  # Dicionário para rastrear o número de requisições por IP
 
@@ -44,7 +44,7 @@ async def rate_limit_middleware(request: Request, call_next):
             "X-RateLimit-Remaining": "0",
             "X-RateLimit-Reset": str(remaining_time)
         }
-        raise HTTPException(status_code=429, detail="Too many requests", headers=headers)
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Too many requests", headers=headers)
 
     request_counts[client_ip]["count"] += 1
     headers = {
@@ -85,7 +85,11 @@ def cors(app):
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
+"""
+Ao permitir todas as origens (allow_origins=["*"]), você deve ter cuidado,
+pois isso pode expor sua API a riscos de segurança.
+É sempre melhor restringir as origens permitidas ao mínimo necessário
+"""
 
 
 # Configurar o registro
