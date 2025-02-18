@@ -1,7 +1,13 @@
 
 ## Melhorias da API
 
-- ### Painel Admin
+- ### Criação de um painel administrativo -> (Baseado no Django)
+    - Controle de:
+        - Estoque
+        - Usuarios -> Update
+        - Produtos
+        - Análise de vendas
+
     - Adicionar pesquisa de produtos baseado em:
         -  nome do produto
         -  categoria do produto
