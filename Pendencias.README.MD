@@ -15,12 +15,6 @@
             - media de preço dos produtos
        - quantidade de estrelas dos produtos -> média
       
-- ### Criação de um painel administrativo -> (Baseado no Django)
-    - Controle de:
-        - Estoque
-        - Usuarios -> Update
-        - Produtos
-        - Análise de vendas
           
     
 - ### Autenticação e Autorização: (Implementado)
