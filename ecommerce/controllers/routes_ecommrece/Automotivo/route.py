@@ -11,7 +11,6 @@ import uuid
 route_automotivo = APIRouter()
 
 
-
 @route_automotivo.post(
     path="/category/automotivo",
     status_code=status.HTTP_201_CREATED,
@@ -68,8 +67,8 @@ async def get_products(
     path="/category/automotivo/search-filters/",
     response_model=list[EspecificacoesAutomotivo],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List search products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -91,20 +90,20 @@ def read_products(
     if name:
         query = query.filter(Product_Automotivo.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Product_Automotivo.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category: # Usando LIKE para categoria
+        query = query.filter(Product_Automotivo.category.ilike(f"%{category}%"))
 
-    if stars:
+    if stars:# Usando LIKE para stard
         query = query.filter(Product_Automotivo.stars >= stars)
     
-    if color:
-        query = query.filter(Product_Automotivo.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color:# Usando LIKE para cor
+        query = query.filter(Product_Automotivo.color.ilike(f"%{color}%"))
 
-    if details:
+    if details:# Usando LIKE para detalhes
         query = query.filter(Product_Automotivo.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Product_Automotivo.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Product_Automotivo.size.ilike(f"%{size}%"))
 
 
     if min_price is not None:
@@ -121,8 +120,8 @@ def read_products(
         products_listed = [Product_Automotivo.from_orm(product) for product in products]
         return products_listed
 
-    logger.info(msg="Nenhum produto de moda encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+    logger.info(msg="Nenhum produto automotivo encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto automotivo encontrado!")
 
 
 
@@ -196,7 +195,7 @@ async def delete_product_id(
 ):
     product_delete = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
     if product_delete is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produto nao encontrado!")
     db.delete(product_delete)
     db.commit()
     print("Produto deletado!!")
@@ -219,7 +218,7 @@ async def update_product(
     product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
     # Verifica se o produto existe
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produto nao encontado!")
     
     # Atualiza os campos do produto com os dados recebidos
     for key, value in product_data.dict().items():

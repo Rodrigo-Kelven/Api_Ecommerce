@@ -11,7 +11,6 @@ import uuid
 route_moda = APIRouter()
 
 
-
 @route_moda.post(
     path="/category/moda-feminina/",
     status_code=status.HTTP_201_CREATED,
@@ -36,12 +35,13 @@ async def create_product(
     return db_product
 
 
-@route_moda.get(path="/category/moda-feminina/", 
-                response_model=list[EspecificacoesModaFeminina],
-                status_code=status.HTTP_200_OK,
-                description="List all producst",
-                name="Route list products"
-            )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+@route_moda.get(
+        path="/category/moda-feminina/", 
+        response_model=list[EspecificacoesModaFeminina],
+        status_code=status.HTTP_200_OK,
+        description="List all producst",
+        name="Route list products"
+        )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 def read_products(
     skip: int = 0, limit: int = 10,
     db: Session = Depends(get_db)
@@ -63,8 +63,8 @@ def read_products(
     path="/category/moda-feminina/search-filters/",
     response_model=list[EspecificacoesModaFeminina],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List search products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -86,20 +86,20 @@ def read_products(
     if name:
         query = query.filter(Products_Moda_Feminina.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Products_Moda_Feminina.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category:# Usando LIKE para categoria
+        query = query.filter(Products_Moda_Feminina.category.ilike(f"%{category}%"))
 
-    if stars:
+    if stars:# Usando LIKE para stars
         query = query.filter(Products_Moda_Feminina.stars >= stars)
     
-    if color:
-        query = query.filter(Products_Moda_Feminina.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color:# Usando LIKE para cor
+        query = query.filter(Products_Moda_Feminina.color.ilike(f"%{color}%"))
 
-    if details:
+    if details:# Usando LIKE para detalhes
         query = query.filter(Products_Moda_Feminina.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Products_Moda_Feminina.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Products_Moda_Feminina.size.ilike(f"%{size}%"))
 
 
     if min_price is not None:

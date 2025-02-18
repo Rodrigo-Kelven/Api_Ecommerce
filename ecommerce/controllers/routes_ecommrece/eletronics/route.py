@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 import json
 import uuid
 
-route_eletronicos = APIRouter()
 
+route_eletronicos = APIRouter()
 
 
 @route_eletronicos.post(
@@ -63,8 +63,8 @@ async def read_products(
     path="/category/eletronic/search-filters/",
     response_model=list[EspecificacoesEletronicos],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List serach products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -86,20 +86,20 @@ def read_products(
     if name:
         query = query.filter(Products_Eletronics.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Products_Eletronics.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category: # Usando LIKE para categorya
+        query = query.filter(Products_Eletronics.category.ilike(f"%{category}%"))
 
-    if stars:
+    if stars:# Usando LIKE para start
         query = query.filter(Products_Eletronics.stars >= stars)
     
-    if color:
-        query = query.filter(Products_Eletronics.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color:# Usando LIKE para cor
+        query = query.filter(Products_Eletronics.color.ilike(f"%{color}%"))
 
-    if details:
+    if details:# Usando LIKE para detalhes
         query = query.filter(Products_Eletronics.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Products_Eletronics.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Products_Eletronics.size.ilike(f"%{size}%"))
 
 
     if min_price is not None:
@@ -116,16 +116,17 @@ def read_products(
         products_listed = [Products_Eletronics.from_orm(product) for product in products]
         return products_listed
 
-    logger.info(msg="Nenhum produto de moda encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+    logger.info(msg="Nenhum produto de eletronicos encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de eletronicos encontrado!")
 
 
-@route_eletronicos.get(path="/category/eletronic/{product_id}",
-                response_model=EspecificacoesEletronicos,
-                status_code=status.HTTP_200_OK,
-                description="Search product with ID",
-                name="Route search product with ID"
-            )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+@route_eletronicos.get(
+        path="/category/eletronic/{product_id}",
+        response_model=EspecificacoesEletronicos,
+        status_code=status.HTTP_200_OK,
+        description="Search product with ID",
+        name="Route search product with ID"
+        )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def read_product_id(
     product_id: str,
     db: Session = Depends(get_db
