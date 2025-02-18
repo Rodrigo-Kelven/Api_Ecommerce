@@ -7,13 +7,12 @@
         - Usuarios -> Update
         - Produtos
         - Análise de vendas
-
-    - Adicionar pesquisa de produtos baseado em:
-        -  nome do produto
-        -  categoria do produto
-        -  preço do produto
-            - media de preço dos produtos
-       - quantidade de estrelas dos produtos -> média
+            - Adicionar pesquisa de produtos baseado em:
+                -  nome do produto
+                -  categoria do produto
+                -  preço do produto
+                    - media de preço dos produtos
+               - quantidade de estrelas dos produtos -> média
       
           
     
