@@ -11,6 +11,11 @@ import os
 db_ecommerce_path = "./databases/DB_ecommerce/db_ecommerce/ecommerce.db" # -> banco de dados dos produtos
 db_users_path = "./databases/DB_users/db_users/users_users.db" # -> banco de dados de usuarios
 
+
+# Redis em container
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
+
+
 # Verificar se a pasta existe, caso contrário, criar
 db_directory_users = os.path.dirname(db_users_path)
 db_directory_products = os.path.dirname(db_ecommerce_path)
@@ -68,6 +73,3 @@ def get_db_users():
     finally:
         db_users.close()
 
-    
-# Redis
-redis_client = redis.Redis(host='localhost', port=6379, db=0)

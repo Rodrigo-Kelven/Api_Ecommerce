@@ -73,7 +73,7 @@ async def get_product_id(
     db: Session = Depends(get_db)
 ):
     # primeiro procura no redis
-    product_data = redis_client.get(f"produto_automotivo: {product_id}")
+    product_data = redis_client.get(f"produto_automotivo:{product_id}")
 
     # retorna do redis se tiver no redis
     if product_data:
@@ -82,11 +82,11 @@ async def get_product_id(
     
     # senao, procura no db e retorna
     product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
-    logger.info(msg="Produto encontrado no Banco de dados")
+    
 
     # no db, procura se existir, e transforma para ser armazenado no redis
     if product:
-        logger.info(msg="Produtos automotivos sendo listado")
+        logger.info(msg="Produto encontrado no Banco de dados")
         product_listed = Product_Automotivo.from_orm(product)
 
         product_data = {
@@ -103,14 +103,16 @@ async def get_product_id(
             "category": product.category
         }
         logger.info(msg="Produto inserido no redis!")
-        redis_client.set(f"produto_automotivo: {product.id}", json.dumps(product_data))
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_automotivo:{product.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
         # retorna do db
         return product_listed
 
 
     if product is None:
-        logger.info(msg="Produto eletronico nao encontrado!")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
+        logger.info(msg="Produto automotivo nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto automotivo nao encontrado!")
 
 
 

@@ -64,7 +64,7 @@ def read_products(
 async def get_product(product_id: int, db: Session = Depends(get_db)):
     
     # Tenta pegar produto pelo redis
-    product_data = redis_client.get(f"produto_moda: {product_id}")
+    product_data = redis_client.get(f"produto_moda:{product_id}")
 
     if product_data:
         # Se encontrar no redis retorna
@@ -73,9 +73,10 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
 
     # senao encontrar, retorna do db
     product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
-    logger.info(msg="Produto encontrado no banco de dados!")
+    
 
     if product:
+        logger.info(msg="Produto encontrado no banco de dados!")
         # converte de modelo SqlAlchemy para um dicionario
         product_data = {
             "id": product.id,
@@ -91,13 +92,14 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
             "category": product.category
         }
 
-        # guarda no redis para melhorar performance d buscas
-        redis_client.set(f"produto_moda: {product.id}", json.dumps(product_data))
-        logger.info(msg="Produto armazenado no Redis")
+        # guarda no redis para melhorar performance das buscas
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_moda:{product.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
 
         return product_data
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 @route_moda.delete(

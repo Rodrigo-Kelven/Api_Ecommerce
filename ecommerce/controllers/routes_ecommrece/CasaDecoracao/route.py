@@ -64,7 +64,7 @@ async def search_product(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product_data = redis_client.get(f"produto_casa_decoracao: {product_id}")
+    product_data = redis_client.get(f"produto_casa_decoracao:{product_id}")
 
     if product_data:
         logger.info(msg="Produto retornado do Redis!")
@@ -72,10 +72,10 @@ async def search_product(
 
 
     products = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()  # Usando o modelo de SQLAlchemy
-    logger.info(msg="Produto encontrado no Banco de dados")
+    
     
     if products:
-        logger.info(msg="Produto encontrado!")
+        logger.info(msg="Produto encontrado no Banco de dados")
         product = Product_Casa_Decoracao.from_orm(products)
 
         product_data = {
@@ -91,9 +91,11 @@ async def search_product(
             "details": products.details,
             "category": 'Casa-e-decoracao'
         }
-        redis_client.set(f"produto_casa_decoracao: {products.id}", json.dumps(product_data))
-        logger.info(msg="Produto armazenado no Redis")
-        
+        logger.info(msg="Produto inserido no redis!")
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_casa_decoracao:{products.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+        # retorna do db
         return product
     
 
@@ -124,7 +126,7 @@ async def delete_product_id(
         # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
 
     if product_delete is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
 
 
 

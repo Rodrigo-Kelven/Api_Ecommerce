@@ -68,18 +68,18 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product_data = redis_client.get(f"produto_esporte_lazer: {product_id}")
+    product_data = redis_client.get(f"produto_esporte_lazer:{product_id}")
 
     if product_data:
-        logger.info(msg="Produto retornado do Redis")
+        logger.info(msg="Produto retornado do Redis!")
         return json.loads(product_data)
     
 
     products = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
-    logger.info(msg="Produto encontrado no Baco de dados")
+    
 
     if products:
-        logger.info(msg="Produto encontado!")
+        logger.info(msg="Produto encontrado no Banco de dados!")
         products_listed = Product_Esporte_Lazer.from_orm(products)
 
         product_data = {
@@ -95,10 +95,11 @@ async def searchProduct_id(
             "details": products.details,
             "category": products.category
         }
-        redis_client.set(f"produto_esporte_lazer: {products.id}", json.dumps(product_data))
-        logger.info(msg="Produto armazenado no Redis")
-
-
+        logger.info(msg="Produto inserido no redis!")
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_esporte_lazer:{products.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+        # retorna do db
         return products_listed
     
     if not products:

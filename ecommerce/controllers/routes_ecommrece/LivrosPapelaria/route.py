@@ -69,7 +69,7 @@ async def get_product_id(
     db: Session = Depends(get_db)
 ):
     
-    product_data = redis_client.get(f"produto_livraria: {product_id}")
+    product_data = redis_client.get(f"produto_livraria:{product_id}")
 
     if product_data:
         logger.info(msg="Produto retornado do Redis!")
@@ -94,9 +94,11 @@ async def get_product_id(
             "details": db_product.details,
             "category": "Livros_Papelaria"
         }
-        redis_client.set(f"produto_livraria: {db_product.id}", json.dumps(product_data))
-        logger.info(msg="Produto armazenado no Redis!")
-
+        logger.info(msg="Produto inserido no redis!")
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_livraria:{db_product.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+        # retorna do db
         return product
 
     if db_product is None:

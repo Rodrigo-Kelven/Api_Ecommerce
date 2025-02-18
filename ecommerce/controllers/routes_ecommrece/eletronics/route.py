@@ -46,7 +46,7 @@ async def read_products(
     products = db.query(Products_Eletronics).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
     
     if products:
-        logger.info(msg="Produtos eletronicos listados")
+        logger.info(msg="Produtos eletronicos listados!")
         products_listados = [Products_Eletronics.from_orm(product) for product in products]
         return products_listados
     
@@ -66,7 +66,7 @@ async def read_product_id(
     db: Session = Depends(get_db
 )):
     # primeiro procura no redis
-    product_data = redis_client.get(f"produto_eletronicos: {product_id}")
+    product_data = redis_client.get(f"produto_eletronicos:{product_id}")
 
     # retorna do redis se tiver no redis
     if product_data:
@@ -75,11 +75,11 @@ async def read_product_id(
     
     # senao, procura no db e retorna
     product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
-    logger.info(msg="Produto encontrado no Banco de dados")
+    
 
     # no db, procura se existir, e transforma para ser armazenado no redis
     if product:
-        logger.info(msg="Produto eletronico sendo listado")
+        logger.info(msg="Produto encontrado no Banco de dados!")
         product_listed = Products_Eletronics.from_orm(product)
 
         product_data = {
@@ -96,7 +96,9 @@ async def read_product_id(
             "category": "Eletronicos"
         }
         logger.info(msg="Produto inserido no redis!")
-        redis_client.set(f"produto_eletronicos: {product.id}", json.dumps(product_data))
+        # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
+        redis_client.setex(f"produto_eletronicos:{product.id}", 54000, json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
         # retorna do db
         return product_listed
 
