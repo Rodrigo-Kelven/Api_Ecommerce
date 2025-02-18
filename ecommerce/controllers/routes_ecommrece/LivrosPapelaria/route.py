@@ -116,8 +116,8 @@ def read_products(
         products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
         return products_listed
 
-    logger.info(msg="Nenhum produto de moda encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+    logger.info(msg="Nenhum produto encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto encontrado!")
 
 
 
