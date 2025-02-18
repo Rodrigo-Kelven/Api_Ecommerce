@@ -27,25 +27,6 @@ async def create_product(
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
-
-    # Convert the SQLAlchemy model instance to a dictionary
-    product_data = {
-        "id": db_product.id,
-        "name": db_product.name,
-        "description": db_product.description,
-        "price": db_product.price,
-        "quantity": db_product.quantity,
-        "tax": db_product.tax,
-        "stars": db_product.stars,
-        "color": db_product.color,
-        "size": db_product.size,
-        "details": db_product.details,
-        "category": db_product.category
-    }
-
-    # armazena o modelo convertido de sqlachemy para dicionario no redis
-    redis_client.set(f"product:{db_product.id}", json.dumps(product_data))
-    logger.info(msg="Produto armazenado no redis")
    
     return db_product
 

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Body
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesAutomotivo, ProductAutomotivo, ProductBase
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, status, Depends, HTTPException, Body
 from ecommerce.models.ecommerce.models import Product_Automotivo
-from ecommerce.databases.ecommerce_config.database import get_db
-
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
+from sqlalchemy.orm import Session
+import json
 
 
 route_automotivo = APIRouter()
@@ -27,6 +27,7 @@ async def create_product(
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
+    
     return db_product
 
 
@@ -71,10 +72,45 @@ async def get_product_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    db_product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
-    if db_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return db_product
+    # primeiro procura no redis
+    product_data = redis_client.get(f"product: {product_id}")
+
+    # retorna do redis se tiver no redis
+    if product_data:
+        logger.info(msg="Retornou do Redis!")
+        return json.loads(product_data)
+    
+    # senao, procura no db e retorna
+    product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
+
+    # no db, procura se existir, e transforma para ser armazenado no redis
+    if product:
+        logger.info(msg="Produto eletronico sendo listado")
+        product_listed = Product_Automotivo.from_orm(product)
+
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "quantity": product.quantity,
+            "tax": product.tax,
+            "stars": product.stars,
+            "color": product.color,
+            "size": product.size,
+            "details": product.details,
+            "category": product.category
+        }
+        logger.info(msg="Produto inserido no redis!")
+        redis_client.set(f"product: {product.id}", json.dumps(product_data))
+        # retorna do db
+        return product_listed
+
+
+    if product is None:
+        logger.info(msg="Produto eletronico nao encontrado!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
+
 
 
 

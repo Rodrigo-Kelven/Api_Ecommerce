@@ -28,23 +28,6 @@ async def create_product(
     db.commit()
     db.refresh(db_product)
 
-    product_data = {
-        "id": db_product.id,
-        "name": db_product.name,
-        "description": db_product.description,
-        "price": db_product.price,
-        "quantity": db_product.quantity,
-        "tax": db_product.tax,
-        "stars": db_product.stars,
-        "color": db_product.color,
-        "size": db_product.size,
-        "details": db_product.details,
-        "category": db_product.category
-    }
-
-    redis_client.set(f"product: {db_product.id}", json.dumps(product_data))
-    logger.info(msg="Produto armazenado no Redis")
-
     return db_product
 
 
@@ -83,7 +66,7 @@ async def read_product_id(
     db: Session = Depends(get_db
 )):
     # primeiro procura no redis
-    product_data = redis_client.get(f"product: {product_id}")
+    product_data = redis_client.get(f"produto: {product_id}")
 
     # retorna do redis se tiver no redis
     if product_data:
@@ -109,10 +92,10 @@ async def read_product_id(
             "color": product.color,
             "size": product.size,
             "details": product.details,
-            "category": product.category
+            "category": "Eletronicos"
         }
         logger.info(msg="Produto inserido no redis!")
-        redis_client.set(f"product: {product.id}", json.dumps(product_data))
+        redis_client.set(f"produto: {product.id}", json.dumps(product_data))
         # retorna do db
         return product_listed
 

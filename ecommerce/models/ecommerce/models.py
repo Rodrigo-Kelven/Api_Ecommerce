@@ -152,40 +152,6 @@ class Product_Automotivo(Base):
         )
 
 
-class Product_Beleza_e_cuidados(Base):
-    __tablename__ = "products_beleza_e_cuidados"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)  
-    description = Column(String, nullable=True)  
-    price = Column(Float, nullable=False)  
-    quantity = Column(Integer, nullable=False)  
-    tax = Column(Float, nullable=True)  
-    stars = Column(Float, nullable=True)  
-    color = Column(String, nullable=False)  
-    size = Column(Integer, nullable=False)  
-    details = Column(String, nullable=True)
-    category = Column(String, nullable=False, default='Beleza_e_cuidados')
-
-    class Config:
-        orm_mode = True  # This allows Pydantic to work with SQLAlchemy models
-
-    @classmethod
-    def from_orm(cls, product) -> "Product_Beleza_e_cuidados":
-        # This method allows automatic conversion of Product_Automotivo to EspecificacoesAutomotivo
-        return cls(
-            id=product.id,
-            name=product.name,
-            description=product.description,
-            price=product.price,
-            quantity=product.quantity,
-            tax=product.tax,
-            stars=product.stars,
-            color=product.color,
-            size=product.size,
-            details=product.details,
-            category=product.category
-        )
     
 
 class Product_Esporte_Lazer(Base):

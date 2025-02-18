@@ -3,7 +3,6 @@ from ecommerce.controllers.routes_ecommrece.eletronics.route import route_eletro
 from ecommerce.controllers.routes_ecommrece.Moda.route import route_moda
 from ecommerce.controllers.routes_ecommrece.CasaDecoracao.route import route_cada_decoracao
 from ecommerce.controllers.routes_ecommrece.Automotivo.route import route_automotivo
-from ecommerce.controllers.routes_ecommrece.Beleza.route import route_Beleza
 from ecommerce.controllers.routes_ecommrece.BrinquedosJogos.route import route_brinquedos_jogos
 from ecommerce.controllers.routes_ecommrece.EsportesLazer.route import route_esporte_lazer
 from ecommerce.controllers.routes_ecommrece.LivrosPapelaria.route import route_livros_papelaria
@@ -19,7 +18,6 @@ from ecommerce.auth.routes.routes import routes_auth_auten
 class Tags(Enum):
     eletronicos = "Eletronicos"
     moda = "Moda"
-    beleza = "Beleza e Saude"
     casa_decoracao = "Casa e decoracao"
     users = "Users"
     user2 = "Teste Painel Admin Users"
@@ -41,7 +39,6 @@ def routes(app):
     app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce")
     app.include_router(route_all, tags=[Tags.all_products], prefix="/ecommerce")
     app.include_router(route_moda, tags=[Tags.moda], prefix="/ecommerce")
-    app.include_router(route_Beleza, tags=[Tags.beleza], prefix="/ecommerce") 
     app.include_router(route_automotivo, tags=[Tags.automotivo], prefix="/ecommerce") 
     app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecommerce")
     app.include_router(route_esporte_lazer, tags=[Tags.esporte_lazer], prefix="/ecommerce") 

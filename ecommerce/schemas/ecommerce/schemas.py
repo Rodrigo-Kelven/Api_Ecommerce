@@ -261,9 +261,6 @@ class EspecificacoesModaFeminina(ProductModaFemininaID):
 class EspecificacoesCasaeDecoracao(ProductCasaeDecoracaoID):
     category: Literal["Casa-e-decoracao"] = "Casa-e-decoracao" # somente passando a Litral é suficiente para setar o valor desejado
 
-class EspecificacoesBelezaCuidados(ProductBelezaeCuidadosID):
-    category: Literal["Beleza_e_cuidados"] = "Beleza_e_cuidados" 
-
 class EspecificacoesEsporteLazer(ProductEsporteLazerID):
     category: Literal["Esporte_Lazer"] = "Esporte_Lazer" 
 

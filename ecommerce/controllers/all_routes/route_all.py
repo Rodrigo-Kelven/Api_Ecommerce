@@ -5,7 +5,6 @@ from ecommerce.models.ecommerce.models import (
     Product_Casa_Decoracao,
     Products_Moda_Feminina,
     Product_Automotivo,
-    Product_Beleza_e_cuidados,
     Product_Esporte_Lazer,
     Product_Brinquedos_Jogos,
     Product_Saude_Medicamentos,
@@ -32,7 +31,6 @@ async def all_products(
     products_casa_decoracao = db.query(Product_Casa_Decoracao).all()
     products_moda_feminina = db.query(Products_Moda_Feminina).all()
     products_automotivo = db.query(Product_Automotivo).all()
-    products_beleza_e_cuidados = db.query(Product_Beleza_e_cuidados).all()
     products_esporte_lazer = db.query(Product_Esporte_Lazer).all()
     products_brinquedos_e_jogos = db.query(Product_Brinquedos_Jogos).all()
     products_saude_e_medicamentos = db.query(Product_Saude_Medicamentos).all()
@@ -51,7 +49,6 @@ async def all_products(
         "Produtos Casa e Decoracao": products_casa_decoracao,
         "Produtos Moda Feminina": products_moda_feminina,
         "Produtos Automotivos":  products_automotivo,
-        "Produtos de Beleza e Cuidados Pessoais": products_beleza_e_cuidados,
         "Produtos de Esporte e Lazer": products_esporte_lazer,
         "Produtos Brinquedos e Jogos": products_brinquedos_e_jogos,
         "Produtos Saude e Mediacmentos": products_saude_e_medicamentos,

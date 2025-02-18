@@ -1,9 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
 from fastapi import APIRouter, status, HTTPException, Body, Depends
 from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
+import json
 
 route_esporte_lazer = APIRouter()
 
@@ -21,11 +22,12 @@ async def create_product(
     product: ProductEsporteLazer = Body(embed=True),
     db: Session = Depends(get_db)
 ):
-    product = Product_Esporte_Lazer(**product.dict())
-    db.add(product)
+    db_product = Product_Esporte_Lazer(**product.dict())
+    db.add(db_product)
     db.commit()
-    db.refresh(product)
-    return product
+    db.refresh(db_product)
+
+    return db_product
 
 
 
@@ -66,11 +68,36 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
+    product_data = redis_client.get(f"produuto: {product_id}")
+
+    if product_data:
+        logger.info(msg="Produto pego do Redis")
+        return json.loads(product_data)
+    
+
     products = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
 
     if products:
         logger.info(msg="Produto encontado!")
         products_listed = Product_Esporte_Lazer.from_orm(products)
+
+        product_data = {
+            "id": products.id,
+            "name": products.name,
+            "description": products.description,
+            "price": products.price,
+            "quantity": products.quantity,
+            "tax": products.tax,
+            "stars": products.stars,
+            "color": products.color,
+            "size": products.size,
+            "details": products.details,
+            "category": products.category
+        }
+        redis_client.set(f"produuto: {products.id}", json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis")
+
+
         return products_listed
     
     if not products:

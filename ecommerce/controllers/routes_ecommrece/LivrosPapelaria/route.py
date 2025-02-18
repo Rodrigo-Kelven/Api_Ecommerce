@@ -1,9 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
 from fastapi import APIRouter, status, Depends, HTTPException, Body
 from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
+import json
 
 
 route_livros_papelaria = APIRouter()
@@ -67,11 +68,35 @@ async def get_product_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
+    
+    product_data = redis_client.get(f"produto_livraria: {product_id}")
+
+    if product_data:
+        logger.info(msg="Produto retornado do Redis")
+        return json.loads(product_data)
+    
     db_product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
     
     if db_product:
         logger.info(msg="Produto encontrado!")
         product = Product_Livros_Papelaria.from_orm(db_product)
+
+        product_data = {
+            "id": db_product.id,
+            "name": db_product.name,
+            "description": db_product.description,
+            "price": db_product.price,
+            "quantity": db_product.quantity,
+            "tax": db_product.tax,
+            "stars": db_product.stars,
+            "color": db_product.color,
+            "size": db_product.size,
+            "details": db_product.details,
+            "category": "Livros_Papelaria"
+        }
+        redis_client.set(f"produto_livraria: {db_product.id}", json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis")
+
         return product
 
     if db_product is None:

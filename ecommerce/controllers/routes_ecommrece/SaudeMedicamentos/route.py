@@ -1,10 +1,10 @@
-from schemas.ecommerce.schemas import EspecificacoesSaudeMedicamentos, ProductSaudeMedicamentos, ProductBase
+from ecommerce.schemas.ecommerce.schemas import EspecificacoesSaudeMedicamentos, ProductSaudeMedicamentos, ProductBase
 from fastapi import APIRouter, status, Depends, HTTPException, Body
 from models.ecommerce.models import Product_Saude_Medicamentos
-from databases.ecommerce_config.database import get_db
+from databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
-
+import json
 
 route_saude_medicamentos = APIRouter()
 
@@ -68,10 +68,38 @@ async def get_product_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
+    product_data = redis_client.get(f"produto: {product_id}")
+
+    if product_data:
+        logger.info(msg="Produto retornado do Redis")
+        return json.loads(product_data)
+    
     db_product = db.query(Product_Saude_Medicamentos).filter(Product_Saude_Medicamentos.id == product_id).first()
+    
+    if db_product:
+        logger.info(msg="Produto encontrado")
+        product = Product_Saude_Medicamentos.from_orm(db_product)
+
+        product_data = {
+            "id": db_product.id,
+            "name": db_product.name,
+            "description": db_product.description,
+            "price": db_product.price,
+            "quantity": db_product.quantity,
+            "tax": db_product.tax,
+            "stars": db_product.stars,
+            "color": db_product.color,
+            "size": db_product.size,
+            "details": db_product.details,
+            "category": 'Brinquedos_Jogos'
+        }
+        redis_client.set(f"produto: {db_product.id}", json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis")
+
+        return product
+
     if db_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return db_product
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
 
 # Rota DELETE with ID
@@ -86,6 +114,7 @@ async def delete_product_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
+
     product_delete = db.query(Product_Saude_Medicamentos).filter(Product_Saude_Medicamentos.id == product_id).first()
     if product_delete is None:
         raise HTTPException(status_code=404, detail="Product not found")

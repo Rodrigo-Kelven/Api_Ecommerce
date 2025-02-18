@@ -1,9 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import ProductBrinquedosJogos, EspecificacoesBrinquedosJogos, ProductBase
 from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
 from fastapi import APIRouter, status, HTTPException, Body, Depends
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
+import json
 
 route_brinquedos_jogos = APIRouter()
 
@@ -25,6 +26,7 @@ async def create_product(
     db.add(product)
     db.commit()
     db.refresh(product)
+
     return product
 
 
@@ -66,11 +68,35 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
+    product_data = redis_client.get(f"produuuuto: {product_id}")
+
+    if product_data:
+        logger.info(msg="Produto retornado do Redis")
+        return json.loads(product_data)
+
+
     products = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
 
     if products:
         logger.info(msg="Produto encontrado")
         product = Product_Brinquedos_Jogos.from_orm(products)
+
+        product_data = {
+            "id": products.id,
+            "name": products.name,
+            "description": products.description,
+            "price": products.price,
+            "quantity": products.quantity,
+            "tax": products.tax,
+            "stars": products.stars,
+            "color": products.color,
+            "size": products.size,
+            "details": products.details,
+            "category": 'Brinquedos_Jogos'
+        }
+        redis_client.set(f"produuuuto: {products.id}", json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis")
+
         return product
     
     if not products:
