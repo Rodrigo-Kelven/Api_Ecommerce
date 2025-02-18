@@ -64,8 +64,8 @@ async def list_products(
     path="/category/esporte-lazer/search-filters/",
     response_model=list[EspecificacoesEsporteLazer],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List search products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -87,20 +87,20 @@ def read_products(
     if name:
         query = query.filter(Product_Esporte_Lazer.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Product_Esporte_Lazer.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category: # Usando LIKE para categoria
+        query = query.filter(Product_Esporte_Lazer.category.ilike(f"%{category}%"))
 
-    if stars:
+    if stars:# Usando LIKE star
         query = query.filter(Product_Esporte_Lazer.stars >= stars)
     
-    if color:
-        query = query.filter(Product_Esporte_Lazer.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color:# Usando LIKE para cor
+        query = query.filter(Product_Esporte_Lazer.color.ilike(f"%{color}%"))
 
-    if details:
+    if details:# Usando LIKE para detalhes
         query = query.filter(Product_Esporte_Lazer.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Product_Esporte_Lazer.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Product_Esporte_Lazer.size.ilike(f"%{size}%"))
 
 
     if min_price is not None:
@@ -113,12 +113,12 @@ def read_products(
     products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
 
     if products:
-        logger.info(msg="Produtos de moda sendo listados!")
+        logger.info(msg="Produtos de esporte e lazer sendo listados!")
         products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
         return products_listed
 
     logger.info(msg="Nenhum produto de moda encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de esporte e lazer encontrado!")
 
 
 

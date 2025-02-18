@@ -39,7 +39,7 @@ async def create_product(
     response_model=list[EspecificacoesLivrosPapelaria],
     response_description="Informations products",
     description="Route list products",
-    name="Route list products category automotivo"
+    name="Route list products category papelaria"
 )
 async def get_products(
     skip: int = 0,
@@ -49,13 +49,13 @@ async def get_products(
     db_product = db.query(Product_Livros_Papelaria).offset(skip).limit(limit).all()
     
     if db_product:
-        logger.info(msg="Produtos sendo listado!")
+        logger.info(msg="Produtos de papelaria sendo listado!")
         products_listed = [Product_Livros_Papelaria.from_orm(product) for product in db_product]
         return products_listed
     
     if not db_product:
-        logger.info(msg="Nenhum produto inserido!")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
+        logger.info(msg="Nenhum produto de papelaria inserido!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de papelaria inserido!")
 
 
 # rota de filtragem de buscas 
@@ -63,8 +63,8 @@ async def get_products(
     path="/category/livros-papelaria/search-filters/",
     response_model=list[EspecificacoesLivrosPapelaria],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List search products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -86,20 +86,20 @@ def read_products(
     if name:
         query = query.filter(Product_Livros_Papelaria.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Product_Livros_Papelaria.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category:# Usando LIKE para categoria
+        query = query.filter(Product_Livros_Papelaria.category.ilike(f"%{category}%")) 
 
-    if stars:
+    if stars:# Usando LIKE para stars
         query = query.filter(Product_Livros_Papelaria.stars >= stars)
     
-    if color:
-        query = query.filter(Product_Livros_Papelaria.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color: # Usando LIKE para cor
+        query = query.filter(Product_Livros_Papelaria.color.ilike(f"%{color}%")) 
 
-    if details:
+    if details: # Usando LIKE para detalhes
         query = query.filter(Product_Livros_Papelaria.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Product_Livros_Papelaria.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Product_Livros_Papelaria.size.ilike(f"%{size}%"))  
 
 
     if min_price is not None:
@@ -112,12 +112,12 @@ def read_products(
     products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
 
     if products:
-        logger.info(msg="Produtos de moda sendo listados!")
+        logger.info(msg="Produtos de papelaria sendo listados!")
         products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
         return products_listed
 
-    logger.info(msg="Nenhum produto encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto encontrado!")
+    logger.info(msg="Nenhum produto de papelaria encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto papelaria encontrado!")
 
 
 

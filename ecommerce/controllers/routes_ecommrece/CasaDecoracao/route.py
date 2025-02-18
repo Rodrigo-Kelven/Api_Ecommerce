@@ -62,8 +62,8 @@ async def list_products(
     path="/category/casa-e-decoracao/search-filters/",
     response_model=list[EspecificacoesCasaeDecoracao],
     status_code=status.HTTP_200_OK,
-    description="List all products",
-    name="Route list products"
+    description="List search products",
+    name="Route search products"
 )
 def read_products(
     category: str = Query(None, description="Filtrar por categoria"),
@@ -85,20 +85,20 @@ def read_products(
     if name:
         query = query.filter(Product_Casa_Decoracao.name.ilike(f"%{name}%"))
 
-    if category: 
-        query = query.filter(Product_Casa_Decoracao.category.ilike(f"%{category}%"))  # Usando LIKE
+    if category:# Usando LIKE para categoria
+        query = query.filter(Product_Casa_Decoracao.category.ilike(f"%{category}%"))
 
-    if stars:
+    if stars:# Usando LIKE para stars
         query = query.filter(Product_Casa_Decoracao.stars >= stars)
     
-    if color:
-        query = query.filter(Product_Casa_Decoracao.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+    if color:# Usando LIKE para cor
+        query = query.filter(Product_Casa_Decoracao.color.ilike(f"%{color}%"))
 
-    if details:
+    if details:# Usando LIKE para detalhes
         query = query.filter(Product_Casa_Decoracao.details.ilike(f"%{details}%"))
 
-    if size:
-        query = query.filter(Product_Casa_Decoracao.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+    if size:# Usando LIKE para tamanho
+        query = query.filter(Product_Casa_Decoracao.size.ilike(f"%{size}%"))
 
 
     if min_price is not None:
@@ -115,8 +115,8 @@ def read_products(
         products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
         return products_listed
 
-    logger.info(msg="Nenhum produto de moda encontrado!")
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
+    logger.info(msg="Nenhum produto de casa e decoracao encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de casa e decoracao encontrado!")
 
 
 @route_casa_decoracao.get(
