@@ -66,15 +66,16 @@ async def read_product_id(
     db: Session = Depends(get_db
 )):
     # primeiro procura no redis
-    product_data = redis_client.get(f"produto: {product_id}")
+    product_data = redis_client.get(f"produto_eletronicos: {product_id}")
 
     # retorna do redis se tiver no redis
     if product_data:
-        logger.info(msg="Retornou do Redis!")
+        logger.info(msg="Produto retornado do Redis!")
         return json.loads(product_data)
     
     # senao, procura no db e retorna
     product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
+    logger.info(msg="Produto encontrado no Banco de dados")
 
     # no db, procura se existir, e transforma para ser armazenado no redis
     if product:
@@ -95,7 +96,7 @@ async def read_product_id(
             "category": "Eletronicos"
         }
         logger.info(msg="Produto inserido no redis!")
-        redis_client.set(f"produto: {product.id}", json.dumps(product_data))
+        redis_client.set(f"produto_eletronicos: {product.id}", json.dumps(product_data))
         # retorna do db
         return product_listed
 

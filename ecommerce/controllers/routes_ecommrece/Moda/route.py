@@ -64,15 +64,16 @@ def read_products(
 async def get_product(product_id: int, db: Session = Depends(get_db)):
     
     # Tenta pegar produto pelo redis
-    product_data = redis_client.get(f"product:{product_id}")
+    product_data = redis_client.get(f"produto_moda: {product_id}")
 
     if product_data:
         # Se encontrar no redis retorna
-        logger.info(msg="Retornou do redis")
+        logger.info(msg="Produto retornado do Redis")
         return json.loads(product_data)
 
     # senao encontrar, retorna do db
     product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
+    logger.info(msg="Produto encontrado no banco de dados!")
 
     if product:
         # converte de modelo SqlAlchemy para um dicionario
@@ -91,7 +92,8 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
         }
 
         # guarda no redis para melhorar performance d buscas
-        redis_client.set(f"product:{product.id}", json.dumps(product_data))
+        redis_client.set(f"produto_moda: {product.id}", json.dumps(product_data))
+        logger.info(msg="Produto armazenado no Redis")
 
         return product_data
 

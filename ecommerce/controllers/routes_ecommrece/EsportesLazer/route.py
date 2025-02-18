@@ -68,14 +68,15 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product_data = redis_client.get(f"produuto: {product_id}")
+    product_data = redis_client.get(f"produto_esporte_lazer: {product_id}")
 
     if product_data:
-        logger.info(msg="Produto pego do Redis")
+        logger.info(msg="Produto retornado do Redis")
         return json.loads(product_data)
     
 
     products = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
+    logger.info(msg="Produto encontrado no Baco de dados")
 
     if products:
         logger.info(msg="Produto encontado!")
@@ -94,7 +95,7 @@ async def searchProduct_id(
             "details": products.details,
             "category": products.category
         }
-        redis_client.set(f"produuto: {products.id}", json.dumps(product_data))
+        redis_client.set(f"produto_esporte_lazer: {products.id}", json.dumps(product_data))
         logger.info(msg="Produto armazenado no Redis")
 
 

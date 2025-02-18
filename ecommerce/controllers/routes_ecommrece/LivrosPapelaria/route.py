@@ -72,13 +72,13 @@ async def get_product_id(
     product_data = redis_client.get(f"produto_livraria: {product_id}")
 
     if product_data:
-        logger.info(msg="Produto retornado do Redis")
+        logger.info(msg="Produto retornado do Redis!")
         return json.loads(product_data)
     
     db_product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
     
     if db_product:
-        logger.info(msg="Produto encontrado!")
+        logger.info(msg="Produto encontrado no banco de dados!")
         product = Product_Livros_Papelaria.from_orm(db_product)
 
         product_data = {
@@ -95,7 +95,7 @@ async def get_product_id(
             "category": "Livros_Papelaria"
         }
         redis_client.set(f"produto_livraria: {db_product.id}", json.dumps(product_data))
-        logger.info(msg="Produto armazenado no Redis")
+        logger.info(msg="Produto armazenado no Redis!")
 
         return product
 

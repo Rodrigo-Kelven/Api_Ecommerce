@@ -68,14 +68,15 @@ async def searchProduct_id(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    product_data = redis_client.get(f"produuuuto: {product_id}")
+    product_data = redis_client.get(f"produto_brinquedos_jogos: {product_id}")
 
     if product_data:
-        logger.info(msg="Produto retornado do Redis")
+        logger.info(msg="Produto retornado do Redis!")
         return json.loads(product_data)
 
 
     products = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
+    logger.info(msg="Produto encontrado no banco de dados")
 
     if products:
         logger.info(msg="Produto encontrado")
@@ -94,7 +95,7 @@ async def searchProduct_id(
             "details": products.details,
             "category": 'Brinquedos_Jogos'
         }
-        redis_client.set(f"produuuuto: {products.id}", json.dumps(product_data))
+        redis_client.set(f"produto_brinquedos_jogos: {products.id}", json.dumps(product_data))
         logger.info(msg="Produto armazenado no Redis")
 
         return product
