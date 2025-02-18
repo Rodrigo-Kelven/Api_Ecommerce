@@ -1,6 +1,6 @@
 from ecommerce.schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
 from ecommerce.models.ecommerce.models import Products_Moda_Feminina
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Query
 from ecommerce.databases.ecommerce_config.database import get_db, redis_client
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
@@ -52,6 +52,67 @@ def read_products(
         logger.info(msg="Nenhum produto de moda nao encontardo!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
 
+
+# rota de filtragem de buscas 
+@route_moda.get(
+    path="/category/moda-feminina/search-filters/",
+    response_model=list[EspecificacoesModaFeminina],
+    status_code=status.HTTP_200_OK,
+    description="List all products",
+    name="Route list products"
+)
+def read_products(
+    category: str = Query(None, description="Filtrar por categoria"),
+    min_price: float = Query(None, description="Filtrar por preço mínimo"),
+    max_price: float = Query(None, description="Filtrar por preço máximo"),
+    name: str = Query(None, description="Filtrar por nome"),
+    stars: int = Query(None, description="Filtrar por quantidade de estrelas"),
+    color: str = Query(None, description="Filtrar pela cor"),
+    size: float = Query(None, description="Filtrar pelo tamanho"),
+    details: str = Query(None, description="Filtrar por detalhes"),
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Products_Moda_Feminina)
+
+    # Aplicar filtros se fornecidos
+    # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
+    if name:
+        query = query.filter(Products_Moda_Feminina.name.ilike(f"%{name}%"))
+
+    if category: 
+        query = query.filter(Products_Moda_Feminina.category.ilike(f"%{category}%"))  # Usando LIKE
+
+    if stars:
+        query = query.filter(Products_Moda_Feminina.stars >= stars)
+    
+    if color:
+        query = query.filter(Products_Moda_Feminina.color.ilike(f"%{color}%"))  # Usando LIKE para cor
+
+    if details:
+        query = query.filter(Products_Moda_Feminina.details.ilike(f"%{details}%"))
+
+    if size:
+        query = query.filter(Products_Moda_Feminina.size.ilike(f"%{size}%"))  # Usando LIKE para tamanho
+
+
+    if min_price is not None:
+        query = query.filter(Products_Moda_Feminina.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Products_Moda_Feminina.price <= max_price)
+
+    
+    products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+
+    if products:
+        logger.info(msg="Produtos de moda sendo listados!")
+        products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
+        return products_listed
+
+    logger.info(msg="Nenhum produto de moda encontrado!")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
 
 
 @route_moda.get(

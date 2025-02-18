@@ -74,3 +74,10 @@ def get_db_users():
     finally:
         db_users.close()
 
+
+# sessao de anotacoes
+"""
+Uso de ilike: O método ilike é usado para realizar uma busca insensível a maiúsculas e minúsculas.
+O padrão f"%{category}%" permite que a pesquisa encontre qualquer categoria que contenha a string fornecida.
+Por exemplo, se o usuário buscar "verão", ele encontrará categorias como "Moda de Verão", "Roupas de Verão", etc.
+"""
