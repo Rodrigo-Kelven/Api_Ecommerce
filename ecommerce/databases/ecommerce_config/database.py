@@ -13,6 +13,7 @@ db_users_path = "./databases/DB_users/db_users/users_users.db" # -> banco de dad
 
 
 # Redis em container
+# o tempo de expiracao do dados esta em cada endpoins, a medida que os dados nao requesitados, o tempo se expiracao aumenta
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 
