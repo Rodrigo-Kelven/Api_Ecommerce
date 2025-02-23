@@ -1,11 +1,13 @@
-from ecommerce.auth.models.models import UserDB
-from ecommerce.databases.ecommerce_config.database import SessionLocal_users, get_db_users
 from ecommerce.auth.schemas.schemas import Token, User, UserResponse, UserResponseUpdate
-from typing import List, Annotated
+from ecommerce.databases.ecommerce_config.database import SessionLocal_users, get_db_users
 from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundTasks, Body
+from ecommerce.auth.models.models import UserDB, Role
+from typing import List, Annotated
 from ecommerce.auth.auth import *
 
 from fastapi.security import OAuth2PasswordRequestForm
+
+from ecommerce.auth.auth import check_permissions
 
 # caso queira entender como funciona, recomendo desenhar o fluxo
 routes_auth_auten = APIRouter()
@@ -16,8 +18,8 @@ routes_auth_auten = APIRouter()
 @routes_auth_auten.post("/login")
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db_users),
-) -> Token:
+    db: Session = Depends(get_db_users)) -> Token:
+
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -42,9 +44,11 @@ async def login_for_access_token(
         description="Route get informations user",
         name="Route get informations user"
 )
-async def read_users_me(
-    current_user: Annotated[User , Depends(get_current_user)],
-):
+async def read_users_me(current_user: Annotated[User , Depends(get_current_user)]):
+    # Verifique as permissões antes de retornar as informações do usuário
+    check_permissions(current_user, Role.user)  # Aqui verificamos se o usuário tem o papel de 'user'
+
+    # Se a permissão foi verificada com sucesso, retornamos os dados do usuário
     return current_user
 
 
@@ -56,48 +60,49 @@ async def read_users_me(
         description="Route get items user",
         name="Route get items user"
 )
-async def read_own_items(
-    current_user: Annotated[User , Depends(get_current_active_user)],
-):
+async def read_own_items(current_user: Annotated[User , Depends(get_current_active_user)]):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
 
 # Rota para criar um novo usuário -> qualquer usuario pode criar 
+# Rota para criar um novo usuário
 @routes_auth_auten.post("/users/")
 async def create_user(
     username: str = Form(...),
     email: str = Form(...),
     full_name: str = Form(...),
     password: str = Form(...),
+    #role: str = Role.user,  # Permite definir o papel do usuário, default é 'user'
     db: Session = Depends(get_db_users),
 ):
+    # Verifica se o username já está registrado
     if get_user(db, username):
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username ja registrado!")
+    
+    # Verifica se o email já está registrado
+    if db.query(UserDB).filter(UserDB.email == email).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email ja registrado!")
 
+    # Hash da senha
     hashed_password = get_password_hash(password)
+    
+    # Criação do usuário
     db_user = UserDB(
         username=username,
         email=email,
         full_name=full_name,
         hashed_password=hashed_password,
+        #role=role  # Define o papel do usuário, seja 'user', 'admin', ou 'moderator'
     )
+    
+    # Adiciona e comita o novo usuário no banco de dados
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
     return db_user
 
-
-"""
-# Listar todos os usuários sem verificacao de identificacao -> roles
-@routes_auth_auten.get("/users/", response_model=List[User ], deprecated=True)
-async def get_users():
-    db = SessionLocal()
-    users = db.query(UserDB).all()
-    db.close()
-    return [User (**user.__dict__) for user in users]
-
-"""
 
 # Listar todos os usuários -> somente user admin 
 @routes_auth_auten.get(
@@ -108,9 +113,8 @@ async def get_users():
         name="Route list users"
 )
 async def get_users(current_user: Annotated[UserResponse , Depends(get_current_active_user)]):
-    # Verifica se o usuário atual tem o papel de admin
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Operation not permitted")
+    # Verifique as permissões antes de retornar as informações do usuário
+    check_permissions(current_user, Role.admin)  # Aqui verificamos se o usuário tem o papel de 'user'
 
     db = SessionLocal_users()
     users = db.query(UserDB).all()
@@ -128,12 +132,13 @@ async def get_users(current_user: Annotated[UserResponse , Depends(get_current_a
 )
 async def update_user(
     username: str, user: UserResponseUpdate, current_user: Annotated[User , Depends(get_current_active_user)]
-):
+    ):
+
     db = SessionLocal_users()
     db_user = get_user(db, username)
     if not db_user:
         db.close()
-        raise HTTPException(status_code=404, detail="User  not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario nao encontrado!")
     
     for key, value in user.dict(exclude_unset=True).items():
         setattr(db_user, key, value)
@@ -158,7 +163,7 @@ async def delete_user(
 
     if not db_user:
         db.close()
-        raise HTTPException(status_code=404, detail="User  not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario nao encontrado!")
     
     db.delete(db_user)
     db.commit()
