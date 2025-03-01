@@ -1,5 +1,9 @@
 
 # Api Ecommerce
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) 
+![FastAPI](https://img.shields.io/badge/FastAPI-%23FF4F00.svg?style=for-the-badge&logo=fastapi&logoColor=white)
+![GraphQL](https://img.shields.io/badge/GraphQL-%23E10098.svg?style=for-the-badge&logo=graphql&logoColor=white)
+
 ## Descrição
 Este projeto é uma API RESTful para um sistema de e-commerce. Um simples projeto baseado num ecommerce construido em FastAPI. A ideia e criar um pequeno Ecommerce e usa-lo como base em outros projetos
 Ele permite que os usuários realizem operações como criar, ler, atualizar e excluir produtos, além de gerenciar pedidos e usuários.
