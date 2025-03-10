@@ -67,7 +67,7 @@ async def rate_limit_middleware(request: Request, call_next):
 # Os cabeçalhos X-RateLimit-Limit, X-RateLimit-Remaining e X-RateLimit-Reset são adicionados à resposta para informar o cliente sobre o limite de requisições1.
 """
 
-# atualizar e confighurar
+
 def cors(app):
     from fastapi.middleware.cors import CORSMiddleware
 
@@ -79,11 +79,13 @@ def cors(app):
     ]
 
     app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["X-Custom-Header"],
+    max_age=3600,
     )
 """
 Ao permitir todas as origens (allow_origins=["*"]), você deve ter cuidado,
