@@ -1,5 +1,6 @@
 
 # Api Ecommerce
+## Versão: 0.1.0
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) 
 ![FastAPI](https://img.shields.io/badge/FastAPI-%23FF4F00.svg?style=for-the-badge&logo=fastapi&logoColor=white)
 ![GraphQL](https://img.shields.io/badge/GraphQL-%23E10098.svg?style=for-the-badge&logo=graphql&logoColor=white)
@@ -23,7 +24,6 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - [Docker](https://www.docker.com/) - Conteirização da aplicação
 - [Redis](https://hub.docker.com/_/redis) - Conteirização do banco de dados caching
 
-## Versão: 0.1.0
 
 
 ## Instalação
