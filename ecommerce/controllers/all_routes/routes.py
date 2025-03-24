@@ -30,21 +30,27 @@ class Tags(Enum):
     OAth2 = "Autenticação e Autorização"
 
 
+class Prefix(Enum):
+    api = "/api-v3/ecommerce"
+    api_admin = "/api-v3/ecommerce/admin"
+    api_auth = "/api-v3/ecommerce/auth"
+
+
 
 
 # definir todas as configuracoes de todas as rotas aqui, para deixar mais organizado possivel
 def routes(app):
-    app.include_router(router, tags=[Tags.user2], prefix="/ecommerce/admin") # se for mudar a rota aqui, mude em todos as paginas HTML
-    app.include_router(routes_auth_auten, tags=[Tags.OAth2], prefix="/api-auten_auth") 
-    app.include_router(route_users, tags=[Tags.users], prefix="/ecommerce")
-    app.include_router(route_all, tags=[Tags.all_products], prefix="/ecommerce")
-    app.include_router(route_moda, tags=[Tags.moda], prefix="/ecommerce")
-    app.include_router(route_automotivo, tags=[Tags.automotivo], prefix="/ecommerce") 
-    app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix="/ecommerce")
-    app.include_router(route_esporte_lazer, tags=[Tags.esporte_lazer], prefix="/ecommerce") 
-    app.include_router(route_casa_decoracao, tags=[Tags.casa_decoracao], prefix="/ecommerce")
-    app.include_router(route_brinquedos_jogos, tags=[Tags.brinquedos_jogos], prefix="/ecommerce") 
-    app.include_router(route_livros_papelaria, tags=[Tags.livros_papelaria], prefix="/ecommerce")
+    app.include_router(router, tags=[Tags.user2], prefix=Prefix.api_admin.value) # se for mudar a rota aqui, mude em todos as paginas HTML
+    app.include_router(routes_auth_auten, tags=[Tags.OAth2], prefix=Prefix.api_auth.value) 
+    app.include_router(route_users, tags=[Tags.users], prefix=Prefix.api.value)
+    app.include_router(route_all, tags=[Tags.all_products], prefix=Prefix.api.value)
+    app.include_router(route_moda, tags=[Tags.moda], prefix=Prefix.api.value)
+    app.include_router(route_automotivo, tags=[Tags.automotivo], prefix=Prefix.api.value) 
+    app.include_router(route_eletronicos, tags=[Tags.eletronicos], prefix=Prefix.api.value)
+    app.include_router(route_esporte_lazer, tags=[Tags.esporte_lazer], prefix=Prefix.api.value) 
+    app.include_router(route_casa_decoracao, tags=[Tags.casa_decoracao], prefix=Prefix.api.value)
+    app.include_router(route_brinquedos_jogos, tags=[Tags.brinquedos_jogos], prefix=Prefix.api.value) 
+    app.include_router(route_livros_papelaria, tags=[Tags.livros_papelaria], prefix=Prefix.api.value)
     #app.include_router(route_saude_medicamentos, tags=[Tags.saude_medicamentos], prefix="/ecommerce") # talvez nao implementar
 
 
