@@ -23,7 +23,7 @@ Ele permite que os usuários realizem operações como criar, ler, atualizar e e
 - [Docker](https://www.docker.com/) - Conteirização da aplicação
 - [Redis](https://hub.docker.com/_/redis) - Conteirização do banco de dados caching
 
-## Versão: 0.0.25
+## Versão: 0.1.0
 
 
 ## Instalação
