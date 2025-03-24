@@ -1,12 +1,7 @@
 from ecommerce.schemas.ecommerce.schemas import ProductBrinquedosJogos, EspecificacoesBrinquedosJogos, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
-from fastapi import APIRouter, status, HTTPException, Body, Depends, Query
-from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
-from ecommerce.config.config import logger
+from ecommerce.databases.ecommerce_config.database import get_db
+from fastapi import APIRouter, status, Body, Depends, Query
 from sqlalchemy.orm import Session
-import json
-import uuid
-
 from ecommerce.controllers.services.services_brinquedos import Servico_Brinquedos_Jogos
 
 
@@ -25,6 +20,7 @@ async def create_product(
     product: ProductBrinquedosJogos = Body(embed=True),
     db: Session = Depends(get_db)
 ):
+    # servico para criar produto Brinquedo e Jogos
     return await Servico_Brinquedos_Jogos.create_produtc_brinq_jogos(product, db)
 
 
@@ -42,6 +38,7 @@ async def list_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
+    # servico para pegar todos os produtos de Brinquedos e Jogos
     return await Servico_Brinquedos_Jogos.get_products_brinq_jogos(skip, limit, db)
 
 
@@ -66,6 +63,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para buscar produtos por parametros
     return await Servico_Brinquedos_Jogos.get_products_with_params(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
@@ -83,6 +81,7 @@ async def searchProduct_id(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para buscar produto por ID
     return await Servico_Brinquedos_Jogos.get_product_ID(product_id, db)
 
 @route_brinquedos_jogos.delete(
@@ -96,6 +95,7 @@ async def delete_product(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para deletar produto por ID
     return await Servico_Brinquedos_Jogos.delete_product_ID(product_id, db)
 
 @route_brinquedos_jogos.put(
@@ -111,4 +111,5 @@ async def update_products(
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_db),
 ):
+    # servco para fazer update in produto Brinquedos e Jogos
     return await Servico_Brinquedos_Jogos.update_product_ID(product_id, product_data, db)
