@@ -1,12 +1,7 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
-from fastapi import APIRouter, status, Body, Depends, HTTPException, Query
-from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
-from ecommerce.config.config import logger
+from ecommerce.databases.ecommerce_config.database import get_db
+from fastapi import APIRouter, status, Body, Depends, Query
 from sqlalchemy.orm import Session
-import json
-import uuid
-
 from ecommerce.controllers.services.services_casadecoracao import ServicesCasaDecoracao
 
 
@@ -25,6 +20,7 @@ async def create_product(
     product: ProductCasaeDecoracao = Body(embed=True), 
     db: Session = Depends(get_db)
 ):
+    # servico para criar produto
     return await ServicesCasaDecoracao.create_product(product, db)
 
 
@@ -41,6 +37,7 @@ async def list_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para retornar todos os produtos de casa e decoracao
     return await ServicesCasaDecoracao.get_products(skip, limit, db)
 
 # rota de filtragem de buscas 
@@ -64,6 +61,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para retornar produtos passando parametros
     return await ServicesCasaDecoracao.get_product_params(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
@@ -80,6 +78,7 @@ async def search_product(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para retornar produto passando id
     return await ServicesCasaDecoracao.get_product_id(product_id, db)
 
 
@@ -94,6 +93,7 @@ async def delete_product_id(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para deletar produto passando id
     return await ServicesCasaDecoracao.delete_product_id(product_id, db)
 
 
@@ -111,4 +111,5 @@ async def update_product(
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
     ):
+    # servico para realizar update em produto passando id
     return await ServicesCasaDecoracao.update_product_id(product_id, db, product_data)
