@@ -37,6 +37,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para pegar todos os produtos de eletornicos
     return await ServicesEletronics.get_all_products(skip, limit, db)
 
 # rota de filtragem de buscas 
@@ -60,6 +61,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para retornar produtos de eletronicos baseados nos parametros
     return await ServicesEletronics.get_product_params(
         db, category, name, stars, color,
         details, size,min_price, max_price,
@@ -75,9 +77,9 @@ async def read_products(
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def read_product_id(
     product_id: str,
-    db: Session = Depends(get_db
-)):
-
+    db: Session = Depends(get_db)
+):
+    # servico para retornar produto com parametro ID passado
     return await ServicesEletronics.get_product_id(product_id, db)
 
 
@@ -91,6 +93,7 @@ async def delete_product_id(
     product_id: str, 
     db: Session = Depends(get_db)
 ):
+    # servico para deletar produto com parametro ID passado
     return await ServicesEletronics.delete_product(product_id, db)
 
 
@@ -107,5 +110,5 @@ async def update_product(
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
 ):
-
+    # servico para realizar update em produto com parametro ID passado
     return await ServicesEletronics.update_product(product_id, db, product_data)
