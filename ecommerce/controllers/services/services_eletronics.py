@@ -82,6 +82,7 @@ class ServicesEletronics:
         logger.info(msg="Nenhum produto de eletronicos encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de eletronicos encontrado!")
     
+
     @staticmethod
     async def get_product_id(product_id, db):
         # primeiro procura no redis
@@ -141,6 +142,7 @@ class ServicesEletronics:
         if product_delete is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
         
+
     @staticmethod
     async def update_product(product_id, db, product_data):
         product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
@@ -158,8 +160,6 @@ class ServicesEletronics:
         if product is None:
             logger.info(msg="Produto eletronico nao encontrado")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
-        
-
 
         # Corrige o valor da categoria se necessário
         #product.category = "Eletronicos"  # Defina o valor da categoria como "Eletronicos"
