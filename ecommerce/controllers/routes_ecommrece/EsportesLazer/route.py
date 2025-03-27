@@ -1,13 +1,9 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
-from fastapi import APIRouter, status, HTTPException, Body, Depends, Query
-from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
-from ecommerce.config.config import logger
+from fastapi import APIRouter, status, Body, Depends, Query
+from ecommerce.databases.ecommerce_config.database import get_db
 from sqlalchemy.orm import Session
-import json
-import uuid
-
 from ecommerce.controllers.services.services_esport import ServicesEsportLazer
+
 
 route_esporte_lazer = APIRouter()
 
@@ -24,6 +20,7 @@ async def create_product(
     product: ProductEsporteLazer = Body(embed=True),
     db: Session = Depends(get_db)
 ):
+    # service para criar produto
     return await ServicesEsportLazer.create_product(product, db)
 
 
@@ -41,6 +38,7 @@ async def list_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
+    # servico para listar produto com parametros 
     return await ServicesEsportLazer.get_all_products(skip, limit, db)
 
 # rota de filtragem de buscas 
@@ -64,6 +62,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para listar produtos com parametros especificos
     return await ServicesEsportLazer.get_product(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
@@ -82,6 +81,7 @@ async def searchProduct_id(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para pegar produto por ID
     return await ServicesEsportLazer.get_product_id(db, product_id)
 
 
@@ -96,6 +96,7 @@ async def delete_product(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para deletar produto pelo ID
     return await ServicesEsportLazer.delete_product(product_id, db)
 
 
@@ -113,5 +114,6 @@ async def update_products(
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_db),
 ):
+    # servico para atualizar informacoes do produto
     return await ServicesEsportLazer.update_product(product_id, product_data, db)
 
