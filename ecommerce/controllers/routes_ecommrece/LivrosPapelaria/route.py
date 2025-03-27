@@ -1,12 +1,7 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
-from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
-from fastapi import APIRouter, status, Depends, HTTPException, Body, Query
-from ecommerce.config.config import logger
+from ecommerce.databases.ecommerce_config.database import get_db
+from fastapi import APIRouter, status, Depends, Body, Query
 from sqlalchemy.orm import Session
-import json
-import uuid
-
 from ecommerce.controllers.services.services_livraria import ServicesLivraria
 
 
@@ -25,6 +20,7 @@ async def create_product(
     product: ProductLivrosPapelaria,
     db: Session = Depends(get_db)
 ):
+    # servico para criar produto
     return await ServicesLivraria.create_product(product, db)
 
 
@@ -42,6 +38,7 @@ async def get_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
+    # servico para pegar produtos com parametros
     return await ServicesLivraria.get_products(skip, limit, db)
 
 
@@ -66,6 +63,7 @@ async def read_products(
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
+    # servico para pegar produtos com parametros especificos
     return await ServicesLivraria.search_product(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
@@ -84,7 +82,7 @@ async def get_product_id(
     product_id: str,
     db: Session = Depends(get_db)
 ):
-    
+    # servico para pegar produto por ID  
     return await ServicesLivraria.get_product_ID(product_id, db)
 
 
@@ -99,6 +97,7 @@ async def delete_product_id(
     product_id: str,
     db: Session = Depends(get_db)
 ):
+    # servico para deletar produto por ID
     return await ServicesLivraria.delete_product(product_id, db)
 
 
@@ -114,4 +113,5 @@ async def update_product(
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):
+    # servico para atualizar produto por ID
     return await ServicesLivraria.update_product(product_id, db, product_data)
