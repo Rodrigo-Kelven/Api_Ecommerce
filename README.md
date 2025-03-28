@@ -47,3 +47,4 @@ Contribuições são bem-vindas! Se você tiver sugestões ou melhorias, sinta-s
 
 ## Autores
 - [@Rodrigo_Kelven](https://github.com/Rodrigo-Kelven)
+- [@Wesley Thiago](https://github.com/Wesley0071)
