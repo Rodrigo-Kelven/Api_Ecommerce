@@ -106,18 +106,6 @@ class ProductBrinquedosJogos(BaseModel):
     details: str = Field(None, title="details products", description="details of products", examples=["Policia"])
 
 
-class ProductSaudeMedicamentos(BaseModel):
-    name: str = Field(..., title="Name Product",description="Name of product",examples=["Raspador de Lingua"])
-    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
-    price: float = Field(..., title="Price Product", description="Price of product",examples=[15.00])
-    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
-    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
-    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
-    color: str = Field(..., title="color product", description="Color of product", examples=["Prata"])
-    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
-    details: str = Field(None, title="details products", description="details of products", examples=["Adukto"])
-
-
 class ProductLivrosPapelaria(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Livro algoritimos"])
     description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
@@ -224,18 +212,6 @@ class ProductBrinquedosJogosID(BaseModel):
     size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
     details: str = Field(None, title="details products", description="details of products", examples=["Policia"])
 
-class ProductSaudeMedicamentosID(BaseModel):
-    id: str
-    name: str = Field(..., title="Name Product",description="Name of product",examples=["Raspador de Lingua"])
-    description: str = Field(None, title="Description product", description="Description of products", examples=["Good Product, Stars 5"])
-    price: float = Field(..., title="Price Product", description="Price of product",examples=[15.00])
-    quantity: int = Field(..., title="Amount of product", description="Amount of product", examples=[1])
-    tax: float = Field(None, title="Tax Product", description="Tax of product",examples=[0.1])
-    stars: float = Field(None, title="Stars of product", description="Stars of avaliation product", examples=[5.0])
-    color: str = Field(..., title="color product", description="Color of product", examples=["Prata"])
-    size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
-    details: str = Field(None, title="details products", description="details of products", examples=["Adukto"])
-
 
 class ProductLivrosPapelariaID(BaseModel):
     id: str
@@ -266,9 +242,6 @@ class EspecificacoesEsporteLazer(ProductEsporteLazerID):
 
 class EspecificacoesBrinquedosJogos(ProductBrinquedosJogosID):
     category: Literal["Brinquedos_Jogos"] = "Brinquedos_Jogos" 
-
-class EspecificacoesSaudeMedicamentos(ProductSaudeMedicamentosID):
-    category: Literal["Saude_Medicamentos"] = "Saude_Medicamentos" 
 
 class EspecificacoesLivrosPapelaria(ProductLivrosPapelariaID):
     category: Literal["Livros_Papelaria"] = "Livros_Papelaria" 
