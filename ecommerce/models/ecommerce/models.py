@@ -226,9 +226,6 @@ class Product_Brinquedos_Jogos(Base):
         )
 
 
-
-    
-
 class Product_Livros_Papelaria(Base):
     __tablename__ = "products_livros_papelaria"
 
