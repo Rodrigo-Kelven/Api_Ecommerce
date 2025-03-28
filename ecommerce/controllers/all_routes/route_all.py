@@ -7,7 +7,6 @@ from ecommerce.models.ecommerce.models import (
     Product_Automotivo,
     Product_Esporte_Lazer,
     Product_Brinquedos_Jogos,
-    Product_Saude_Medicamentos,
     Product_Livros_Papelaria
 )
 from sqlalchemy.orm import Session
@@ -33,7 +32,6 @@ async def all_products(
     products_automotivo = db.query(Product_Automotivo).all()
     products_esporte_lazer = db.query(Product_Esporte_Lazer).all()
     products_brinquedos_e_jogos = db.query(Product_Brinquedos_Jogos).all()
-    products_saude_e_medicamentos = db.query(Product_Saude_Medicamentos).all()
     products_livros_papelaria = db.query(Product_Livros_Papelaria).all()
     
     # Combine todos os produtos em uma única lista
@@ -51,7 +49,6 @@ async def all_products(
         "Produtos Automotivos":  products_automotivo,
         "Produtos de Esporte e Lazer": products_esporte_lazer,
         "Produtos Brinquedos e Jogos": products_brinquedos_e_jogos,
-        "Produtos Saude e Mediacmentos": products_saude_e_medicamentos,
         "Produtos Livros e Papelaria": products_livros_papelaria
     }
     return all  # Retorna uma lista de produtos
