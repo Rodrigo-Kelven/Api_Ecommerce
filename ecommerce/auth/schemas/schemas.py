@@ -31,8 +31,7 @@ class UserResponse(BaseModel):
 class UserResponseUpdate(BaseModel):
     email: str
     full_name: str
-    hashed_password: str
-    disabled: bool
+
 
 
 class UserInDB(User):
