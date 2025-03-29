@@ -20,7 +20,7 @@
     - Implementar um sistema de autenticação, como OAuth2 ou JWT, para garantir que apenas usuários autorizados possam acessar a API.
     - Centralizar a autorização para controlar o acesso a diferentes serviços
 
-- ### Otimização do Roteamento:
+- ### Otimização do Roteamento: (Implementado)
     - Utilizar técnicas de balanceamento de carga para distribuir as solicitações entre múltiplos serviços, melhorando a eficiência e a resiliência.
     - Implementação de um mecanismo de fallback para redirecionar solicitações em caso de falha de um serviço.
 
@@ -36,7 +36,7 @@
     - Utilizar ferramentas como Swagger ou Redoc para gerar documentação interativa da API, facilitando o uso por desenvolvedores.
     - Manter a documentação atualizada com exemplos de uso e descrições claras dos endpoints.
 
-- ### Testes Automatizados:
+- ### Testes Automatizados: 
     - Criar uma suíte de testes automatizados para garantir que a API funcione conforme esperado e para detectar regressões rapidamente.
     - Realizar testes de carga para avaliar como a API se comporta sob diferentes níveis de tráfego.
 
@@ -48,7 +48,7 @@
     - Considerar implementar versionamento na API para permitir atualizações sem quebrar a compatibilidade com clientes existentes.
     - Utilizar um padrão de URL que inclua a versão, como /api/v1/....
 
-- ### Segurança:
+- ### Segurança: (Implementado)
     - Apliquar práticas de segurança, como validação de entrada e proteção contra ataques comuns (ex: SQL Injection, XSS).
     - Considerar o uso de HTTPS para proteger a comunicação entre clientes e a API.
 
