@@ -21,7 +21,7 @@ async def create_product(
     db: Session = Depends(get_db)
 ):
     # servico para criar produto Brinquedo e Jogos
-    return await Servico_Brinquedos_Jogos.create_produtc_brinq_jogos(product, db)
+    return await Servico_Brinquedos_Jogos.createToyProduct(product, db)
 
 
 
@@ -39,7 +39,7 @@ async def list_products(
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos de Brinquedos e Jogos
-    return await Servico_Brinquedos_Jogos.get_products_brinq_jogos(skip, limit, db)
+    return await Servico_Brinquedos_Jogos.getToyProductInInterval(skip, limit, db)
 
 
 # rota de filtragem de buscas 
@@ -64,7 +64,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para buscar produtos por parametros
-    return await Servico_Brinquedos_Jogos.get_products_with_params(
+    return await Servico_Brinquedos_Jogos.getToyProductWithParams(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     )
@@ -82,7 +82,7 @@ async def searchProduct_id(
     db: Session = Depends(get_db)
 ):
     # servico para buscar produto por ID
-    return await Servico_Brinquedos_Jogos.get_product_ID(product_id, db)
+    return await Servico_Brinquedos_Jogos.getToyProductById(product_id, db)
 
 @route_brinquedos_jogos.delete(
     path="/category/brinquedos-jogos/{product_id}",
@@ -96,7 +96,7 @@ async def delete_product(
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto por ID
-    return await Servico_Brinquedos_Jogos.delete_product_ID(product_id, db)
+    return await Servico_Brinquedos_Jogos.deleteToyProductById(product_id, db)
 
 @route_brinquedos_jogos.put(
     path="/category/brinquedos-jogos/{product_id}",
@@ -112,4 +112,4 @@ async def update_products(
     db: Session = Depends(get_db),
 ):
     # servco para fazer update in produto Brinquedos e Jogos
-    return await Servico_Brinquedos_Jogos.update_product_ID(product_id, product_data, db)
+    return await Servico_Brinquedos_Jogos.updateToyProductById(product_id, product_data, db)

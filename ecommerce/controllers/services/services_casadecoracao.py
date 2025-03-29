@@ -10,7 +10,7 @@ import json
 class ServicesCasaDecoracao:
 
     @staticmethod
-    async def create_product(product, db):
+    async def createDecorationProduct(product, db):
         product_id = str(uuid.uuid4())
 
         db_product = Product_Casa_Decoracao(id=product_id, **product.dict())
@@ -21,7 +21,7 @@ class ServicesCasaDecoracao:
         return db_product
     
     @staticmethod
-    async def get_products(skip, limit, db):
+    async def getDecorationProductInInterval(skip, limit, db):
         products = db.query(Product_Casa_Decoracao).offset(skip).limit(limit).all()
     
         if products:
@@ -35,7 +35,7 @@ class ServicesCasaDecoracao:
         
 
     @staticmethod
-    async def get_product_params(
+    async def getDecorationProductWithParams(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     ):
@@ -81,7 +81,7 @@ class ServicesCasaDecoracao:
     
 
     @staticmethod
-    async def get_product_id(product_id, db):
+    async def getDecorationProductById(product_id, db):
         product_data = redis_client.get(f"produto_casa_decoracao:{product_id}")
 
         if product_data:
@@ -123,7 +123,7 @@ class ServicesCasaDecoracao:
         
 
     @staticmethod
-    async def delete_product_id(product_id, db):
+    async def deleteDecorationProductById(product_id, db):
         product_delete = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
         
         if product_delete:
@@ -138,7 +138,7 @@ class ServicesCasaDecoracao:
         
 
     @staticmethod
-    async def update_product_id(product_id, db, product_data):
+    async def updateDecorationProductById(product_id, db, product_data):
     
         product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
 

@@ -21,7 +21,7 @@ async def create_product(
     db: Session = Depends(get_db)
 ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     # servico para criar produtos eletronicos
-    return await ServicesEletronics.create_product(product,db)
+    return await ServicesEletronics.createEletronicProduct(product,db)
 
 
 
@@ -38,7 +38,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos de eletornicos
-    return await ServicesEletronics.get_all_products(skip, limit, db)
+    return await ServicesEletronics.getEletronicProductInInterval(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_eletronicos.get(
@@ -62,7 +62,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produtos de eletronicos baseados nos parametros
-    return await ServicesEletronics.get_product_params(
+    return await ServicesEletronics.getEletronicProductWithParams(
         db, category, name, stars, color,
         details, size,min_price, max_price,
         skip, limit
@@ -80,7 +80,7 @@ async def read_product_id(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produto com parametro ID passado
-    return await ServicesEletronics.get_product_id(product_id, db)
+    return await ServicesEletronics.getEletronicProductById(product_id, db)
 
 
 @route_eletronicos.delete(
@@ -94,7 +94,7 @@ async def delete_product_id(
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto com parametro ID passado
-    return await ServicesEletronics.delete_product(product_id, db)
+    return await ServicesEletronics.deleteEletronicProductById(product_id, db)
 
 
 
@@ -111,4 +111,4 @@ async def update_product(
     product_data: ProductBase = Body(embed=True)
 ):
     # servico para realizar update em produto com parametro ID passado
-    return await ServicesEletronics.update_product(product_id, db, product_data)
+    return await ServicesEletronics.updateEletronicProductById(product_id, db, product_data)

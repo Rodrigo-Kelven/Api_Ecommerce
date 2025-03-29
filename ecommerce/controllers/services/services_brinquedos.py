@@ -10,7 +10,7 @@ class Servico_Brinquedos_Jogos:
 
 
     @staticmethod
-    async def create_produtc_brinq_jogos(product, db):
+    async def createToyProduct(product, db):
         product_id = str(uuid.uuid4())
 
         product = Product_Brinquedos_Jogos(id=product_id, **product.dict())
@@ -22,7 +22,7 @@ class Servico_Brinquedos_Jogos:
     
 
     @staticmethod
-    async def get_products_brinq_jogos(skip, limit, db):
+    async def getToyProductInInterval(skip, limit, db):
         products = db.query(Product_Brinquedos_Jogos).offset(skip).limit(limit).all()
 
         if products:
@@ -36,7 +36,7 @@ class Servico_Brinquedos_Jogos:
         
 
     @staticmethod
-    async def get_products_with_params(
+    async def getToyProductWithParams(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     ):
@@ -82,7 +82,7 @@ class Servico_Brinquedos_Jogos:
     
 
     @staticmethod
-    async def get_product_ID(product_id, db):
+    async def getToyProductById(product_id, db):
         product_data = redis_client.get(f"produto_brinquedos_jogos:{product_id}")
 
         if product_data:
@@ -123,7 +123,7 @@ class Servico_Brinquedos_Jogos:
         
 
     @staticmethod
-    async def delete_product_ID(product_id, db):
+    async def deleteToyProductById(product_id, db):
         product_delete = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
         
         if product_delete:
@@ -139,7 +139,7 @@ class Servico_Brinquedos_Jogos:
     
 
     @staticmethod
-    async def update_product_ID(product_id, product_data ,db):
+    async def updateToyProductById(product_id, product_data ,db):
         product = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
     
         if product:

@@ -21,7 +21,7 @@ async def create_product(
     db: Session = Depends(get_db)
 ):
     # servico para criar produto
-    return await ServicesCasaDecoracao.create_product(product, db)
+    return await ServicesCasaDecoracao.createDecorationProduct(product, db)
 
 
 
@@ -38,7 +38,7 @@ async def list_products(
     db: Session = Depends(get_db)
 ):
     # servico para retornar todos os produtos de casa e decoracao
-    return await ServicesCasaDecoracao.get_products(skip, limit, db)
+    return await ServicesCasaDecoracao.getDecorationProductInInterval(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_casa_decoracao.get(
@@ -62,7 +62,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produtos passando parametros
-    return await ServicesCasaDecoracao.get_product_params(
+    return await ServicesCasaDecoracao.getDecorationProductWithParams(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     )
@@ -79,7 +79,7 @@ async def search_product(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produto passando id
-    return await ServicesCasaDecoracao.get_product_id(product_id, db)
+    return await ServicesCasaDecoracao.getDecorationProductById(product_id, db)
 
 
 
@@ -94,7 +94,7 @@ async def delete_product_id(
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto passando id
-    return await ServicesCasaDecoracao.delete_product_id(product_id, db)
+    return await ServicesCasaDecoracao.deleteDecorationProductById(product_id, db)
 
 
 
@@ -112,4 +112,4 @@ async def update_product(
     product_data: ProductBase = Body(embed=True)
     ):
     # servico para realizar update em produto passando id
-    return await ServicesCasaDecoracao.update_product_id(product_id, db, product_data)
+    return await ServicesCasaDecoracao.updateDecorationProductById(product_id, db, product_data)
