@@ -18,12 +18,12 @@ route_moda = APIRouter()
     description="Create product",
     name="Route create product"
 )
-async def create_product(
+async def createFashionProduct(
     product: ProductModaFeminina = Body(embed=True),
     db: Session = Depends(get_db)
 ):
     # service para criar produto
-    return await ServiceModa.create_produto(product, db)
+    return await ServiceModa.createFashionProductService(product, db)
 
 
 @route_moda.get(
@@ -33,13 +33,13 @@ async def create_product(
         description="List all producst",
         name="Route list products"
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-async def read_products(
+async def getFashionProductInInterval(
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
     # servico para listar produtos com parametros
-    return await ServiceModa.get_product(skip, limit, db)
+    return await ServiceModa.getFashionProductInIntervalService(skip, limit, db)
 
 
 # rota de filtragem de buscas 
@@ -50,7 +50,7 @@ async def read_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def getFashionProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -64,7 +64,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para procurar produtos com parametros
-    return await ServiceModa.search_product_params(
+    return await ServiceModa.getFashionProductWithParamsService(
         db, name, category, stars, color, 
         details, size, min_price, max_price,
         skip, limit
@@ -78,9 +78,9 @@ async def read_products(
     description="Get product by ID",
     name="Route get product by ID"
 )
-async def get_product(product_id: str, db: Session = Depends(get_db)):
+async def getFashionProductById(product_id: str, db: Session = Depends(get_db)):
     # servico para procurar produto por ID
-    return await ServiceModa.get_product_ID(product_id, db)
+    return await ServiceModa.getFashionProductByIdService(product_id, db)
 
 
 @route_moda.delete(
@@ -89,12 +89,12 @@ async def get_product(product_id: str, db: Session = Depends(get_db)):
     description="Delete product for ID",
     name="Route delete product for ID"
     )
-async def delete_product(
+async def deleteFashionProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto por ID
-    return await ServiceModa.delete_product(product_id, db)
+    return await ServiceModa.deleteFashionProductByIdService(product_id, db)
 
 
 
@@ -106,10 +106,10 @@ async def delete_product(
     description="Update product for ID",
     name="Route update product for ID"
     )
-async def update_product(
+async def updateFashionProductById(
     product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID
-    return await ServiceModa.update_product(product_id, db, product_data)
+    return await ServiceModa.updateFashionProductByIdService(product_id, db, product_data)

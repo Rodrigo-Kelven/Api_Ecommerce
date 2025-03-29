@@ -10,7 +10,7 @@ import json
 class Services_Automotivo:
 
     @staticmethod
-    async def createAutomotiveProduct(product, db):
+    async def createAutomotiveProductService(product, db):
         # gera uuid 
         product_id = str(uuid.uuid4())
         # coloca o uuid como id em formato str
@@ -22,7 +22,7 @@ class Services_Automotivo:
         return db_product
     
     @staticmethod
-    async def getAutomotiveProductsInInterval(skip, limit, db):
+    async def getAutomotiveProductsInIntervalService(skip, limit, db):
         db_product = db.query(Product_Automotivo).offset(skip).limit(limit).all()
 
         if db_product:
@@ -37,7 +37,7 @@ class Services_Automotivo:
         
 
     @staticmethod
-    async def getAutomotiveProductWithParams(
+    async def getAutomotiveProductWithParamsService(
         name, category, stars, color, details,
         size, min_price, max_price, skip, limit, db
     ):
@@ -83,7 +83,7 @@ class Services_Automotivo:
     
 
     @staticmethod
-    async def getAutomotiveProductById(product_id, db):
+    async def getAutomotiveProductByIdService(product_id, db):
         # primeiro procura no redis
         product_data = redis_client.get(f"produto_automotivo:{product_id}")
 
@@ -128,7 +128,7 @@ class Services_Automotivo:
         
 
     @staticmethod
-    async def deleteAutomotiveProductById(product_id, db):
+    async def deleteAutomotiveProductByIdService(product_id, db):
         product_delete = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
         if product_delete is None:
             raise HTTPException(status_code=404, detail="Produto nao encontrado!")
@@ -139,7 +139,7 @@ class Services_Automotivo:
     
 
     @staticmethod
-    async def updateAutomotiveProductById(product_id, db, product_data):
+    async def updateAutomotiveProductByIdService(product_id, db, product_data):
         product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
         # Verifica se o produto existe
         if product is None:

@@ -16,12 +16,12 @@ route_livros_papelaria = APIRouter()
     description="Route create product",
     name="Route Create product"
 )
-async def create_product(
+async def createLibraryProduct(
     product: ProductLivrosPapelaria,
     db: Session = Depends(get_db)
 ):
     # servico para criar produto
-    return await ServicesLivraria.create_product(product, db)
+    return await ServicesLivraria.createLibraryProductService(product, db)
 
 
 
@@ -33,13 +33,13 @@ async def create_product(
     description="Route list products",
     name="Route list products category papelaria"
 )
-async def get_products(
+async def getLibraryProductInInterval(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
     # servico para pegar produtos com parametros
-    return await ServicesLivraria.get_products(skip, limit, db)
+    return await ServicesLivraria.getLibraryProductInIntervalService(skip, limit, db)
 
 
 # rota de filtragem de buscas 
@@ -50,7 +50,7 @@ async def get_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def getLibraryProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -64,7 +64,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para pegar produtos com parametros especificos
-    return await ServicesLivraria.search_product(
+    return await ServicesLivraria.getLibraryProductWithParamsService(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     )
@@ -78,12 +78,12 @@ async def read_products(
     description="Route get product for id",
     name="Route GET products ID"
 )
-async def get_product_id(
+async def getLibraryProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para pegar produto por ID  
-    return await ServicesLivraria.get_product_ID(product_id, db)
+    return await ServicesLivraria.getLibraryProductByIdService(product_id, db)
 
 
 @route_livros_papelaria.delete(
@@ -93,12 +93,12 @@ async def get_product_id(
     description="Route get product for id",
     name="Route GET products ID"
 )
-async def delete_product_id(
+async def deleteLibraryProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto por ID
-    return await ServicesLivraria.delete_product(product_id, db)
+    return await ServicesLivraria.deleteLibraryProductByIdService(product_id, db)
 
 
 @route_livros_papelaria.put(
@@ -108,10 +108,10 @@ async def delete_product_id(
     description="Route PUT product",
     name="Route PUT product"
 )
-async def update_product(
+async def updateLibraryProductById(
     product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID
-    return await ServicesLivraria.update_product(product_id, db, product_data)
+    return await ServicesLivraria.updateLibraryProductByIdService(product_id, db, product_data)

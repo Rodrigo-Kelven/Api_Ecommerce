@@ -16,12 +16,12 @@ route_brinquedos_jogos = APIRouter()
     description="Route create product",
     name="Route create product"
 )
-async def create_product(
+async def createToyProduct(
     product: ProductBrinquedosJogos = Body(embed=True),
     db: Session = Depends(get_db)
 ):
     # servico para criar produto Brinquedo e Jogos
-    return await Servico_Brinquedos_Jogos.createToyProduct(product, db)
+    return await Servico_Brinquedos_Jogos.createToyProductService(product, db)
 
 
 
@@ -33,13 +33,13 @@ async def create_product(
     description="Route list products",
     name="Route list products"
 )
-async def list_products(
+async def getToyProductInInterval(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos de Brinquedos e Jogos
-    return await Servico_Brinquedos_Jogos.getToyProductInInterval(skip, limit, db)
+    return await Servico_Brinquedos_Jogos.getToyProductInIntervalService(skip, limit, db)
 
 
 # rota de filtragem de buscas 
@@ -50,7 +50,7 @@ async def list_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def getToyProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -64,7 +64,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para buscar produtos por parametros
-    return await Servico_Brinquedos_Jogos.getToyProductWithParams(
+    return await Servico_Brinquedos_Jogos.getToyProductWithParamsService(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     )
@@ -77,12 +77,12 @@ async def read_products(
     description="Route get product for ID",
     name="Route GET product for ID"
 )
-async def searchProduct_id(
+async def getToyProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para buscar produto por ID
-    return await Servico_Brinquedos_Jogos.getToyProductById(product_id, db)
+    return await Servico_Brinquedos_Jogos.getToyProductByIdService(product_id, db)
 
 @route_brinquedos_jogos.delete(
     path="/category/brinquedos-jogos/{product_id}",
@@ -91,12 +91,12 @@ async def searchProduct_id(
     description="Route delete product for ID",
     name="Route DELETE product for ID"
 )
-async def delete_product(
+async def deleteToyProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto por ID
-    return await Servico_Brinquedos_Jogos.deleteToyProductById(product_id, db)
+    return await Servico_Brinquedos_Jogos.deleteToyProductByIdService(product_id, db)
 
 @route_brinquedos_jogos.put(
     path="/category/brinquedos-jogos/{product_id}",
@@ -106,10 +106,10 @@ async def delete_product(
     description="Route update products",
     name="Route PUT product for ID"
 )
-async def update_products(
+async def updateToyProductById(
     product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_db),
 ):
     # servco para fazer update in produto Brinquedos e Jogos
-    return await Servico_Brinquedos_Jogos.updateToyProductById(product_id, product_data, db)
+    return await Servico_Brinquedos_Jogos.updateToyProductByIdService(product_id, product_data, db)

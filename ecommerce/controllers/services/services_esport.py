@@ -11,7 +11,7 @@ class ServicesEsportLazer:
 
 
     @staticmethod
-    async def create_product(product, db):
+    async def createSportProductService(product, db):
         product_id = str(uuid.uuid4())
 
         db_product = Product_Esporte_Lazer(id=product_id, **product.dict())
@@ -22,7 +22,7 @@ class ServicesEsportLazer:
         return db_product
     
     @staticmethod
-    async def get_all_products(skip, limit, db):
+    async def getSportProductInIntervalService(skip, limit, db):
         products = db.query(Product_Esporte_Lazer).offset(skip).limit(limit).all()
         
         if products:
@@ -36,7 +36,7 @@ class ServicesEsportLazer:
         
 
     @staticmethod
-    async def get_product(
+    async def getSportProductWithParamsService(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     ):
@@ -80,8 +80,9 @@ class ServicesEsportLazer:
         logger.info(msg="Nenhum produto de moda encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de esporte e lazer encontrado!")
     
+
     @staticmethod
-    async def get_product_id(db, product_id):
+    async def getSportProductByIdService(db, product_id):
         product_data = redis_client.get(f"produto_esporte_lazer:{product_id}")
 
         if product_data:
@@ -120,8 +121,9 @@ class ServicesEsportLazer:
             logger.info("Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
+
     @staticmethod
-    async def delete_product(product_id, db):
+    async def deleteSportProductByIdService(product_id, db):
         product_delete = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
         
         if product_delete:
@@ -133,8 +135,9 @@ class ServicesEsportLazer:
             logger.info(msg="Produto nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
+
     @staticmethod
-    async def update_product(product_id, product_data, db):
+    async def updateSportProductByIdService(product_id, product_data, db):
         product = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
 
         if product:

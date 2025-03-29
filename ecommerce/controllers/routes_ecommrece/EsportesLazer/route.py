@@ -16,12 +16,12 @@ route_esporte_lazer = APIRouter()
     description="Route create product",
     name="Route create product"
 )
-async def create_product(
+async def createSportProduct(
     product: ProductEsporteLazer = Body(embed=True),
     db: Session = Depends(get_db)
 ):
     # service para criar produto
-    return await ServicesEsportLazer.create_product(product, db)
+    return await ServicesEsportLazer.createSportProductService(product, db)
 
 
 
@@ -33,13 +33,13 @@ async def create_product(
     description="Route list products",
     name="Route list products"
 )
-async def list_products(
+async def getSportProductInInterval(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
     # servico para listar produto com parametros 
-    return await ServicesEsportLazer.get_all_products(skip, limit, db)
+    return await ServicesEsportLazer.getSportProductInIntervalService(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_esporte_lazer.get(
@@ -49,7 +49,7 @@ async def list_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def getSportProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -63,7 +63,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para listar produtos com parametros especificos
-    return await ServicesEsportLazer.get_product(
+    return await ServicesEsportLazer.getSportProductWithParamsService(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     )
@@ -77,12 +77,12 @@ async def read_products(
     description="Route get product for ID",
     name="Route GET product for ID"
 )
-async def searchProduct_id(
+async def getSportProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para pegar produto por ID
-    return await ServicesEsportLazer.get_product_id(db, product_id)
+    return await ServicesEsportLazer.getSportProductByIdService(db, product_id)
 
 
 @route_esporte_lazer.delete(
@@ -92,12 +92,12 @@ async def searchProduct_id(
     description="Route delete product for ID",
     name="Route DELETE product for ID"
 )
-async def delete_product(
+async def deleteSportProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto pelo ID
-    return await ServicesEsportLazer.delete_product(product_id, db)
+    return await ServicesEsportLazer.deleteSportProductByIdService(product_id, db)
 
 
 
@@ -109,11 +109,11 @@ async def delete_product(
     description="Route put product for ID",
     name="Route PUT product for ID"
 )
-async def update_products(
+async def updateSportProductById(
     product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_db),
 ):
     # servico para atualizar informacoes do produto
-    return await ServicesEsportLazer.update_product(product_id, product_data, db)
+    return await ServicesEsportLazer.updateSportProductByIdService(product_id, product_data, db)
 

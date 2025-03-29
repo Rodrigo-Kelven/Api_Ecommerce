@@ -10,7 +10,7 @@ import json
 class ServicesEletronics:
 
     @staticmethod
-    async def createEletronicProduct(product, db):
+    async def createEletronicProductService(product, db):
 
         product_id = str(uuid.uuid4())
 
@@ -23,7 +23,7 @@ class ServicesEletronics:
     
 
     @staticmethod
-    async def getEletronicProductInInterval(skip, limit, db):
+    async def getEletronicProductInIntervalService(skip, limit, db):
         products = db.query(Products_Eletronics).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
         
         if products:
@@ -37,7 +37,7 @@ class ServicesEletronics:
         
 
     @staticmethod
-    async def getEletronicProductWithParams(
+    async def getEletronicProductWithParamsService(
         db, category, name, stars, color,
         details, size,min_price, max_price,
         skip, limit
@@ -84,7 +84,7 @@ class ServicesEletronics:
     
 
     @staticmethod
-    async def getEletronicProductById(product_id, db):
+    async def getEletronicProductByIdService(product_id, db):
         # primeiro procura no redis
         product_data = redis_client.get(f"produto_eletronicos:{product_id}")
 
@@ -129,7 +129,7 @@ class ServicesEletronics:
         
 
     @staticmethod
-    async def deleteEletronicProductById(product_id, db):
+    async def deleteEletronicProductByIdService(product_id, db):
         product_delete = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
     
         if product_delete:
@@ -144,7 +144,7 @@ class ServicesEletronics:
         
 
     @staticmethod
-    async def updateEletronicProductById(product_id, db, product_data):
+    async def updateEletronicProductByIdService(product_id, db, product_data):
         product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
 
         if product:

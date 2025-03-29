@@ -10,7 +10,7 @@ class ServiceModa:
 
 
     @staticmethod
-    async def create_produto(product, db):
+    async def createFashionProductService(product, db):
         # Gera um UUID para o novo produto
         product_id = str(uuid.uuid4())
 
@@ -24,7 +24,7 @@ class ServiceModa:
     
 
     @staticmethod
-    async def get_product(skip, limit, db):
+    async def getFashionProductInIntervalService(skip, limit, db):
         products = db.query(Products_Moda_Feminina).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
     
         if products:
@@ -38,7 +38,7 @@ class ServiceModa:
         
 
     @staticmethod
-    async def search_product_params(
+    async def getFashionProductWithParamsService(
         db, name, category, stars, color, 
         details, size, min_price, max_price,
         skip, limit
@@ -85,7 +85,7 @@ class ServiceModa:
     
 
     @staticmethod
-    async def get_product_ID(product_id, db):
+    async def getFashionProductByIdService(product_id, db):
         # Tenta pegar produto pelo redis
         product_data = redis_client.get(f"produto_moda:{product_id}")
 
@@ -126,7 +126,7 @@ class ServiceModa:
     
 
     @staticmethod
-    async def delete_product(product_id, db):
+    async def deleteFashionProductByIdService(product_id, db):
         product_delete = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
     
         if product_delete:
@@ -143,7 +143,7 @@ class ServiceModa:
         
         
     @staticmethod
-    async def update_product(product_id, db, product_data):
+    async def updateFashionProductByIdService(product_id, db, product_data):
         product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
 
         if product:

@@ -16,12 +16,12 @@ route_casa_decoracao = APIRouter()
     description="Create product home and decorations",
     name="Route create product",
     )
-async def create_product(
+async def createDecorationProduct(
     product: ProductCasaeDecoracao = Body(embed=True), 
     db: Session = Depends(get_db)
 ):
     # servico para criar produto
-    return await ServicesCasaDecoracao.createDecorationProduct(product, db)
+    return await ServicesCasaDecoracao.createDecorationProductService(product, db)
 
 
 
@@ -32,13 +32,13 @@ async def create_product(
     description="List all products",
     name="Route list products"
 )
-async def list_products(
+async def getDecorationProductInInterval(
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
     # servico para retornar todos os produtos de casa e decoracao
-    return await ServicesCasaDecoracao.getDecorationProductInInterval(skip, limit, db)
+    return await ServicesCasaDecoracao.getDecorationProductInIntervalService(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_casa_decoracao.get(
@@ -48,7 +48,7 @@ async def list_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def getDecorationProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -62,7 +62,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produtos passando parametros
-    return await ServicesCasaDecoracao.getDecorationProductWithParams(
+    return await ServicesCasaDecoracao.getDecorationProductWithParamsService(
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     )
@@ -74,12 +74,12 @@ async def read_products(
     description="Search product with ID",
     name="Route search product with ID"
 )
-async def search_product(
+async def getDecorationProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para retornar produto passando id
-    return await ServicesCasaDecoracao.getDecorationProductById(product_id, db)
+    return await ServicesCasaDecoracao.getDecorationProductByIdService(product_id, db)
 
 
 
@@ -89,12 +89,12 @@ async def search_product(
     description="Delete product for ID",
     name="Route delete product for ID"
 )
-async def delete_product_id(
+async def deleteDecorationProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto passando id
-    return await ServicesCasaDecoracao.deleteDecorationProductById(product_id, db)
+    return await ServicesCasaDecoracao.deleteDecorationProductByIdService(product_id, db)
 
 
 
@@ -106,10 +106,10 @@ async def delete_product_id(
     description="Route for update products",
     name="Route create product"
 )
-async def update_product(
+async def updateDecorationProductById(
     product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
     ):
     # servico para realizar update em produto passando id
-    return await ServicesCasaDecoracao.updateDecorationProductById(product_id, db, product_data)
+    return await ServicesCasaDecoracao.updateDecorationProductByIdService(product_id, db, product_data)

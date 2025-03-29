@@ -16,12 +16,12 @@ route_automotivo = APIRouter()
     description="Route create product",
     name="Route Create product category"
 )
-async def create_product(
+async def createAutomotiveProduct(
     product: ProductAutomotivo = Body(embed=True),
     db: Session = Depends(get_db)
 ):
     # servico para registro de produto automotivo
-    return await Services_Automotivo.createAutomotiveProduct(product, db)
+    return await Services_Automotivo.createAutomotiveProductService(product, db)
 
 
 
@@ -33,13 +33,13 @@ async def create_product(
     description="Route list products",
     name="Route list products category automotivo"
 )
-async def get_products(
+async def getAutomotiveProduct(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos de automotivo
-    return await Services_Automotivo.getAutomotiveProductsInInterval(skip, limit, db)
+    return await Services_Automotivo.getAutomotiveProductsInIntervalService(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_automotivo.get(
@@ -49,7 +49,7 @@ async def get_products(
     description="List search products",
     name="Route search products"
 )
-async def read_products(
+async def searchAutomotiveProducts(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -63,7 +63,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos com base nos parametros
-    return await Services_Automotivo.getAutomotiveProductWithParams(
+    return await Services_Automotivo.getAutomotiveProductWithParamsService(
         name, category, stars, color, details,
         size, min_price, max_price, skip, limit, db
     )
@@ -77,12 +77,12 @@ async def read_products(
     description="Route get product for id",
     name="Route GET products for ID"
 )
-async def get_product_id(
+async def getAutomotiveProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para pegar produto automotivo por ID
-    return await Services_Automotivo.getAutomotiveProductById(product_id, db)
+    return await Services_Automotivo.getAutomotiveProductByIdService(product_id, db)
 
 
 @route_automotivo.delete(
@@ -92,12 +92,12 @@ async def get_product_id(
     description="Route get product for id",
     name="Route DELETE products for ID"
 )
-async def delete_product_id(
+async def deleteAutomotiveProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto automotivo por ID
-    return await Services_Automotivo.deleteAutomotiveProductById(product_id, db)
+    return await Services_Automotivo.deleteAutomotiveProductByIdService(product_id, db)
 
 
 @route_automotivo.put(
@@ -107,10 +107,10 @@ async def delete_product_id(
     description="Route PUT product",
     name="Route PUT product for ID"
 )
-async def update_product(
+async def updateAutomotiveProductById(
     product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID
-    return await Services_Automotivo.updateAutomotiveProductById(product_id, db, product_data)
+    return await Services_Automotivo.updateAutomotiveProductByIdService(product_id, db, product_data)

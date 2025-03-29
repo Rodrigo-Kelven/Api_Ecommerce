@@ -11,7 +11,7 @@ class ServicesLivraria:
 
 
     @staticmethod
-    async def create_product(product, db):
+    async def createLibraryProductService(product, db):
         product_id = str(uuid.uuid4())
 
         db_product = Product_Livros_Papelaria(id=product_id, **product.dict())
@@ -20,8 +20,9 @@ class ServicesLivraria:
         db.refresh(db_product)
         return db_product
     
+
     @staticmethod
-    async def get_products(skip, limit, db):
+    async def getLibraryProductInIntervalService(skip, limit, db):
         db_product = db.query(Product_Livros_Papelaria).offset(skip).limit(limit).all()
         
         if db_product:
@@ -35,7 +36,7 @@ class ServicesLivraria:
         
 
     @staticmethod
-    async def search_product(
+    async def getLibraryProductWithParamsService(
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     ):
@@ -79,8 +80,9 @@ class ServicesLivraria:
         logger.info(msg="Nenhum produto de papelaria encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto papelaria encontrado!")
     
+
     @staticmethod
-    async def get_product_ID(product_id, db):
+    async def getLibraryProductByIdService(product_id, db):
         product_data = redis_client.get(f"produto_livraria:{product_id}")
 
         if product_data:
@@ -117,8 +119,9 @@ class ServicesLivraria:
             logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
+
     @staticmethod
-    async def delete_product(product_id, db):
+    async def deleteLibraryProductByIdService(product_id, db):
         product_delete = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
     
         if product_delete:
@@ -130,9 +133,10 @@ class ServicesLivraria:
 
         if product_delete is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
-        
+
+
     @staticmethod
-    async def update_product(product_id, db, product_data):
+    async def updateLibraryProductByIdService(product_id, db, product_data):
         product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
 
         if product:

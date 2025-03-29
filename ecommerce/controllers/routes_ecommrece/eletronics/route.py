@@ -16,12 +16,12 @@ route_eletronicos = APIRouter()
         description="Create product",
         name="Route create product"
     )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-async def create_product(
+async def createEletronicProduct(
     product: ProductEletronicos = Body(embed=True),
     db: Session = Depends(get_db)
 ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     # servico para criar produtos eletronicos
-    return await ServicesEletronics.createEletronicProduct(product,db)
+    return await ServicesEletronics.createEletronicProductService(product,db)
 
 
 
@@ -32,13 +32,13 @@ async def create_product(
         description="List all producst",
         name="Route list products"
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-async def read_products(
+async def getEletronicProductInInterval(
     skip: int = 0, 
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
     # servico para pegar todos os produtos de eletornicos
-    return await ServicesEletronics.getEletronicProductInInterval(skip, limit, db)
+    return await ServicesEletronics.getEletronicProductInIntervalService(skip, limit, db)
 
 # rota de filtragem de buscas 
 @route_eletronicos.get(
@@ -48,7 +48,7 @@ async def read_products(
     description="List serach products",
     name="Route search products"
 )
-async def read_products(
+async def getEletronicProductWithParams(
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -62,7 +62,7 @@ async def read_products(
     db: Session = Depends(get_db)
 ):
     # servico para retornar produtos de eletronicos baseados nos parametros
-    return await ServicesEletronics.getEletronicProductWithParams(
+    return await ServicesEletronics.getEletronicProductWithParamsService(
         db, category, name, stars, color,
         details, size,min_price, max_price,
         skip, limit
@@ -75,12 +75,12 @@ async def read_products(
         description="Search product with ID",
         name="Route search product with ID"
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
-async def read_product_id(
+async def getEletronicProductById(
     product_id: str,
     db: Session = Depends(get_db)
 ):
     # servico para retornar produto com parametro ID passado
-    return await ServicesEletronics.getEletronicProductById(product_id, db)
+    return await ServicesEletronics.getEletronicProductByIdService(product_id, db)
 
 
 @route_eletronicos.delete(
@@ -89,12 +89,12 @@ async def read_product_id(
     description="Delete product for ID",
     name="Route delete product for ID"
     )
-async def delete_product_id(
+async def deleteEletronicProductById(
     product_id: str, 
     db: Session = Depends(get_db)
 ):
     # servico para deletar produto com parametro ID passado
-    return await ServicesEletronics.deleteEletronicProductById(product_id, db)
+    return await ServicesEletronics.deleteEletronicProductByIdService(product_id, db)
 
 
 
@@ -105,10 +105,10 @@ async def delete_product_id(
     description="Update product for ID",
     name="Route update product with ID"
 )
-async def update_product(
+async def updateEletronicProductById(
     product_id: str,
     db: Session = Depends(get_db),
     product_data: ProductBase = Body(embed=True)
 ):
     # servico para realizar update em produto com parametro ID passado
-    return await ServicesEletronics.updateEletronicProductById(product_id, db, product_data)
+    return await ServicesEletronics.updateEletronicProductByIdService(product_id, db, product_data)
