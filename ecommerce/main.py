@@ -9,7 +9,7 @@ from ecommerce.controllers.all_routes.routes import routes
 app = FastAPI(
     debug=True,
     title="API Ecommerce with FastAPI",
-    version="0.1.7",
+    version="0.2.0",
     summary="Este projeto é uma API RESTful para um sistema de e-commerce."
     "Um simples projeto baseado num ecommerce construido em FastAPI."
     "A ideia e criar um pequeno Ecommerce e usa-lo como base em outros projetos."
