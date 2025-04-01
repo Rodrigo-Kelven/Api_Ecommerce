@@ -5,7 +5,6 @@ from ecommerce.databases.ecommerce_config.database import engine_ecommerce_produ
 from ecommerce.controllers.all_routes.routes import routes
 
 
-
 app = FastAPI(
     debug=True,
     title="API Ecommerce with FastAPI",

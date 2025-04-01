@@ -4,12 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundT
 from ecommerce.auth.models.models import UserDB, Role
 from typing import List, Annotated
 from ecommerce.auth.auth import *
-
 from fastapi.security import OAuth2PasswordRequestForm
-
 from ecommerce.auth.auth import check_permissions
 
-
+# service auth
 class ServicesAuth:
 
 
