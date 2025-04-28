@@ -28,10 +28,16 @@ class UserResponse(BaseModel):
     role: str
 
 
-class UserResponseUpdate(BaseModel):
+class UserResponseEdit(BaseModel):
+    username: str
     email: str
     full_name: str
 
+
+class UserResponseCreate(BaseModel):
+    username: str
+    email: str
+    full_name: str
 
 
 class UserInDB(User):

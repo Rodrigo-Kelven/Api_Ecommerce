@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from ecommerce.databases.ecommerce_config.database import Base
+from ecommerce.auth.config.config_db import Base_auth, engine_auth
 from ecommerce.config.config import *
-from ecommerce.databases.ecommerce_config.database import engine_ecommerce_products, engine_ecommerce_users
+from ecommerce.databases.ecommerce_config.database import engine_ecommerce_products, Base
 from ecommerce.controllers.all_routes.routes import routes
+from ecommerce.auth.config.config import db_logger, config_CORS
 
 
 app = FastAPI(
@@ -27,7 +28,25 @@ app.middleware("http")(rate_limit_middleware)
 logging.basicConfig(level=logging.DEBUG)
 
 # Verifique se as tabelas estão sendo criadas
-logging.debug("Criando as tabelas no banco de dados...")
-Base.metadata.create_all(bind=engine_ecommerce_users)
+db_logger.info("Tabelas sendo criadas,")
 Base.metadata.create_all(bind=engine_ecommerce_products)
-logging.debug("Tabelas criadas com sucesso.")
+db_logger.info("Tabelas criadas.")
+
+config_CORS(app)
+
+@app.on_event("startup")
+async def startup_event():
+    try:
+        # Criação das tabelas no banco de dados de usuários
+        async with engine_auth.begin() as conn:
+            await conn.run_sync(Base_auth.metadata.create_all)
+            db_logger.info("Tabela UserDB criada com sucesso.")
+
+    except Exception as e:
+        db_logger.error(f"Erro ao criar tabelas: {str(e)}.")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await engine_auth.dispose()
+    db_logger.info("Conexões com os bancos de dados encerradas.")
