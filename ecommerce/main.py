@@ -34,7 +34,8 @@ async def startup_event():
         async with engine_auth.begin() as conn:
             await conn.run_sync(Base_auth.metadata.create_all)
             db_logger.info("Tabela UserDB criada com sucesso.")
-
+            
+        # Criação das tabelas no banco de dados de produtos
         async with engine_ecommerce.begin() as conn_ecom:
             await conn_ecom.run_sync(Base.metadata.create_all)
             db_logger.info("Tabelas criada com sucesso.")
