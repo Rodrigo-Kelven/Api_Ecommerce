@@ -9,8 +9,6 @@ from ecommerce.controllers.routes_ecommrece.LivrosPapelaria.route import route_l
 #from ecommerce.controllers.routes_ecommrece.SaudeMedicamentos.route import route_saude_medicamentos
 
 from ecommerce.controllers.all_routes.route_all import route_all
-from ecommerce.controllers.routes_users.routes import route_users
-from ecommerce.controllers.Painel_Administrativo.route import router
 
 from ecommerce.auth.routes.routes import routes_auth_auten
 
@@ -40,9 +38,7 @@ class Prefix(Enum):
 
 # definir todas as configuracoes de todas as rotas aqui, para deixar mais organizado possivel
 def routes(app):
-    app.include_router(router, tags=[Tags.user2], prefix=Prefix.api_admin.value) # se for mudar a rota aqui, mude em todos as paginas HTML
     app.include_router(routes_auth_auten, tags=[Tags.OAth2], prefix=Prefix.api_auth.value) 
-    app.include_router(route_users, tags=[Tags.users], prefix=Prefix.api.value)
     app.include_router(route_all, tags=[Tags.all_products], prefix=Prefix.api.value)
     app.include_router(route_moda, tags=[Tags.moda], prefix=Prefix.api.value)
     app.include_router(route_automotivo, tags=[Tags.automotivo], prefix=Prefix.api.value) 

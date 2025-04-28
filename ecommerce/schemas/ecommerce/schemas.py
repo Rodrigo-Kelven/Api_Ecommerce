@@ -45,6 +45,7 @@ class ProductModaFeminina(BaseModel):
     color: str = Field(..., title="color product", description="Color of product", examples=["Jeans"])
     size: int = Field(..., title="size product", description="size product in CM", examples=["34"])
     details: str = Field(None, title="details products", description="details of products", examples=["rasgado leve"])
+
     
 class ProductCasaeDecoracao(BaseModel):
     name: str = Field(..., title="Name Product",description="Name of product",examples=["Vaso para decoração"])

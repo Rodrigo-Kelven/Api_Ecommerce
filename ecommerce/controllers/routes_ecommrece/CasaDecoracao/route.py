@@ -1,5 +1,5 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from fastapi import APIRouter, status, Body, Depends, Query
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_casadecoracao import ServicesCasaDecoracao
@@ -18,7 +18,7 @@ route_casa_decoracao = APIRouter()
     )
 async def createDecorationProduct(
     product: ProductCasaeDecoracao = Body(embed=True), 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para criar produto
     return await ServicesCasaDecoracao.createDecorationProductService(product, db)
@@ -35,7 +35,7 @@ async def createDecorationProduct(
 async def getDecorationProductInInterval(
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para retornar todos os produtos de casa e decoracao
     return await ServicesCasaDecoracao.getDecorationProductInIntervalService(skip, limit, db)
@@ -59,7 +59,7 @@ async def getDecorationProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para retornar produtos passando parametros
     return await ServicesCasaDecoracao.getDecorationProductWithParamsService(
@@ -76,7 +76,7 @@ async def getDecorationProductWithParams(
 )
 async def getDecorationProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para retornar produto passando id
     return await ServicesCasaDecoracao.getDecorationProductByIdService(product_id, db)
@@ -91,7 +91,7 @@ async def getDecorationProductById(
 )
 async def deleteDecorationProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto passando id
     return await ServicesCasaDecoracao.deleteDecorationProductByIdService(product_id, db)
@@ -108,7 +108,7 @@ async def deleteDecorationProductById(
 )
 async def updateDecorationProductById(
     product_id: str,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True)
     ):
     # servico para realizar update em produto passando id

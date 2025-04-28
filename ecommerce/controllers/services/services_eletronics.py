@@ -1,10 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Products_Eletronics
 from ecommerce.config.config import logger
 import uuid
 import json
 
+from sqlalchemy.future import select
 
 
 class ServicesEletronics:
@@ -16,16 +17,22 @@ class ServicesEletronics:
 
         db_product = Products_Eletronics(id=product_id, **product.dict()) 
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
 
         return db_product
     
 
     @staticmethod
     async def getEletronicProductInIntervalService(skip, limit, db):
-        products = db.query(Products_Eletronics).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product_search = select(Products_Eletronics).offset(skip).limit(limit)  # Usando o modelo SQLAlchemy
         
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
+
         if products:
             logger.info(msg="Produtos eletronicos listados!")
             products_listados = [Products_Eletronics.from_orm(product) for product in products]
@@ -42,7 +49,7 @@ class ServicesEletronics:
         details, size,min_price, max_price,
         skip, limit
     ):
-        query = db.query(Products_Eletronics)
+        query = select(Products_Eletronics)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -72,7 +79,10 @@ class ServicesEletronics:
             query = query.filter(Products_Eletronics.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product = await db.execute(query.offset(skip).limit(limit))  # Usando o modelo SQLAlchemy
+
+        # Obtemos os produtos da consulta
+        products = product.scalars().all()
 
         if products:
             logger.info(msg="Produtos de moda sendo listados!")
@@ -94,8 +104,11 @@ class ServicesEletronics:
             return json.loads(product_data)
         
         # senao, procura no db e retorna
-        product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
+        product = select(Products_Eletronics).filter(Products_Eletronics.id == product_id)
         
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        product = result.scalars().first()
 
         # no db, procura se existir, e transforma para ser armazenado no redis
         if product:
@@ -130,22 +143,30 @@ class ServicesEletronics:
 
     @staticmethod
     async def deleteEletronicProductByIdService(product_id, db):
-        product_delete = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
-    
-        if product_delete:
+        product_delete = select(Products_Eletronics).filter(Products_Eletronics.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
             logger.info(msg="Produto eletronico deletado")
-            db.delete(product_delete)
-            db.commit()
+            await db.delete(product)
+            await db.commit()
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
             # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
 
-        if product_delete is None:
+        if product is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
         
 
     @staticmethod
     async def updateEletronicProductByIdService(product_id, db, product_data):
-        product = db.query(Products_Eletronics).filter(Products_Eletronics.id == product_id).first()
+        product_update = select(Products_Eletronics).filter(Products_Eletronics.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
 
         if product:
             logger.info(msg="Produto eletronico encontrado!")

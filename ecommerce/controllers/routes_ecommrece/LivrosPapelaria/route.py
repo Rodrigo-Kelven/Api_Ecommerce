@@ -1,5 +1,5 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from fastapi import APIRouter, status, Depends, Body, Query
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_livraria import ServicesLivraria
@@ -18,7 +18,7 @@ route_livros_papelaria = APIRouter()
 )
 async def createLibraryProduct(
     product: ProductLivrosPapelaria,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para criar produto
     return await ServicesLivraria.createLibraryProductService(product, db)
@@ -36,7 +36,7 @@ async def createLibraryProduct(
 async def getLibraryProductInInterval(
     skip: int = 0,
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar produtos com parametros
     return await ServicesLivraria.getLibraryProductInIntervalService(skip, limit, db)
@@ -61,7 +61,7 @@ async def getLibraryProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar produtos com parametros especificos
     return await ServicesLivraria.getLibraryProductWithParamsService(
@@ -80,7 +80,7 @@ async def getLibraryProductWithParams(
 )
 async def getLibraryProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar produto por ID  
     return await ServicesLivraria.getLibraryProductByIdService(product_id, db)
@@ -95,7 +95,7 @@ async def getLibraryProductById(
 )
 async def deleteLibraryProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto por ID
     return await ServicesLivraria.deleteLibraryProductByIdService(product_id, db)
@@ -110,7 +110,7 @@ async def deleteLibraryProductById(
 )
 async def updateLibraryProductById(
     product_id: str,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID

@@ -1,10 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
 from ecommerce.config.config import logger
 import uuid
 import json
 
+from sqlalchemy.future import select
 
 
 class ServicesCasaDecoracao:
@@ -15,15 +16,21 @@ class ServicesCasaDecoracao:
 
         db_product = Product_Casa_Decoracao(id=product_id, **product.dict())
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
 
         return db_product
     
     @staticmethod
     async def getDecorationProductInIntervalService(skip, limit, db):
-        products = db.query(Product_Casa_Decoracao).offset(skip).limit(limit).all()
-    
+        product_search = select(Product_Casa_Decoracao).offset(skip).limit(limit)
+
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
+
         if products:
             logger.info(msg="Produtos sendo listados")
             products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
@@ -39,7 +46,7 @@ class ServicesCasaDecoracao:
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     ):
-        query = db.query(Product_Casa_Decoracao)
+        query = select(Product_Casa_Decoracao)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -69,7 +76,10 @@ class ServicesCasaDecoracao:
             query = query.filter(Product_Casa_Decoracao.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product = await db.execute(query.offset(skip).limit(limit))  # Usando o modelo SQLAlchemy
+
+        # Obtemos os produtos da consulta
+        products = product.scalars().all()
 
         if products:
             logger.info(msg="Produtos de moda sendo listados!")
@@ -89,8 +99,11 @@ class ServicesCasaDecoracao:
             return json.loads(product_data)
 
 
-        products = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()  # Usando o modelo de SQLAlchemy
+        product = select(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id)  # Usando o modelo de SQLAlchemy
         
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        products = result.scalars().first()
         
         if products:
             logger.info(msg="Produto encontrado no Banco de dados")
@@ -124,23 +137,31 @@ class ServicesCasaDecoracao:
 
     @staticmethod
     async def deleteDecorationProductByIdService(product_id, db):
-        product_delete = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
+        product_delete = select(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id)
         
-        if product_delete:
-            db.delete(product_delete)
-            db.commit()
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
+            await db.delete(product)
+            await db.commit()
             logger.info(msg="Produto deletado!")
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
             # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
 
-        if product_delete is None:
+        if product is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
     @staticmethod
     async def updateDecorationProductByIdService(product_id, db, product_data):
     
-        product = db.query(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id).first()
+        product_update = select(Product_Casa_Decoracao).filter(Product_Casa_Decoracao.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
 
         if product:
             # Atualiza os campos do produto com os dados recebidos

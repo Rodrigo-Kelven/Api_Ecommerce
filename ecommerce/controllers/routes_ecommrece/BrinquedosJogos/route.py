@@ -1,5 +1,5 @@
 from ecommerce.schemas.ecommerce.schemas import ProductBrinquedosJogos, EspecificacoesBrinquedosJogos, ProductBase
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from fastapi import APIRouter, status, Body, Depends, Query
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_brinquedos import Servico_Brinquedos_Jogos
@@ -18,7 +18,7 @@ route_brinquedos_jogos = APIRouter()
 )
 async def createToyProduct(
     product: ProductBrinquedosJogos = Body(embed=True),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para criar produto Brinquedo e Jogos
     return await Servico_Brinquedos_Jogos.createToyProductService(product, db)
@@ -36,7 +36,7 @@ async def createToyProduct(
 async def getToyProductInInterval(
     skip: int = 0,
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar todos os produtos de Brinquedos e Jogos
     return await Servico_Brinquedos_Jogos.getToyProductInIntervalService(skip, limit, db)
@@ -61,7 +61,7 @@ async def getToyProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para buscar produtos por parametros
     return await Servico_Brinquedos_Jogos.getToyProductWithParamsService(
@@ -79,7 +79,7 @@ async def getToyProductWithParams(
 )
 async def getToyProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para buscar produto por ID
     return await Servico_Brinquedos_Jogos.getToyProductByIdService(product_id, db)
@@ -93,7 +93,7 @@ async def getToyProductById(
 )
 async def deleteToyProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto por ID
     return await Servico_Brinquedos_Jogos.deleteToyProductByIdService(product_id, db)
@@ -109,7 +109,7 @@ async def deleteToyProductById(
 async def updateToyProductById(
     product_id: str,
     product_data: ProductBase = Body(embed=True),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
 ):
     # servco para fazer update in produto Brinquedos e Jogos
     return await Servico_Brinquedos_Jogos.updateToyProductByIdService(product_id, product_data, db)

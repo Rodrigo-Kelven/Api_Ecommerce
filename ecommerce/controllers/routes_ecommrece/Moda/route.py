@@ -1,6 +1,6 @@
 from ecommerce.schemas.ecommerce.schemas import ProductModaFeminina, EspecificacoesModaFeminina, ProductBase
 from fastapi import APIRouter, Depends, status, Body, Query
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
 
@@ -20,7 +20,7 @@ route_moda = APIRouter()
 )
 async def createFashionProduct(
     product: ProductModaFeminina = Body(embed=True),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # service para criar produto
     return await ServiceModa.createFashionProductService(product, db)
@@ -36,7 +36,7 @@ async def createFashionProduct(
 async def getFashionProductInInterval(
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para listar produtos com parametros
     return await ServiceModa.getFashionProductInIntervalService(skip, limit, db)
@@ -61,7 +61,7 @@ async def getFashionProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para procurar produtos com parametros
     return await ServiceModa.getFashionProductWithParamsService(
@@ -78,7 +78,7 @@ async def getFashionProductWithParams(
     description="Get product by ID",
     name="Route get product by ID"
 )
-async def getFashionProductById(product_id: str, db: Session = Depends(get_db)):
+async def getFashionProductById(product_id: str, db: Session = Depends(get_Session)):
     # servico para procurar produto por ID
     return await ServiceModa.getFashionProductByIdService(product_id, db)
 
@@ -91,7 +91,7 @@ async def getFashionProductById(product_id: str, db: Session = Depends(get_db)):
     )
 async def deleteFashionProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto por ID
     return await ServiceModa.deleteFashionProductByIdService(product_id, db)
@@ -108,7 +108,7 @@ async def deleteFashionProductById(
     )
 async def updateFashionProductById(
     product_id: str,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID

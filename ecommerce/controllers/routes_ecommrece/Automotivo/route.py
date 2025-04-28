@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Depends, Body, Query
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesAutomotivo, ProductAutomotivo, ProductBase
 from ecommerce.controllers.services.services_automotivo import Services_Automotivo
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
 
 
@@ -18,7 +18,7 @@ route_automotivo = APIRouter()
 )
 async def createAutomotiveProduct(
     product: ProductAutomotivo = Body(embed=True),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para registro de produto automotivo
     return await Services_Automotivo.createAutomotiveProductService(product, db)
@@ -36,7 +36,7 @@ async def createAutomotiveProduct(
 async def getAutomotiveProduct(
     skip: int = 0,
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar todos os produtos de automotivo
     return await Services_Automotivo.getAutomotiveProductsInIntervalService(skip, limit, db)
@@ -60,7 +60,7 @@ async def searchAutomotiveProducts(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar todos os produtos com base nos parametros
     return await Services_Automotivo.getAutomotiveProductWithParamsService(
@@ -79,7 +79,7 @@ async def searchAutomotiveProducts(
 )
 async def getAutomotiveProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar produto automotivo por ID
     return await Services_Automotivo.getAutomotiveProductByIdService(product_id, db)
@@ -94,7 +94,7 @@ async def getAutomotiveProductById(
 )
 async def deleteAutomotiveProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto automotivo por ID
     return await Services_Automotivo.deleteAutomotiveProductByIdService(product_id, db)
@@ -109,7 +109,7 @@ async def deleteAutomotiveProductById(
 )
 async def updateAutomotiveProductById(
     product_id: str,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
 ):
     # servico para atualizar produto por ID

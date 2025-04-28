@@ -1,6 +1,6 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
 from fastapi import APIRouter, status, Body, Depends, Query
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_esport import ServicesEsportLazer
 
@@ -18,7 +18,7 @@ route_esporte_lazer = APIRouter()
 )
 async def createSportProduct(
     product: ProductEsporteLazer = Body(embed=True),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # service para criar produto
     return await ServicesEsportLazer.createSportProductService(product, db)
@@ -36,7 +36,7 @@ async def createSportProduct(
 async def getSportProductInInterval(
     skip: int = 0,
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para listar produto com parametros 
     return await ServicesEsportLazer.getSportProductInIntervalService(skip, limit, db)
@@ -60,7 +60,7 @@ async def getSportProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para listar produtos com parametros especificos
     return await ServicesEsportLazer.getSportProductWithParamsService(
@@ -79,7 +79,7 @@ async def getSportProductWithParams(
 )
 async def getSportProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar produto por ID
     return await ServicesEsportLazer.getSportProductByIdService(db, product_id)
@@ -94,7 +94,7 @@ async def getSportProductById(
 )
 async def deleteSportProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto pelo ID
     return await ServicesEsportLazer.deleteSportProductByIdService(product_id, db)
@@ -112,7 +112,7 @@ async def deleteSportProductById(
 async def updateSportProductById(
     product_id: str,
     product_data: ProductBase = Body(embed=True),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
 ):
     # servico para atualizar informacoes do produto
     return await ServicesEsportLazer.updateSportProductByIdService(product_id, product_data, db)

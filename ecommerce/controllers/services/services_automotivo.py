@@ -1,10 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Automotivo
 from ecommerce.config.config import logger
 import uuid
 import json
 
+from sqlalchemy.future import select
 
 
 class Services_Automotivo:
@@ -16,22 +17,28 @@ class Services_Automotivo:
         # coloca o uuid como id em formato str
         db_product = Product_Automotivo(id=product_id, **product.dict())
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
 
         return db_product
     
     @staticmethod
     async def getAutomotiveProductsInIntervalService(skip, limit, db):
-        db_product = db.query(Product_Automotivo).offset(skip).limit(limit).all()
+        product_search = select(Product_Automotivo).offset(skip).limit(limit)
 
-        if db_product:
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
+
+        if products:
             logger.info(msg="Produtos automotivos listados!")
             # Convert db_product (list of Product_Automotivo) to a list of Product_Automotivo
-            products = [Product_Automotivo.from_orm(product) for product in db_product]
+            products = [Product_Automotivo.from_orm(product) for product in products]
             return products
         
-        if not db_product:
+        if not products:
             logger.info(msg="Nenhum produto automotivo inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
@@ -41,7 +48,7 @@ class Services_Automotivo:
         name, category, stars, color, details,
         size, min_price, max_price, skip, limit, db
     ):
-        query = db.query(Product_Automotivo)
+        query = select(Product_Automotivo)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -71,7 +78,10 @@ class Services_Automotivo:
             query = query.filter(Product_Automotivo.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product = await db.execute(query.offset(skip).limit(limit))  # Usando o modelo SQLAlchemy
+
+        # Obtemos os produtos da consulta
+        products = product.scalars().all()
 
         if products:
             logger.info(msg="Produtos de moda sendo listados!")
@@ -93,8 +103,11 @@ class Services_Automotivo:
             return json.loads(product_data)
         
         # senao, procura no db e retorna
-        product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
+        product = select(Product_Automotivo).filter(Product_Automotivo.id == product_id)
         
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        product = result.scalars().first()
 
         # no db, procura se existir, e transforma para ser armazenado no redis
         if product:
@@ -129,30 +142,42 @@ class Services_Automotivo:
 
     @staticmethod
     async def deleteAutomotiveProductByIdService(product_id, db):
-        product_delete = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
-        if product_delete is None:
-            raise HTTPException(status_code=404, detail="Produto nao encontrado!")
-        db.delete(product_delete)
-        db.commit()
-        print("Produto deletado!!")
-        return 
+        product_delete = select(Product_Automotivo).filter(Product_Automotivo.id == product_id)
+        
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
+            await db.delete(product)
+            await db.commit()
+
+        if product is None:
+            logger.info(msg="Produto nao encontado!")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
+        
     
 
     @staticmethod
     async def updateAutomotiveProductByIdService(product_id, db, product_data):
-        product = db.query(Product_Automotivo).filter(Product_Automotivo.id == product_id).first()
+        product_update = select(Product_Automotivo).filter(Product_Automotivo.id == product_id)
+        
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
+
+        if product:
+            for key, value in product_data.dict().items():
+                setattr(product, key, value)
+
+            # Salva as alterações no banco de dados
+            await db.commit()
+            await db.refresh(product)
+            return product
+
         # Verifica se o produto existe
         if product is None:
+            logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=404, detail="Produto nao encontado!")
+
         
-        # Atualiza os campos do produto com os dados recebidos
-        for key, value in product_data.dict().items():
-            setattr(product, key, value)
-
-        # Corrige o valor da categoria se necessário
-        #product.category = "Automotivo"  
-
-        # Salva as alterações no banco de dados
-        db.commit()
-        db.refresh(product)
-        return product

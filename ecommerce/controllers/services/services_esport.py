@@ -1,10 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
 from ecommerce.config.config import logger
 import uuid
 import json
 
+from sqlalchemy.future import select
 
 
 class ServicesEsportLazer:
@@ -16,15 +17,21 @@ class ServicesEsportLazer:
 
         db_product = Product_Esporte_Lazer(id=product_id, **product.dict())
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
 
         return db_product
     
     @staticmethod
     async def getSportProductInIntervalService(skip, limit, db):
-        products = db.query(Product_Esporte_Lazer).offset(skip).limit(limit).all()
+        product_search = select(Product_Esporte_Lazer).offset(skip).limit(limit)
         
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
+
         if products:
             products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
             logger.info(msg="Produtos sendo listado!")
@@ -40,7 +47,7 @@ class ServicesEsportLazer:
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     ):
-        query = db.query(Product_Esporte_Lazer)
+        query = select(Product_Esporte_Lazer)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -70,7 +77,10 @@ class ServicesEsportLazer:
             query = query.filter(Product_Esporte_Lazer.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product = await db.execute(query.offset(skip).limit(limit))  # Usando o modelo SQLAlchemy
+
+        # Obtemos os produtos da consulta
+        products = product.scalars().all()
 
         if products:
             logger.info(msg="Produtos de esporte e lazer sendo listados!")
@@ -90,8 +100,11 @@ class ServicesEsportLazer:
             return json.loads(product_data)
         
 
-        products = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
+        product = select(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id)
         
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        products = result.scalars().first()
 
         if products:
             logger.info(msg="Produto encontrado no Banco de dados!")
@@ -124,21 +137,29 @@ class ServicesEsportLazer:
 
     @staticmethod
     async def deleteSportProductByIdService(product_id, db):
-        product_delete = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
+        product_delete = select(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id)
         
-        if product_delete:
-            db.delete(product_delete)
-            db.commit()
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
+            await db.delete(product)
+            await db.commit()
 
 
-        if product_delete is None:
+        if product is None:
             logger.info(msg="Produto nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
     @staticmethod
     async def updateSportProductByIdService(product_id, product_data, db):
-        product = db.query(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id).first()
+        product_update = select(Product_Esporte_Lazer).filter(Product_Esporte_Lazer.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
 
         if product:
             for key, value in product_data.dict().items():
@@ -148,8 +169,8 @@ class ServicesEsportLazer:
             #product.category = "Esporte_Lazer"  
 
             # Salva as alterações no banco de dados
-            db.commit()
-            db.refresh(product)
+            await db.commit()
+            await db.refresh(product)
             return product
 
         

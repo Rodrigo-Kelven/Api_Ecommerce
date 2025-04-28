@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from ecommerce.databases.ecommerce_config.database import get_db
+from ecommerce.databases.ecommerce_config.database import get_Session
 from ecommerce.models.ecommerce.models import (
     Products_Eletronics,
     Product_Casa_Decoracao,
@@ -23,7 +23,7 @@ route_all = APIRouter()
     name="Route all products"
     )
 async def all_products(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # PRESTE ATENÇÃO PARA NAO ESQUECER O () DE  .ALL()
     products_eletronics = db.query(Products_Eletronics).all()

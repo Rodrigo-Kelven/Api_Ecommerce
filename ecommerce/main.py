@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from ecommerce.auth.config.config_db import Base_auth, engine_auth
-from ecommerce.config.config import *
-from ecommerce.databases.ecommerce_config.database import engine_ecommerce_products, Base
+from ecommerce.databases.ecommerce_config.database import Base, engine_ecommerce
 from ecommerce.controllers.all_routes.routes import routes
-from ecommerce.auth.config.config import db_logger, config_CORS
+from ecommerce.auth.config.config import db_logger, config_CORS, LogRequestMiddleware
 
 
 app = FastAPI(
@@ -22,15 +21,9 @@ routes(app) # funcao que chama todas as rotas existentes
 app.add_middleware(LogRequestMiddleware)
 
 # funcao para configuracao do middleware
-app.middleware("http")(rate_limit_middleware)
+#app.middleware("http")(rate_limit_middleware) # refatorar depois
 
-# Configure o logging para depuração
-logging.basicConfig(level=logging.DEBUG)
 
-# Verifique se as tabelas estão sendo criadas
-db_logger.info("Tabelas sendo criadas,")
-Base.metadata.create_all(bind=engine_ecommerce_products)
-db_logger.info("Tabelas criadas.")
 
 config_CORS(app)
 
@@ -41,6 +34,10 @@ async def startup_event():
         async with engine_auth.begin() as conn:
             await conn.run_sync(Base_auth.metadata.create_all)
             db_logger.info("Tabela UserDB criada com sucesso.")
+
+        async with engine_ecommerce.begin() as conn_ecom:
+            await conn_ecom.run_sync(Base.metadata.create_all)
+            db_logger.info("Tabelas criada com sucesso.")
 
     except Exception as e:
         db_logger.error(f"Erro ao criar tabelas: {str(e)}.")

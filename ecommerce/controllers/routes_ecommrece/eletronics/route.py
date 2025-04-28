@@ -1,6 +1,6 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEletronicos, EspecificacoesEletronicos, ProductBase 
 from fastapi import APIRouter, Depends,  status, Body, Query
-from ecommerce.databases.ecommerce_config.database import  get_db
+from ecommerce.databases.ecommerce_config.database import  get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_eletronics import ServicesEletronics
 
@@ -18,7 +18,7 @@ route_eletronicos = APIRouter()
     )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def createEletronicProduct(
     product: ProductEletronicos = Body(embed=True),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     # servico para criar produtos eletronicos
     return await ServicesEletronics.createEletronicProductService(product,db)
@@ -35,7 +35,7 @@ async def createEletronicProduct(
 async def getEletronicProductInInterval(
     skip: int = 0, 
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar todos os produtos de eletornicos
     return await ServicesEletronics.getEletronicProductInIntervalService(skip, limit, db)
@@ -59,7 +59,7 @@ async def getEletronicProductWithParams(
     details: str = Query(None, description="Filtrar por detalhes"),
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para retornar produtos de eletronicos baseados nos parametros
     return await ServicesEletronics.getEletronicProductWithParamsService(
@@ -77,7 +77,7 @@ async def getEletronicProductWithParams(
         )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def getEletronicProductById(
     product_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para retornar produto com parametro ID passado
     return await ServicesEletronics.getEletronicProductByIdService(product_id, db)
@@ -91,7 +91,7 @@ async def getEletronicProductById(
     )
 async def deleteEletronicProductById(
     product_id: str, 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_Session)
 ):
     # servico para deletar produto com parametro ID passado
     return await ServicesEletronics.deleteEletronicProductByIdService(product_id, db)
@@ -107,7 +107,7 @@ async def deleteEletronicProductById(
 )
 async def updateEletronicProductById(
     product_id: str,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True)
 ):
     # servico para realizar update em produto com parametro ID passado

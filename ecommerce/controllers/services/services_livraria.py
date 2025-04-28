@@ -1,11 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
 from ecommerce.config.config import logger
 import uuid
 import json
 
-
+from sqlalchemy.future import select
 
 class ServicesLivraria:
 
@@ -16,21 +16,27 @@ class ServicesLivraria:
 
         db_product = Product_Livros_Papelaria(id=product_id, **product.dict())
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
         return db_product
     
 
     @staticmethod
     async def getLibraryProductInIntervalService(skip, limit, db):
-        db_product = db.query(Product_Livros_Papelaria).offset(skip).limit(limit).all()
+        db_product = select(Product_Livros_Papelaria).offset(skip).limit(limit)
+
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(db_product)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
         
-        if db_product:
+        if products:
             logger.info(msg="Produtos de papelaria sendo listado!")
-            products_listed = [Product_Livros_Papelaria.from_orm(product) for product in db_product]
+            products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
             return products_listed
         
-        if not db_product:
+        if not products:
             logger.info(msg="Nenhum produto de papelaria inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de papelaria inserido!")
         
@@ -40,7 +46,7 @@ class ServicesLivraria:
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     ):
-        query = db.query(Product_Livros_Papelaria)
+        query = select(Product_Livros_Papelaria)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -70,7 +76,11 @@ class ServicesLivraria:
             query = query.filter(Product_Livros_Papelaria.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        result = await db.execute(query.offset(skip).limit(limit)) # Usando o modelo SQLAlchemy
+
+        # Obtemos os produtos da consulta
+        products = result.scalars().all()
+
 
         if products:
             logger.info(msg="Produtos de papelaria sendo listados!")
@@ -89,8 +99,12 @@ class ServicesLivraria:
             logger.info(msg="Produto retornado do Redis!")
             return json.loads(product_data)
         
-        db_product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
+        db_product = select(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id)
         
+        # Executa a consulta assíncrona
+        result = await db.execute(db_product)
+        db_product = result.scalars().first()
+
         if db_product:
             logger.info(msg="Produto encontrado no banco de dados!")
             product = Product_Livros_Papelaria.from_orm(db_product)
@@ -122,12 +136,16 @@ class ServicesLivraria:
 
     @staticmethod
     async def deleteLibraryProductByIdService(product_id, db):
-        product_delete = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
-    
+        product_delete = select(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product_delete = result.scalars().first()
+
         if product_delete:
             logger.info(msg="Produto encontrado!")
-            db.delete(product_delete)
-            db.commit()
+            await db.delete(product_delete)
+            await db.commit()
             print("Produto deletado!!")
             return f"Product with {product_id} removed succesfull"
 
@@ -137,7 +155,11 @@ class ServicesLivraria:
 
     @staticmethod
     async def updateLibraryProductByIdService(product_id, db, product_data):
-        product = db.query(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id).first()
+        product_update = select(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
 
         if product:
             for key, value in product_data.dict().items():
@@ -147,8 +169,8 @@ class ServicesLivraria:
             #product.category = "Livros_Papelaria"  
 
             # Salva as alterações no banco de dados
-            db.commit()
-            db.refresh(product)
+            await db.commit()
+            await db.refresh(product)
             return product
 
 

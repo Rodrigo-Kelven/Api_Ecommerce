@@ -1,9 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
 from ecommerce.config.config import logger
 import uuid
 import json
+
+from sqlalchemy.future import select
 
 
 class Servico_Brinquedos_Jogos:
@@ -15,15 +17,21 @@ class Servico_Brinquedos_Jogos:
 
         product = Product_Brinquedos_Jogos(id=product_id, **product.dict())
         db.add(product)
-        db.commit()
-        db.refresh(product)
+        await db.commit()
+        await db.refresh(product)
 
         return product
     
 
     @staticmethod
     async def getToyProductInIntervalService(skip, limit, db):
-        products = db.query(Product_Brinquedos_Jogos).offset(skip).limit(limit).all()
+        product_search = select(Product_Brinquedos_Jogos).offset(skip).limit(limit)
+
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
 
         if products:
             logger.info(msg="Produtos sendo listados!")
@@ -40,7 +48,7 @@ class Servico_Brinquedos_Jogos:
         db, name, category, stars, color, details,
         size, min_price, max_price, skip, limit
     ):
-        query = db.query(Product_Brinquedos_Jogos)
+        query = select(Product_Brinquedos_Jogos)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -70,8 +78,11 @@ class Servico_Brinquedos_Jogos:
             query = query.filter(Product_Brinquedos_Jogos.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        product = await db.execute(query.offset(skip).limit(limit))  # Usando o modelo SQLAlchemy
 
+        # Obtemos os produtos da consulta
+        products = product.scalars().all()
+        
         if products:
             logger.info(msg="Produtos de brinquedo e jogos listados!")
             products_listed = [Product_Brinquedos_Jogos.from_orm(product) for product in products]
@@ -90,8 +101,11 @@ class Servico_Brinquedos_Jogos:
             return json.loads(product_data)
 
 
-        products = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
+        product = select(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id)
         
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        products = result.scalars().first()
 
         if products:
             logger.info(msg="Produto encontrado no banco de dados!")
@@ -124,24 +138,32 @@ class Servico_Brinquedos_Jogos:
 
     @staticmethod
     async def deleteToyProductByIdService(product_id, db):
-        product_delete = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
+        product_delete = select(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id)
         
-        if product_delete:
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
             logger.info(msg="Produto encontrado!")
-            db.delete(product_delete)
-            db.commit()
+            await db.delete(product)
+            await db.commit()
             print("Produto deletado!!")
             return f"Product with {product_id} removed succesfull"
         
-        if product_delete is None:
+        if product is None:
             logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
 
     @staticmethod
     async def updateToyProductByIdService(product_id, product_data ,db):
-        product = db.query(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id).first()
-    
+        product_update = select(Product_Brinquedos_Jogos).filter(Product_Brinquedos_Jogos.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
+
         if product:
             # Atualiza os campos do produto com os dados recebidos
             for key, value in product_data.dict().items():

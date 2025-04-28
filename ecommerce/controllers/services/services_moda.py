@@ -1,9 +1,11 @@
 from fastapi import HTTPException, status
-from ecommerce.databases.ecommerce_config.database import get_db, redis_client
+from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Products_Moda_Feminina
 from ecommerce.config.config import logger
 import uuid
 import json
+
+from sqlalchemy.future import select
 
 
 class ServiceModa:
@@ -17,16 +19,22 @@ class ServiceModa:
         # Cria uma instância do modelo com o UUID
         db_product = Products_Moda_Feminina(id=product_id, **product.dict())  # Adiciona o UUID ao modelo
         db.add(db_product)
-        db.commit()
-        db.refresh(db_product)
+        await db.commit()
+        await db.refresh(db_product)
 
         return db_product
     
 
     @staticmethod
     async def getFashionProductInIntervalService(skip, limit, db):
-        products = db.query(Products_Moda_Feminina).offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
-    
+        product_search = select(Products_Moda_Feminina).offset(skip).limit(limit)  # Usando o modelo SQLAlchemy
+
+        # Executa a consulta de forma assíncrona
+        result = await db.execute(product_search)
+
+        # Obtém os resultados da consulta
+        products = result.scalars().all()
+
         if products:
             logger.info(msg="Produtos de moda sendo listado!")
             products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
@@ -43,7 +51,7 @@ class ServiceModa:
         details, size, min_price, max_price,
         skip, limit
     ):
-        query = db.query(Products_Moda_Feminina)
+        query = select(Products_Moda_Feminina)
 
         # Aplicar filtros se fornecidos
         # explicacao: ecommerce/databases/ecommerce_config/database.py -> linha 80
@@ -73,8 +81,12 @@ class ServiceModa:
             query = query.filter(Products_Moda_Feminina.price <= max_price)
 
         
-        products = query.offset(skip).limit(limit).all()  # Usando o modelo SQLAlchemy
+        # Executa a consulta com paginação
+        result = await db.execute(query.offset(skip).limit(limit))
 
+        # Obtemos os produtos da consulta
+        products = result.scalars().all()
+        
         if products:
             logger.info(msg="Produtos de moda sendo listados!")
             products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
@@ -95,8 +107,12 @@ class ServiceModa:
             return json.loads(product_data)
 
         # senao encontrar, retorna do db
-        product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
-        
+        product = select(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product)
+        product = result.scalars().first()
+
 
         if product:
             logger.info(msg="Produto encontrado no banco de dados!")
@@ -120,6 +136,8 @@ class ServiceModa:
             redis_client.setex(f"produto_moda:{product.id}", 54000, json.dumps(product_data))
             logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
 
+            
+            
             return product_data
 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
@@ -127,24 +145,32 @@ class ServiceModa:
 
     @staticmethod
     async def deleteFashionProductByIdService(product_id, db):
-        product_delete = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
-    
-        if product_delete:
+        product_delete = select(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_delete)
+        product = result.scalars().first()
+
+        if product:
             logger.info(msg="Produto deletado!")
-            db.delete(product_delete)
-            db.commit()
+            await db.delete(product)
+            await db.commit()
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
             # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
 
 
-        if product_delete is None:
+        if product is None:
             logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
         
     @staticmethod
     async def updateFashionProductByIdService(product_id, db, product_data):
-        product = db.query(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id).first()
+        product_update = select(Products_Moda_Feminina).filter(Products_Moda_Feminina.id == product_id)
+
+        # Executa a consulta assíncrona
+        result = await db.execute(product_update)
+        product = result.scalars().first()
 
         if product:
             for key, value in product_data.dict().items():
@@ -152,8 +178,8 @@ class ServiceModa:
 
             # Salva as alterações no banco de dados
             logger.info(msg="Produto atualizado")
-            db.commit()
-            db.refresh(product)
+            await db.commit()
+            await db.refresh(product)
             return product
 
 
