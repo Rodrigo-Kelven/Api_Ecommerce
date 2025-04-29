@@ -16,6 +16,7 @@ class Servico_Brinquedos_Jogos:
         product_id = str(uuid.uuid4())
 
         product = Product_Brinquedos_Jogos(id=product_id, **product.dict())
+        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
         db.add(product)
         await db.commit()
         await db.refresh(product)

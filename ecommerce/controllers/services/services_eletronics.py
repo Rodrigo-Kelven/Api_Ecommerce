@@ -15,7 +15,8 @@ class ServicesEletronics:
 
         product_id = str(uuid.uuid4())
 
-        db_product = Products_Eletronics(id=product_id, **product.dict()) 
+        db_product = Products_Eletronics(id=product_id, **product.dict())
+        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
