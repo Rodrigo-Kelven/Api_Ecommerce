@@ -16,10 +16,10 @@ class Services_Automotivo:
         product_id = str(uuid.uuid4())
         # coloca o uuid como id em formato str
         db_product = Product_Automotivo(id=product_id, **product.dict())
-        app_logger.info(msg=f"Produto automotivo com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
+        app_logger.info(msg=f"Produto automotivo com  id: {product_id} cadastrado.")
 
         return db_product
     
