@@ -16,7 +16,7 @@ class Servico_Brinquedos_Jogos:
         product_id = str(uuid.uuid4())
 
         product = Product_Brinquedos_Jogos(id=product_id, **product.dict())
-        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
+        app_logger.info(msg=f"Produto brinquedo com  id: {product_id} cadastrado.")
         db.add(product)
         await db.commit()
         await db.refresh(product)
@@ -35,12 +35,12 @@ class Servico_Brinquedos_Jogos:
         products = result.scalars().all()
 
         if products:
-            app_logger.info(msg="Produtos sendo listados!")
+            app_logger.info(msg="Produtos brinquedos sendo listados!")
             products_listed = [Product_Brinquedos_Jogos.from_orm(product) for product in products]
             return products_listed
         
         if not products:
-            app_logger.info(msg="Nenhum produto inserido!")
+            app_logger.info(msg="Nenhum produto brinquedo inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
 
@@ -85,11 +85,11 @@ class Servico_Brinquedos_Jogos:
         products = product.scalars().all()
         
         if products:
-            app_logger.info(msg="Produtos de brinquedo e jogos listados!")
+            app_logger.info(msg="Produtos de brinquedo listados!")
             products_listed = [Product_Brinquedos_Jogos.from_orm(product) for product in products]
             return products_listed
 
-        app_logger.info(msg="Nenhum produto de moda encontrado!")
+        app_logger.info(msg="Nenhum produto de brinquedo encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de brinquedo e jogos encontrado!")
     
 
@@ -98,7 +98,7 @@ class Servico_Brinquedos_Jogos:
         product_data = redis_client.get(f"produto_brinquedos_jogos:{product_id}")
 
         if product_data:
-            app_logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto brinquedos retornado do Redis!")
             return json.loads(product_data)
 
 
@@ -109,7 +109,7 @@ class Servico_Brinquedos_Jogos:
         products = result.scalars().first()
 
         if products:
-            app_logger.info(msg="Produto encontrado no banco de dados!")
+            app_logger.info(msg="Produto brinquedo encontrado no banco de dados!")
             product = Product_Brinquedos_Jogos.from_orm(products)
 
             product_data = {
@@ -125,15 +125,15 @@ class Servico_Brinquedos_Jogos:
                 "details": products.details,
                 "category": 'Brinquedos_Jogos'
             }
-            app_logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg="Produto brinquedos inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_brinquedos_jogos:{products.id}", 54000, json.dumps(product_data))
-            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto brinquedos armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return product
         
         if not products:
-            app_logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto brinquedos nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -146,14 +146,14 @@ class Servico_Brinquedos_Jogos:
         product = result.scalars().first()
 
         if product:
-            app_logger.info(msg="Produto encontrado!")
+            app_logger.info(msg="Produto brinquedo encontrado!")
             await db.delete(product)
             await db.commit()
-            print("Produto deletado!!")
+            app_logger.info(msg=f"Produto brinquedo de id: {product_id} deletado!!")
             return f"Product with {product_id} removed succesfull"
         
         if product is None:
-            app_logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto brinquedo nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
     
 
@@ -176,6 +176,7 @@ class Servico_Brinquedos_Jogos:
             # Salva as alterações no banco de dados
             db.commit()
             db.refresh(product)
+            app_logger.info(msg=f"Produto brinquedo de id: {product_id} atualizado.")
             return product
 
         

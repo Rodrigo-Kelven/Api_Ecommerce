@@ -16,7 +16,7 @@ class Services_Automotivo:
         product_id = str(uuid.uuid4())
         # coloca o uuid como id em formato str
         db_product = Product_Automotivo(id=product_id, **product.dict())
-        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
+        app_logger.info(msg=f"Produto automotivo com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
@@ -85,7 +85,7 @@ class Services_Automotivo:
         products = product.scalars().all()
 
         if products:
-            app_logger.info(msg="Produtos de moda sendo listados!")
+            app_logger.info(msg="Produtos de automotivo sendo listados!")
             products_listed = [Product_Automotivo.from_orm(product) for product in products]
             return products_listed
 
@@ -100,7 +100,7 @@ class Services_Automotivo:
 
         # retorna do redis se tiver no redis
         if product_data:
-            app_logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg=f"Produto de id: {product_id} retornado do Redis!")
             return json.loads(product_data)
         
         # senao, procura no db e retorna
@@ -112,7 +112,7 @@ class Services_Automotivo:
 
         # no db, procura se existir, e transforma para ser armazenado no redis
         if product:
-            app_logger.info(msg="Produto encontrado no Banco de dados")
+            app_logger.info(msg=f"Produto de id: {product_id} encontrado no Banco de dados")
             product_listed = Product_Automotivo.from_orm(product)
 
             product_data = {
@@ -128,10 +128,10 @@ class Services_Automotivo:
                 "details": product.details,
                 "category": product.category
             }
-            app_logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg=f"Produto de id: {product_id} inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_automotivo:{product.id}", 54000, json.dumps(product_data))
-            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg=f"Produto de id: {product_id} armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return product_listed
 
@@ -151,10 +151,11 @@ class Services_Automotivo:
 
         if product:
             await db.delete(product)
+            app_logger.info(msg=f"Produto de id: {product_id} automotivo deletado!")
             await db.commit()
 
         if product is None:
-            app_logger.info(msg="Produto nao encontado!")
+            app_logger.info(msg=f"Produto de id: {product_id} nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
     
@@ -174,11 +175,12 @@ class Services_Automotivo:
             # Salva as alterações no banco de dados
             await db.commit()
             await db.refresh(product)
+            app_logger.info(msg=f"Produto de id: {product_id} atualizado!")
             return product
 
         # Verifica se o produto existe
         if product is None:
-            app_logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg=f"Produto de id: {product_id} nao encontrado!")
             raise HTTPException(status_code=404, detail="Produto nao encontado!")
 
         
