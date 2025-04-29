@@ -16,10 +16,10 @@ class ServicesEsportLazer:
         product_id = str(uuid.uuid4())
 
         db_product = Product_Esporte_Lazer(id=product_id, **product.dict())
-        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
+        app_logger.info(msg=f"Produto Esporte de id: {product_id} cadastrado.")
 
         return db_product
     
@@ -35,11 +35,11 @@ class ServicesEsportLazer:
 
         if products:
             products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
-            app_logger.info(msg="Produtos sendo listado!")
+            app_logger.info(msg="Produto Esporte sendo listado!")
             return products_listed
 
         if not products:
-            app_logger.info(msg="Nenhum  produto inserido!")
+            app_logger.info(msg="Nenhum Produto Esporte inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
 
@@ -88,7 +88,7 @@ class ServicesEsportLazer:
             products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
             return products_listed
 
-        app_logger.info(msg="Nenhum produto de moda encontrado!")
+        app_logger.info(msg="Nenhum produto de esporte encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de esporte e lazer encontrado!")
     
 
@@ -97,7 +97,7 @@ class ServicesEsportLazer:
         product_data = redis_client.get(f"produto_esporte_lazer:{product_id}")
 
         if product_data:
-            app_logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} retornado do Redis!")
             return json.loads(product_data)
         
 
@@ -108,7 +108,7 @@ class ServicesEsportLazer:
         products = result.scalars().first()
 
         if products:
-            app_logger.info(msg="Produto encontrado no Banco de dados!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} encontrado no Banco de dados!")
             products_listed = Product_Esporte_Lazer.from_orm(products)
 
             product_data = {
@@ -124,15 +124,15 @@ class ServicesEsportLazer:
                 "details": products.details,
                 "category": products.category
             }
-            app_logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_esporte_lazer:{products.id}", 54000, json.dumps(product_data))
-            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return products_listed
         
         if not products:
-            app_logger.info("Produto nao encontrado!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -147,10 +147,11 @@ class ServicesEsportLazer:
         if product:
             await db.delete(product)
             await db.commit()
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} deletado.")
 
 
         if product is None:
-            app_logger.info(msg="Produto nao encontado!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -172,10 +173,11 @@ class ServicesEsportLazer:
             # Salva as alterações no banco de dados
             await db.commit()
             await db.refresh(product)
+            app_logger.info(msg="fProduto Esporte de id: {product_id} atualizado")
             return product
 
         
         if product is None:
-            app_logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg=f"Produto Esporte de id: {product_id} nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
