@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Products_Moda_Feminina
-from ecommerce.config.config import logger
+from ecommerce.auth.config.config import app_logger
 import uuid
 import json
 
@@ -18,6 +18,7 @@ class ServiceModa:
 
         # Cria uma instância do modelo com o UUID
         db_product = Products_Moda_Feminina(id=product_id, **product.dict())  # Adiciona o UUID ao modelo
+        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
@@ -36,12 +37,12 @@ class ServiceModa:
         products = result.scalars().all()
 
         if products:
-            logger.info(msg="Produtos de moda sendo listado!")
+            app_logger.info(msg="Produtos de moda sendo listado!")
             products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
             return products_listed
 
         if not products:
-            logger.info(msg="Nenhum produto de moda nao encontardo!")
+            app_logger.info(msg="Nenhum produto de moda nao encontardo!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
         
 
@@ -88,11 +89,11 @@ class ServiceModa:
         products = result.scalars().all()
         
         if products:
-            logger.info(msg="Produtos de moda sendo listados!")
+            app_logger.info(msg="Produtos de moda sendo listados!")
             products_listed = [Products_Moda_Feminina.from_orm(product) for product in products]
             return products_listed
 
-        logger.info(msg="Nenhum produto de moda encontrado!")
+        app_logger.info(msg="Nenhum produto de moda encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de moda encontrado!")
     
 
@@ -103,7 +104,7 @@ class ServiceModa:
 
         if product_data:
             # Se encontrar no redis retorna
-            logger.info(msg="Produto retornado do Redis")
+            app_logger.info(msg="Produto retornado do Redis")
             return json.loads(product_data)
 
         # senao encontrar, retorna do db
@@ -115,7 +116,7 @@ class ServiceModa:
 
 
         if product:
-            logger.info(msg="Produto encontrado no banco de dados!")
+            app_logger.info(msg="Produto encontrado no banco de dados!")
             # converte de modelo SqlAlchemy para um dicionario
             product_data = {
                 "id": product.id,
@@ -134,7 +135,7 @@ class ServiceModa:
             # guarda no redis para melhorar performance das buscas
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_moda:{product.id}", 54000, json.dumps(product_data))
-            logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
 
             
             
@@ -152,7 +153,7 @@ class ServiceModa:
         product = result.scalars().first()
 
         if product:
-            logger.info(msg="Produto deletado!")
+            app_logger.info(msg="Produto deletado!")
             await db.delete(product)
             await db.commit()
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
@@ -160,7 +161,7 @@ class ServiceModa:
 
 
         if product is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
         
@@ -177,12 +178,12 @@ class ServiceModa:
                 setattr(product, key, value)
 
             # Salva as alterações no banco de dados
-            logger.info(msg="Produto atualizado")
+            app_logger.info(msg="Produto atualizado")
             await db.commit()
             await db.refresh(product)
             return product
 
 
         if product is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")

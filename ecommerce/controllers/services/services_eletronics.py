@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Products_Eletronics
-from ecommerce.config.config import logger
+from ecommerce.auth.config.config import app_logger
 import uuid
 import json
 
@@ -34,12 +34,12 @@ class ServicesEletronics:
         products = result.scalars().all()
 
         if products:
-            logger.info(msg="Produtos eletronicos listados!")
+            app_logger.info(msg="Produtos eletronicos listados!")
             products_listados = [Products_Eletronics.from_orm(product) for product in products]
             return products_listados
         
         if not products:
-            logger.info(msg="Nenhum produto eletronico inserido!")
+            app_logger.info(msg="Nenhum produto eletronico inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto eletronico inserido!")
         
 
@@ -85,11 +85,11 @@ class ServicesEletronics:
         products = product.scalars().all()
 
         if products:
-            logger.info(msg="Produtos de moda sendo listados!")
+            app_logger.info(msg="Produtos de moda sendo listados!")
             products_listed = [Products_Eletronics.from_orm(product) for product in products]
             return products_listed
 
-        logger.info(msg="Nenhum produto de eletronicos encontrado!")
+        app_logger.info(msg="Nenhum produto de eletronicos encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de eletronicos encontrado!")
     
 
@@ -100,7 +100,7 @@ class ServicesEletronics:
 
         # retorna do redis se tiver no redis
         if product_data:
-            logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto retornado do Redis!")
             return json.loads(product_data)
         
         # senao, procura no db e retorna
@@ -112,7 +112,7 @@ class ServicesEletronics:
 
         # no db, procura se existir, e transforma para ser armazenado no redis
         if product:
-            logger.info(msg="Produto encontrado no Banco de dados!")
+            app_logger.info(msg="Produto encontrado no Banco de dados!")
             product_listed = Products_Eletronics.from_orm(product)
 
             product_data = {
@@ -128,16 +128,16 @@ class ServicesEletronics:
                 "details": product.details,
                 "category": "Eletronicos"
             }
-            logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg="Produto inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_eletronicos:{product.id}", 54000, json.dumps(product_data))
-            logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return product_listed
 
 
         if product is None:
-            logger.info(msg="Produto eletronico nao encontrado!")
+            app_logger.info(msg="Produto eletronico nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
         
 
@@ -150,7 +150,7 @@ class ServicesEletronics:
         product = result.scalars().first()
 
         if product:
-            logger.info(msg="Produto eletronico deletado")
+            app_logger.info(msg="Produto eletronico deletado")
             await db.delete(product)
             await db.commit()
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
@@ -169,17 +169,17 @@ class ServicesEletronics:
         product = result.scalars().first()
 
         if product:
-            logger.info(msg="Produto eletronico encontrado!")
+            app_logger.info(msg="Produto eletronico encontrado!")
             for key, value in product_data.dict().items():
                 setattr(product, key, value)
-            logger.info(msg="Produto eletronico atualizado")
+            app_logger.info(msg="Produto eletronico atualizado")
 
             db.commit()
             db.refresh(product)
             return product
         
         if product is None:
-            logger.info(msg="Produto eletronico nao encontrado")
+            app_logger.info(msg="Produto eletronico nao encontrado")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto eletronico nao encontrado!")
 
         # Corrige o valor da categoria se necessário

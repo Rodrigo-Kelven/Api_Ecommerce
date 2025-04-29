@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Automotivo
-from ecommerce.config.config import logger
+from ecommerce.auth.config.config import app_logger
 import uuid
 import json
 
@@ -33,13 +33,13 @@ class Services_Automotivo:
         products = result.scalars().all()
 
         if products:
-            logger.info(msg="Produtos automotivos listados!")
+            app_logger.info(msg="Produtos automotivos listados!")
             # Convert db_product (list of Product_Automotivo) to a list of Product_Automotivo
             products = [Product_Automotivo.from_orm(product) for product in products]
             return products
         
         if not products:
-            logger.info(msg="Nenhum produto automotivo inserido!")
+            app_logger.info(msg="Nenhum produto automotivo inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
 
@@ -84,11 +84,11 @@ class Services_Automotivo:
         products = product.scalars().all()
 
         if products:
-            logger.info(msg="Produtos de moda sendo listados!")
+            app_logger.info(msg="Produtos de moda sendo listados!")
             products_listed = [Product_Automotivo.from_orm(product) for product in products]
             return products_listed
 
-        logger.info(msg="Nenhum produto automotivo encontrado!")
+        app_logger.info(msg="Nenhum produto automotivo encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto automotivo encontrado!")
     
 
@@ -99,7 +99,7 @@ class Services_Automotivo:
 
         # retorna do redis se tiver no redis
         if product_data:
-            logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto retornado do Redis!")
             return json.loads(product_data)
         
         # senao, procura no db e retorna
@@ -111,7 +111,7 @@ class Services_Automotivo:
 
         # no db, procura se existir, e transforma para ser armazenado no redis
         if product:
-            logger.info(msg="Produto encontrado no Banco de dados")
+            app_logger.info(msg="Produto encontrado no Banco de dados")
             product_listed = Product_Automotivo.from_orm(product)
 
             product_data = {
@@ -127,16 +127,16 @@ class Services_Automotivo:
                 "details": product.details,
                 "category": product.category
             }
-            logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg="Produto inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_automotivo:{product.id}", 54000, json.dumps(product_data))
-            logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return product_listed
 
 
         if product is None:
-            logger.info(msg="Produto automotivo nao encontrado!")
+            app_logger.info(msg="Produto automotivo nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto automotivo nao encontrado!")
         
 
@@ -153,7 +153,7 @@ class Services_Automotivo:
             await db.commit()
 
         if product is None:
-            logger.info(msg="Produto nao encontado!")
+            app_logger.info(msg="Produto nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
     
@@ -177,7 +177,7 @@ class Services_Automotivo:
 
         # Verifica se o produto existe
         if product is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=404, detail="Produto nao encontado!")
 
         

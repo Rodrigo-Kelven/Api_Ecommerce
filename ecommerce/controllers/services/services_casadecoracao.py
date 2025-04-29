@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Casa_Decoracao
-from ecommerce.config.config import logger
+from ecommerce.auth.config.config import app_logger
 import uuid
 import json
 
@@ -32,12 +32,12 @@ class ServicesCasaDecoracao:
         products = result.scalars().all()
 
         if products:
-            logger.info(msg="Produtos sendo listados")
+            app_logger.info(msg="Produtos sendo listados")
             products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
             return products_listed
 
         if not products:
-            logger.info(msg="Nenhum produto inserido!")
+            app_logger.info(msg="Nenhum produto inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
 
@@ -82,11 +82,11 @@ class ServicesCasaDecoracao:
         products = product.scalars().all()
 
         if products:
-            logger.info(msg="Produtos de moda sendo listados!")
+            app_logger.info(msg="Produtos de moda sendo listados!")
             products_listed = [Product_Casa_Decoracao.from_orm(product) for product in products]
             return products_listed
 
-        logger.info(msg="Nenhum produto de casa e decoracao encontrado!")
+        app_logger.info(msg="Nenhum produto de casa e decoracao encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de casa e decoracao encontrado!")
     
 
@@ -95,7 +95,7 @@ class ServicesCasaDecoracao:
         product_data = redis_client.get(f"produto_casa_decoracao:{product_id}")
 
         if product_data:
-            logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto retornado do Redis!")
             return json.loads(product_data)
 
 
@@ -106,7 +106,7 @@ class ServicesCasaDecoracao:
         products = result.scalars().first()
         
         if products:
-            logger.info(msg="Produto encontrado no Banco de dados")
+            app_logger.info(msg="Produto encontrado no Banco de dados")
             product = Product_Casa_Decoracao.from_orm(products)
 
             product_data = {
@@ -122,16 +122,16 @@ class ServicesCasaDecoracao:
                 "details": products.details,
                 "category": 'Casa-e-decoracao'
             }
-            logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg="Produto inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_casa_decoracao:{products.id}", 54000, json.dumps(product_data))
-            logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return product
         
 
         if products is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -146,7 +146,7 @@ class ServicesCasaDecoracao:
         if product:
             await db.delete(product)
             await db.commit()
-            logger.info(msg="Produto deletado!")
+            app_logger.info(msg="Produto deletado!")
             #db.refresh(product_delete) # se voce descomentar isso, sempre vai dar erro 500
             # porque ao dar refresh, entende-se que voce esta procurando o objeto excluido da sessao! por isso erro 500
 
@@ -171,12 +171,12 @@ class ServicesCasaDecoracao:
             # Salva as alterações no banco de dados
             db.commit()
             db.refresh(product)
-            logger.info(msg="Produto atualizado")
+            app_logger.info(msg="Produto atualizado")
             return product
 
 
         # Verifica se o produto existe
         if product is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         

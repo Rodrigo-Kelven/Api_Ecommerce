@@ -24,7 +24,6 @@ app.add_middleware(LogRequestMiddleware)
 #app.middleware("http")(rate_limit_middleware) # refatorar depois
 
 
-
 config_CORS(app)
 
 @app.on_event("startup")

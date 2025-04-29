@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Product_Esporte_Lazer
-from ecommerce.config.config import logger
+from ecommerce.auth.config.config import app_logger
 import uuid
 import json
 
@@ -34,11 +34,11 @@ class ServicesEsportLazer:
 
         if products:
             products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
-            logger.info(msg="Produtos sendo listado!")
+            app_logger.info(msg="Produtos sendo listado!")
             return products_listed
 
         if not products:
-            logger.info(msg="Nenhum  produto inserido!")
+            app_logger.info(msg="Nenhum  produto inserido!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto inserido!")
         
 
@@ -83,11 +83,11 @@ class ServicesEsportLazer:
         products = product.scalars().all()
 
         if products:
-            logger.info(msg="Produtos de esporte e lazer sendo listados!")
+            app_logger.info(msg="Produtos de esporte e lazer sendo listados!")
             products_listed = [Product_Esporte_Lazer.from_orm(product) for product in products]
             return products_listed
 
-        logger.info(msg="Nenhum produto de moda encontrado!")
+        app_logger.info(msg="Nenhum produto de moda encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de esporte e lazer encontrado!")
     
 
@@ -96,7 +96,7 @@ class ServicesEsportLazer:
         product_data = redis_client.get(f"produto_esporte_lazer:{product_id}")
 
         if product_data:
-            logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto retornado do Redis!")
             return json.loads(product_data)
         
 
@@ -107,7 +107,7 @@ class ServicesEsportLazer:
         products = result.scalars().first()
 
         if products:
-            logger.info(msg="Produto encontrado no Banco de dados!")
+            app_logger.info(msg="Produto encontrado no Banco de dados!")
             products_listed = Product_Esporte_Lazer.from_orm(products)
 
             product_data = {
@@ -123,15 +123,15 @@ class ServicesEsportLazer:
                 "details": products.details,
                 "category": products.category
             }
-            logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg="Produto inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_esporte_lazer:{products.id}", 54000, json.dumps(product_data))
-            logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
+            app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
             # retorna do db
             return products_listed
         
         if not products:
-            logger.info("Produto nao encontrado!")
+            app_logger.info("Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -149,7 +149,7 @@ class ServicesEsportLazer:
 
 
         if product is None:
-            logger.info(msg="Produto nao encontado!")
+            app_logger.info(msg="Produto nao encontado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -175,6 +175,6 @@ class ServicesEsportLazer:
 
         
         if product is None:
-            logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg="Produto nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
