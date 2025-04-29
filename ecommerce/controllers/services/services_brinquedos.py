@@ -4,7 +4,6 @@ from ecommerce.models.ecommerce.models import Product_Brinquedos_Jogos
 from ecommerce.auth.config.config import app_logger
 import uuid
 import json
-
 from sqlalchemy.future import select
 
 
