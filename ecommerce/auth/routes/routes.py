@@ -1,19 +1,14 @@
 from fastapi import APIRouter, Depends, status, Form, Request
 from ecommerce.auth.schemas.schemas import Token, User, UserResponse, UserResponseCreate, UserResponseEdit
-from ecommerce.auth.config.config_db import AsyncSessionLocal
-from typing import List, Annotated
 from ecommerce.auth.auth import OAuth2PasswordRequestForm, get_current_active_user, check_permissions, Role
+from ecommerce.auth.config.config_db import AsyncSessionLocal
 from ecommerce.auth.service.services_auth import ServicesAuth
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+from ecommerce.auth.config.config import limiter
+from typing import List, Annotated
 
 
 # route for OAthu2
 routes_auth_auten = APIRouter()
-
-
-# decoracor do rate limit
-limiter = Limiter(key_func=get_remote_address)
 
 
 # Rota de login

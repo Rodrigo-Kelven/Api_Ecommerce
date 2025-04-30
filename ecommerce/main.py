@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from ecommerce.auth.config.config_db import Base_auth, engine_auth
+from ecommerce.auth.config.config import config_CORS, LogRequestMiddleware
 from ecommerce.databases.ecommerce_config.database import Base, engine_ecommerce
+from ecommerce.auth.config.config_db import Base_auth, engine_auth
 from ecommerce.controllers.all_routes.routes import routes
-from ecommerce.auth.config.config import db_logger, config_CORS, LogRequestMiddleware
-from ecommerce.config.config import cors
+from ecommerce.config.config import cors,db_logger
 
 
 app = FastAPI(

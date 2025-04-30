@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from ecommerce.databases.ecommerce_config.database import redis_client
 from ecommerce.models.ecommerce.models import Products_Eletronics
-from ecommerce.auth.config.config import app_logger
+from ecommerce.config.config import app_logger
 import uuid
 import json
 from sqlalchemy.future import select

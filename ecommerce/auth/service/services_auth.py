@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Form, BackgroundT
 from fastapi.security import OAuth2PasswordRequestForm
 from ecommerce.auth.schemas.schemas import Token, User, UserResponse, UserResponseCreate, UserResponseEdit
 from ecommerce.auth.config.config_db import  AsyncSessionLocal
-from ecommerce.auth.config.config import app_logger, auth_logger
+from ecommerce.config.config import app_logger, auth_logger
 from ecommerce.auth.models.models import UserDB, Role
 from typing import List, Annotated
 from ecommerce.auth.auth import (
