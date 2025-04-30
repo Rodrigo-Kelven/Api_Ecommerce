@@ -16,13 +16,11 @@ app = FastAPI(
     "Ele permite que os usuários realizem operações como criar, ler, atualizar e excluir produtos, além de gerenciar pedidos e usuários.",
 )
 
-routes(app) # funcao que chama todas as rotas existentes
+# funcao que chama todas as rotas existentes
+routes(app)
 
 # Adiciona o middleware ao FastAPI, verifica requests e responses
 app.add_middleware(LogRequestMiddleware)
-
-# funcao para configuracao do middleware
-#app.middleware("http")(rate_limit_middleware) # refatorar depois
 
 # CORS de autenticacao
 config_CORS(app)
@@ -33,6 +31,18 @@ cors(app)
 @app.on_event("startup")
 async def startup_event():
     try:
+        # funcao que chama todas as rotas existentes
+        routes(app)
+
+        # Adiciona o middleware ao FastAPI, verifica requests e responses
+        app.add_middleware(LogRequestMiddleware)
+
+        # CORS de autenticacao
+        config_CORS(app)
+
+        # CORS do ecommerce
+        cors(app)
+        
         # Criação das tabelas no banco de dados de usuários
         async with engine_auth.begin() as conn:
             await conn.run_sync(Base_auth.metadata.create_all)
