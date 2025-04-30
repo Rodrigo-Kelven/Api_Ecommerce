@@ -172,10 +172,11 @@ class ServicesEletronics:
             app_logger.info(msg=f"Produto Eletronicos de id: {product_id} encontrado!")
             for key, value in product_data.dict().items():
                 setattr(product, key, value)
-            app_logger.info(msg=f"Produto Eletronicos de id: {product_id} atualizado")
 
             db.commit()
             db.refresh(product)
+            app_logger.info(msg=f"Produto Eletronicos de id: {product_id} atualizado")
+            
             return product
         
         if product is None:

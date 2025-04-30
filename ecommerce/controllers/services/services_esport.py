@@ -174,6 +174,7 @@ class ServicesEsportLazer:
             await db.commit()
             await db.refresh(product)
             app_logger.info(msg="fProduto Esporte de id: {product_id} atualizado")
+            
             return product
 
         
