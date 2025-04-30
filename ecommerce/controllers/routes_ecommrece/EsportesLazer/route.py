@@ -3,7 +3,7 @@ from fastapi import APIRouter, status, Body, Depends, Query
 from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_esport import ServicesEsportLazer
-
+from ecommerce.auth.auth import get_current_user
 
 route_esporte_lazer = APIRouter()
 
@@ -18,7 +18,8 @@ route_esporte_lazer = APIRouter()
 )
 async def createSportProduct(
     product: ProductEsporteLazer = Body(embed=True),
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # service para criar produto
     return await ServicesEsportLazer.createSportProductService(product, db)
@@ -94,7 +95,8 @@ async def getSportProductById(
 )
 async def deleteSportProductById(
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto pelo ID
     return await ServicesEsportLazer.deleteSportProductByIdService(product_id, db)
@@ -113,6 +115,7 @@ async def updateSportProductById(
     product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para atualizar informacoes do produto
     return await ServicesEsportLazer.updateSportProductByIdService(product_id, product_data, db)

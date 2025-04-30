@@ -1,9 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import ProductBrinquedosJogos, EspecificacoesBrinquedosJogos, ProductBase
 from ecommerce.databases.ecommerce_config.database import get_Session
-from fastapi import APIRouter, status, Body, Depends, Query
+from fastapi import APIRouter, status, Body, Depends, Query, Request
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_brinquedos import Servico_Brinquedos_Jogos
-
+from ecommerce.config.config import limiter
+from ecommerce.auth.auth import get_current_user
 
 route_brinquedos_jogos = APIRouter()
 
@@ -16,9 +17,12 @@ route_brinquedos_jogos = APIRouter()
     description="Route create product",
     name="Route create product"
 )
+@limiter.limit("5/minute") # O ideal é 5
 async def createToyProduct(
+    request, Request,
     product: ProductBrinquedosJogos = Body(embed=True),
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para criar produto Brinquedo e Jogos
     return await Servico_Brinquedos_Jogos.createToyProductService(product, db)
@@ -33,7 +37,9 @@ async def createToyProduct(
     description="Route list products",
     name="Route list products"
 )
+@limiter.limit("40/minute")
 async def getToyProductInInterval(
+    request: Request,
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_Session)
@@ -50,7 +56,9 @@ async def getToyProductInInterval(
     description="List search products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def getToyProductWithParams(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -77,7 +85,9 @@ async def getToyProductWithParams(
     description="Route get product for ID",
     name="Route GET product for ID"
 )
+@limiter.limit("40/minute")
 async def getToyProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
@@ -91,9 +101,12 @@ async def getToyProductById(
     description="Route delete product for ID",
     name="Route DELETE product for ID"
 )
+@limiter.limit("5/minute")
 async def deleteToyProductById(
+    request: Request,
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto por ID
     return await Servico_Brinquedos_Jogos.deleteToyProductByIdService(product_id, db)
@@ -106,10 +119,13 @@ async def deleteToyProductById(
     description="Route update products",
     name="Route PUT product for ID"
 )
+@limiter.limit("5/minute")
 async def updateToyProductById(
+    request: Request,
     product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servco para fazer update in produto Brinquedos e Jogos
     return await Servico_Brinquedos_Jogos.updateToyProductByIdService(product_id, product_data, db)

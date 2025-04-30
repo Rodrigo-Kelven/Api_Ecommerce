@@ -3,7 +3,7 @@ from ecommerce.databases.ecommerce_config.database import get_Session
 from fastapi import APIRouter, status, Depends, Body, Query
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_livraria import ServicesLivraria
-
+from ecommerce.auth.auth import get_current_user
 
 route_livros_papelaria = APIRouter()
 
@@ -18,7 +18,8 @@ route_livros_papelaria = APIRouter()
 )
 async def createLibraryProduct(
     product: ProductLivrosPapelaria,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para criar produto
     return await ServicesLivraria.createLibraryProductService(product, db)
@@ -95,7 +96,8 @@ async def getLibraryProductById(
 )
 async def deleteLibraryProductById(
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto por ID
     return await ServicesLivraria.deleteLibraryProductByIdService(product_id, db)
@@ -112,6 +114,7 @@ async def updateLibraryProductById(
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para atualizar produto por ID
     return await ServicesLivraria.updateLibraryProductByIdService(product_id, db, product_data)

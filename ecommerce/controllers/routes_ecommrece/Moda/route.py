@@ -3,9 +3,8 @@ from fastapi import APIRouter, Depends, status, Body, Query
 from ecommerce.databases.ecommerce_config.database import get_Session
 from ecommerce.config.config import logger
 from sqlalchemy.orm import Session
-
 from ecommerce.controllers.services.services_moda import ServiceModa
-
+from ecommerce.auth.auth import get_current_user
 
 route_moda = APIRouter()
 
@@ -20,7 +19,8 @@ route_moda = APIRouter()
 )
 async def createFashionProduct(
     product: ProductModaFeminina = Body(embed=True),
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # service para criar produto
     return await ServiceModa.createFashionProductService(product, db)
@@ -91,7 +91,8 @@ async def getFashionProductById(product_id: str, db: Session = Depends(get_Sessi
     )
 async def deleteFashionProductById(
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto por ID
     return await ServiceModa.deleteFashionProductByIdService(product_id, db)
@@ -110,6 +111,7 @@ async def updateFashionProductById(
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para atualizar produto por ID
     return await ServiceModa.updateFashionProductByIdService(product_id, db, product_data)

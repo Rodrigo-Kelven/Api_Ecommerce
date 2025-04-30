@@ -1,8 +1,10 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesCasaeDecoracao, ProductCasaeDecoracao, ProductBase
 from ecommerce.databases.ecommerce_config.database import get_Session
-from fastapi import APIRouter, status, Body, Depends, Query
+from fastapi import APIRouter, status, Body, Depends, Query, Request
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_casadecoracao import ServicesCasaDecoracao
+from ecommerce.auth.auth import get_current_user
+from ecommerce.config.config import limiter
 
 
 route_casa_decoracao = APIRouter()
@@ -15,10 +17,13 @@ route_casa_decoracao = APIRouter()
     response_description="Informations product",
     description="Create product home and decorations",
     name="Route create product",
-    )
+)
+@limiter.limit("5/minute")
 async def createDecorationProduct(
+    request: Request,
     product: ProductCasaeDecoracao = Body(embed=True), 
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para criar produto
     return await ServicesCasaDecoracao.createDecorationProductService(product, db)
@@ -32,7 +37,9 @@ async def createDecorationProduct(
     description="List all products",
     name="Route list products"
 )
+@limiter.limit("40/minute")
 async def getDecorationProductInInterval(
+    request: Request,
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_Session)
@@ -48,7 +55,9 @@ async def getDecorationProductInInterval(
     description="List search products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def getDecorationProductWithParams(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -74,13 +83,14 @@ async def getDecorationProductWithParams(
     description="Search product with ID",
     name="Route search product with ID"
 )
+@limiter.limit("40/minute")
 async def getDecorationProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
     # servico para retornar produto passando id
     return await ServicesCasaDecoracao.getDecorationProductByIdService(product_id, db)
-
 
 
 @route_casa_decoracao.delete(
@@ -89,13 +99,15 @@ async def getDecorationProductById(
     description="Delete product for ID",
     name="Route delete product for ID"
 )
+@limiter.limit("5/minute")
 async def deleteDecorationProductById(
+    request: Request,
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto passando id
     return await ServicesCasaDecoracao.deleteDecorationProductByIdService(product_id, db)
-
 
 
 @route_casa_decoracao.put(
@@ -106,10 +118,13 @@ async def deleteDecorationProductById(
     description="Route for update products",
     name="Route create product"
 )
+@limiter.limit("5/minute")
 async def updateDecorationProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
-    product_data: ProductBase = Body(embed=True)
-    ):
+    product_data: ProductBase = Body(embed=True),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
+):
     # servico para realizar update em produto passando id
     return await ServicesCasaDecoracao.updateDecorationProductByIdService(product_id, db, product_data)

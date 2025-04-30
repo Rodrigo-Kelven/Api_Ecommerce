@@ -103,7 +103,7 @@ async def getAutomotiveProductById(
     description="Route get product for id",
     name="Route DELETE products for ID"
 )
-@limiter.limit("2/minute")
+@limiter.limit("5/minute")
 async def deleteAutomotiveProductById(
     request: Request,
     product_id: str,
@@ -121,7 +121,7 @@ async def deleteAutomotiveProductById(
     description="Route PUT product",
     name="Route PUT product for ID"
 )
-@limiter.limit("10/minute")
+@limiter.limit("5/minute")
 async def updateAutomotiveProductById(
     request: Request,
     product_id: str,

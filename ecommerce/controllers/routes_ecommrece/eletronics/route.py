@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends,  status, Body, Query
 from ecommerce.databases.ecommerce_config.database import  get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_eletronics import ServicesEletronics
-
+from ecommerce.auth.auth import get_current_user
 
 route_eletronicos = APIRouter()
 
@@ -15,10 +15,11 @@ route_eletronicos = APIRouter()
         response_description="Informations of product",
         description="Create product",
         name="Route create product"
-    )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+)  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
 async def createEletronicProduct(
     product: ProductEletronicos = Body(embed=True),
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ): # db esta sendo tipado como uma Sessao, que tem uma dependencia em fazer um get, no DB
     # servico para criar produtos eletronicos
     return await ServicesEletronics.createEletronicProductService(product,db)
@@ -35,7 +36,8 @@ async def createEletronicProduct(
 async def getEletronicProductInInterval(
     skip: int = 0, 
     limit: int = 10,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    
 ):
     # servico para pegar todos os produtos de eletornicos
     return await ServicesEletronics.getEletronicProductInIntervalService(skip, limit, db)
@@ -91,7 +93,8 @@ async def getEletronicProductById(
     )
 async def deleteEletronicProductById(
     product_id: str, 
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto com parametro ID passado
     return await ServicesEletronics.deleteEletronicProductByIdService(product_id, db)
@@ -108,7 +111,8 @@ async def deleteEletronicProductById(
 async def updateEletronicProductById(
     product_id: str,
     db: Session = Depends(get_Session),
-    product_data: ProductBase = Body(embed=True)
+    product_data: ProductBase = Body(embed=True),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para realizar update em produto com parametro ID passado
     return await ServicesEletronics.updateEletronicProductByIdService(product_id, db, product_data)
