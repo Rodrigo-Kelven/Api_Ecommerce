@@ -9,7 +9,7 @@ from ecommerce.config.config import cors
 app = FastAPI(
     debug=True,
     title="API Ecommerce with FastAPI",
-    version="1.2.0",
+    version="1.2.2",
     summary="Este projeto é uma API RESTful para um sistema de e-commerce."
     "Um simples projeto baseado num ecommerce construido em FastAPI."
     "A ideia e criar um pequeno Ecommerce e usa-lo como base em outros projetos."
