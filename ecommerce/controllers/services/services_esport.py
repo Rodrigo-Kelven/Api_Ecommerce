@@ -48,6 +48,16 @@ class ServicesEsportLazer:
         db, name, category, stars, color,
         details, size, min_price, max_price, skip, limit
     ):
+        # sessao de anotacoes
+        """
+        Uso de ilike: O método ilike é usado para realizar uma busca insensível a maiúsculas e minúsculas.
+        O padrão f"%{category}%" permite que a pesquisa encontre qualquer categoria que contenha a string fornecida.
+        Por exemplo, se o usuário buscar "verão", ele encontrará categorias como "Moda de Verão", "Roupas de Verão", etc.
+
+        Flexibilidade: Isso torna a pesquisa mais flexível,
+        permitindo que os usuários encontrem produtos que correspondam a partes de strings em vez de uma correspondência exata.
+
+        """
         query = select(Product_Esporte_Lazer)
 
         # Aplicar filtros se fornecidos
