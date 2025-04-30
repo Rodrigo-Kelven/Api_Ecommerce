@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Definir o diretório de trabalho
-WORKDIR /ecommerce
+WORKDIR /code
 
 # Copiar o arquivo de requisitos e instalar as dependências
 COPY ./requirements.txt /code/requirements.txt
