@@ -7,6 +7,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 
+
 logging.basicConfig(level=logging.INFO)
 
 class LogRequestMiddleware(BaseHTTPMiddleware):

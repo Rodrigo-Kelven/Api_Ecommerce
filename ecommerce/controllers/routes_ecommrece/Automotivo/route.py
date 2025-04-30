@@ -4,9 +4,10 @@ from ecommerce.controllers.services.services_automotivo import Services_Automoti
 from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
 from ecommerce.config.config import limiter
+from ecommerce.auth.auth import get_current_user
+
 
 route_automotivo = APIRouter()
-
 
 
 @route_automotivo.post(
@@ -21,7 +22,8 @@ route_automotivo = APIRouter()
 async def createAutomotiveProduct(
     request: Request,
     product: ProductAutomotivo = Body(embed=True),
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para registro de produto automotivo
     return await Services_Automotivo.createAutomotiveProductService(product, db)
@@ -105,7 +107,8 @@ async def getAutomotiveProductById(
 async def deleteAutomotiveProductById(
     request: Request,
     product_id: str,
-    db: Session = Depends(get_Session)
+    db: Session = Depends(get_Session),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para deletar produto automotivo por ID
     return await Services_Automotivo.deleteAutomotiveProductByIdService(product_id, db)
@@ -124,6 +127,7 @@ async def updateAutomotiveProductById(
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
+    current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
 ):
     # servico para atualizar produto por ID
     return await Services_Automotivo.updateAutomotiveProductByIdService(product_id, db, product_data)
