@@ -5,7 +5,6 @@ import logging
 import redis
 
 
-
 # URL do banco de dados PostgreSQL
 DATABASE_URL = "postgresql+asyncpg://user:password@localhost/fastapi_db"
 
@@ -22,14 +21,11 @@ engine_ecommerce = create_async_engine(
     pool_pre_ping=True, # Verifica se a conexão está ativa antes de se conectar
 )
 
-
-
 # Criação do gerenciador de sessões assíncronas
 AsyncSessionLocal = sessionmaker(bind=engine_ecommerce, class_=AsyncSession, expire_on_commit=False)
 
 # Criação da base para os modelos
 Base = declarative_base()
-
 
 # Função para obter a sessão de banco de dados
 async def get_Session():
