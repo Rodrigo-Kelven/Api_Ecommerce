@@ -8,7 +8,7 @@ from ecommerce.auth.config.config import db_logger, config_CORS, LogRequestMiddl
 app = FastAPI(
     debug=True,
     title="API Ecommerce with FastAPI",
-    version="0.2.7",
+    version="1.2.0",
     summary="Este projeto é uma API RESTful para um sistema de e-commerce."
     "Um simples projeto baseado num ecommerce construido em FastAPI."
     "A ideia e criar um pequeno Ecommerce e usa-lo como base em outros projetos."
