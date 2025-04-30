@@ -46,4 +46,5 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     await engine_auth.dispose()
+    await engine_ecommerce.dispose()
     db_logger.info("Conexões com os bancos de dados encerradas.")
