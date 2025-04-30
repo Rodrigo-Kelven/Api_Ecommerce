@@ -1,9 +1,11 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEsporteLazer, EspecificacoesEsporteLazer, ProductBase
-from fastapi import APIRouter, status, Body, Depends, Query
+from fastapi import APIRouter, status, Body, Depends, Query, Request
 from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_esport import ServicesEsportLazer
 from ecommerce.auth.auth import get_current_user
+from ecommerce.config.config import limiter
+
 
 route_esporte_lazer = APIRouter()
 

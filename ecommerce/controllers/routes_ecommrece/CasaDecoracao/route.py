@@ -47,6 +47,8 @@ async def getDecorationProductInInterval(
     # servico para retornar todos os produtos de casa e decoracao
     return await ServicesCasaDecoracao.getDecorationProductInIntervalService(skip, limit, db)
 
+
+
 # rota de filtragem de buscas 
 @route_casa_decoracao.get(
     path="/category/casa-e-decoracao/search-filters/",
@@ -76,6 +78,8 @@ async def getDecorationProductWithParams(
         size, min_price, max_price, skip, limit
     )
 
+
+
 @route_casa_decoracao.get(
     path="/category/casa-e-decoracao/{product_id}",
     response_model=EspecificacoesCasaeDecoracao,
@@ -93,6 +97,7 @@ async def getDecorationProductById(
     return await ServicesCasaDecoracao.getDecorationProductByIdService(product_id, db)
 
 
+
 @route_casa_decoracao.delete(
     path="/category/casa-e-decoracao/{product_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -108,6 +113,7 @@ async def deleteDecorationProductById(
 ):
     # servico para deletar produto passando id
     return await ServicesCasaDecoracao.deleteDecorationProductByIdService(product_id, db)
+
 
 
 @route_casa_decoracao.put(

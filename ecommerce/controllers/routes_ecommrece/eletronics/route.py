@@ -1,9 +1,11 @@
 from ecommerce.schemas.ecommerce.schemas import ProductEletronicos, EspecificacoesEletronicos, ProductBase 
-from fastapi import APIRouter, Depends,  status, Body, Query
+from fastapi import APIRouter, Depends,  status, Body, Query, Request
 from ecommerce.databases.ecommerce_config.database import  get_Session
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_eletronics import ServicesEletronics
 from ecommerce.auth.auth import get_current_user
+from ecommerce.config.config import limiter
+
 
 route_eletronicos = APIRouter()
 
@@ -16,7 +18,9 @@ route_eletronicos = APIRouter()
         description="Create product",
         name="Route create product"
 )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+@limiter.limit("5/minute")
 async def createEletronicProduct(
+    request: Request,
     product: ProductEletronicos = Body(embed=True),
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -32,15 +36,18 @@ async def createEletronicProduct(
         status_code=status.HTTP_200_OK,
         description="List all producst",
         name="Route list products"
-        )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+)  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+@limiter.limit("40/minute")
 async def getEletronicProductInInterval(
+    request: Request,
     skip: int = 0, 
     limit: int = 10,
-    db: Session = Depends(get_Session),
-    
+    db: Session = Depends(get_Session)
 ):
     # servico para pegar todos os produtos de eletornicos
     return await ServicesEletronics.getEletronicProductInIntervalService(skip, limit, db)
+
+
 
 # rota de filtragem de buscas 
 @route_eletronicos.get(
@@ -50,7 +57,9 @@ async def getEletronicProductInInterval(
     description="List serach products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def getEletronicProductWithParams(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -70,14 +79,18 @@ async def getEletronicProductWithParams(
         skip, limit
     )
 
+
+
 @route_eletronicos.get(
         path="/category/eletronic/{product_id}",
         response_model=EspecificacoesEletronicos,
         status_code=status.HTTP_200_OK,
         description="Search product with ID",
         name="Route search product with ID"
-        )  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+)  # Usando o schema para transportar o Body para o Modelo que irá salvar os dados no Banco de dados
+@limiter.limit("40/minute")
 async def getEletronicProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
@@ -90,8 +103,10 @@ async def getEletronicProductById(
     status_code=status.HTTP_204_NO_CONTENT,
     description="Delete product for ID",
     name="Route delete product for ID"
-    )
+)
+@limiter.limit("5/minute")
 async def deleteEletronicProductById(
+    request: Request,
     product_id: str, 
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -108,7 +123,9 @@ async def deleteEletronicProductById(
     description="Update product for ID",
     name="Route update product with ID"
 )
+@limiter.limit("5/minute")
 async def updateEletronicProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),

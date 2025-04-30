@@ -6,7 +6,9 @@ from ecommerce.controllers.services.services_brinquedos import Servico_Brinquedo
 from ecommerce.config.config import limiter
 from ecommerce.auth.auth import get_current_user
 
+
 route_brinquedos_jogos = APIRouter()
+
 
 
 @route_brinquedos_jogos.post(
@@ -48,6 +50,7 @@ async def getToyProductInInterval(
     return await Servico_Brinquedos_Jogos.getToyProductInIntervalService(skip, limit, db)
 
 
+
 # rota de filtragem de buscas 
 @route_brinquedos_jogos.get(
     path="/category/brinquedos-jogos/search-filters/",
@@ -77,6 +80,8 @@ async def getToyProductWithParams(
         size, min_price, max_price, skip, limit
     )
 
+
+
 @route_brinquedos_jogos.get(
     path="/category/brinquedos-jogos/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -94,6 +99,8 @@ async def getToyProductById(
     # servico para buscar produto por ID
     return await Servico_Brinquedos_Jogos.getToyProductByIdService(product_id, db)
 
+
+
 @route_brinquedos_jogos.delete(
     path="/category/brinquedos-jogos/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -110,6 +117,8 @@ async def deleteToyProductById(
 ):
     # servico para deletar produto por ID
     return await Servico_Brinquedos_Jogos.deleteToyProductByIdService(product_id, db)
+
+
 
 @route_brinquedos_jogos.put(
     path="/category/brinquedos-jogos/{product_id}",

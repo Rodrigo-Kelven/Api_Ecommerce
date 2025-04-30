@@ -48,6 +48,8 @@ async def getAutomotiveProduct(
     # servico para pegar todos os produtos de automotivo
     return await Services_Automotivo.getAutomotiveProductsInIntervalService(skip, limit, db)
 
+
+
 # rota de filtragem de buscas 
 @route_automotivo.get(
     path="/category/automotivo/search-filters/",
@@ -78,6 +80,7 @@ async def searchAutomotiveProducts(
     )
 
 
+
 @route_automotivo.get(
     path="/category/automotivo/product/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -96,6 +99,7 @@ async def getAutomotiveProductById(
     return await Services_Automotivo.getAutomotiveProductByIdService(product_id, db)
 
 
+
 @route_automotivo.delete(
     path="/category/automotivo/product/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -112,6 +116,7 @@ async def deleteAutomotiveProductById(
 ):
     # servico para deletar produto automotivo por ID
     return await Services_Automotivo.deleteAutomotiveProductByIdService(product_id, db)
+
 
 
 @route_automotivo.put(
