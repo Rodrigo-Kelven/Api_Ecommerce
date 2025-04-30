@@ -1,11 +1,12 @@
-from fastapi import APIRouter, status, Depends, Body, Query
+from fastapi import APIRouter, status, Depends, Body, Query, Request
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesAutomotivo, ProductAutomotivo, ProductBase
 from ecommerce.controllers.services.services_automotivo import Services_Automotivo
 from ecommerce.databases.ecommerce_config.database import get_Session
 from sqlalchemy.orm import Session
-
+from ecommerce.config.config import limiter
 
 route_automotivo = APIRouter()
+
 
 
 @route_automotivo.post(
@@ -16,7 +17,9 @@ route_automotivo = APIRouter()
     description="Route create product",
     name="Route Create product category"
 )
+@limiter.limit("5/minute") # O ideal é 5
 async def createAutomotiveProduct(
+    request: Request,
     product: ProductAutomotivo = Body(embed=True),
     db: Session = Depends(get_Session)
 ):
@@ -33,7 +36,9 @@ async def createAutomotiveProduct(
     description="Route list products",
     name="Route list products category automotivo"
 )
+@limiter.limit("40/minute")
 async def getAutomotiveProduct(
+    request: Request,
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_Session)
@@ -49,7 +54,9 @@ async def getAutomotiveProduct(
     description="List search products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def searchAutomotiveProducts(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -77,7 +84,9 @@ async def searchAutomotiveProducts(
     description="Route get product for id",
     name="Route GET products for ID"
 )
+@limiter.limit("40/minute")
 async def getAutomotiveProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
@@ -92,7 +101,9 @@ async def getAutomotiveProductById(
     description="Route get product for id",
     name="Route DELETE products for ID"
 )
+@limiter.limit("2/minute")
 async def deleteAutomotiveProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
@@ -107,7 +118,9 @@ async def deleteAutomotiveProductById(
     description="Route PUT product",
     name="Route PUT product for ID"
 )
+@limiter.limit("10/minute")
 async def updateAutomotiveProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),

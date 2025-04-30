@@ -3,6 +3,8 @@ from fastapi import Request, HTTPException
 from fastapi import status
 import logging
 import time
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 
 logging.basicConfig(level=logging.INFO)
@@ -101,3 +103,9 @@ logging.basicConfig(level=logging.INFO,
 
 logger = logging.getLogger(__name__)
 
+
+# decoracor do rate limit
+limiter = Limiter(
+    key_func=get_remote_address,
+    enabled=True,
+    )
