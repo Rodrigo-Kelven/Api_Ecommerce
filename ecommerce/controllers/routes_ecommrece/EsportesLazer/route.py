@@ -18,7 +18,9 @@ route_esporte_lazer = APIRouter()
     description="Route create product",
     name="Route create product"
 )
+@limiter.limit("5/minute")
 async def createSportProduct(
+    request: Request,
     product: ProductEsporteLazer = Body(embed=True),
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -36,13 +38,17 @@ async def createSportProduct(
     description="Route list products",
     name="Route list products"
 )
+@limiter.limit("40/minute")
 async def getSportProductInInterval(
+    request: Request,
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_Session)
 ):
     # servico para listar produto com parametros 
     return await ServicesEsportLazer.getSportProductInIntervalService(skip, limit, db)
+
+
 
 # rota de filtragem de buscas 
 @route_esporte_lazer.get(
@@ -52,7 +58,9 @@ async def getSportProductInInterval(
     description="List search products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def getSportProductWithParams(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -72,6 +80,7 @@ async def getSportProductWithParams(
     )
 
 
+
 @route_esporte_lazer.get(
     path="/category/esporte-lazer/{product_id}",
     status_code=status.HTTP_200_OK,
@@ -80,12 +89,15 @@ async def getSportProductWithParams(
     description="Route get product for ID",
     name="Route GET product for ID"
 )
+@limiter.limit("40/minute")
 async def getSportProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
     # servico para pegar produto por ID
     return await ServicesEsportLazer.getSportProductByIdService(db, product_id)
+
 
 
 @route_esporte_lazer.delete(
@@ -95,7 +107,9 @@ async def getSportProductById(
     description="Route delete product for ID",
     name="Route DELETE product for ID"
 )
+@limiter.limit("5/minute")
 async def deleteSportProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -113,7 +127,9 @@ async def deleteSportProductById(
     description="Route put product for ID",
     name="Route PUT product for ID"
 )
+@limiter.limit("5/minute")
 async def updateSportProductById(
+    request: Request,
     product_id: str,
     product_data: ProductBase = Body(embed=True),
     db: Session = Depends(get_Session),

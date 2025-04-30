@@ -1,9 +1,11 @@
 from ecommerce.schemas.ecommerce.schemas import EspecificacoesLivrosPapelaria, ProductLivrosPapelaria, ProductBase
 from ecommerce.databases.ecommerce_config.database import get_Session
-from fastapi import APIRouter, status, Depends, Body, Query
+from fastapi import APIRouter, status, Depends, Body, Query, Request
 from sqlalchemy.orm import Session
 from ecommerce.controllers.services.services_livraria import ServicesLivraria
 from ecommerce.auth.auth import get_current_user
+from ecommerce.config.config import limiter
+
 
 route_livros_papelaria = APIRouter()
 
@@ -16,7 +18,9 @@ route_livros_papelaria = APIRouter()
     description="Route create product",
     name="Route Create product"
 )
+@limiter.limit("5/minute")
 async def createLibraryProduct(
+    request: Request,
     product: ProductLivrosPapelaria,
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -34,13 +38,16 @@ async def createLibraryProduct(
     description="Route list products",
     name="Route list products category papelaria"
 )
+@limiter.limit("40/minute")
 async def getLibraryProductInInterval(
+    request: Request,
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_Session)
 ):
     # servico para pegar produtos com parametros
     return await ServicesLivraria.getLibraryProductInIntervalService(skip, limit, db)
+
 
 
 # rota de filtragem de buscas 
@@ -51,7 +58,9 @@ async def getLibraryProductInInterval(
     description="List search products",
     name="Route search products"
 )
+@limiter.limit("40/minute")
 async def getLibraryProductWithParams(
+    request: Request,
     category: str = Query(None, description="Filtrar por categoria"),
     min_price: float = Query(None, description="Filtrar por preço mínimo"),
     max_price: float = Query(None, description="Filtrar por preço máximo"),
@@ -79,7 +88,9 @@ async def getLibraryProductWithParams(
     description="Route get product for id",
     name="Route GET products ID"
 )
+@limiter.limit("40/minute")
 async def getLibraryProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session)
 ):
@@ -94,7 +105,9 @@ async def getLibraryProductById(
     description="Route get product for id",
     name="Route GET products ID"
 )
+@limiter.limit("5/minute")
 async def deleteLibraryProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
     current_user: str = Depends(get_current_user), # Garante que o usuário está autenticado):
@@ -110,7 +123,9 @@ async def deleteLibraryProductById(
     description="Route PUT product",
     name="Route PUT product"
 )
+@limiter.limit("5/minute")
 async def updateLibraryProductById(
+    request: Request,
     product_id: str,
     db: Session = Depends(get_Session),
     product_data: ProductBase = Body(embed=True),
