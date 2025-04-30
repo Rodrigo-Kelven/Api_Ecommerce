@@ -4,7 +4,6 @@ from ecommerce.models.ecommerce.models import Product_Livros_Papelaria
 from ecommerce.auth.config.config import app_logger
 import uuid
 import json
-
 from sqlalchemy.future import select
 
 class ServicesLivraria:
@@ -15,10 +14,11 @@ class ServicesLivraria:
         product_id = str(uuid.uuid4())
 
         db_product = Product_Livros_Papelaria(id=product_id, **product.dict())
-        app_logger.info(msg=f"Produto com  id: {product_id} cadastrado.")
         db.add(db_product)
         await db.commit()
         await db.refresh(db_product)
+        app_logger.info(msg=f"Produto Library id: {product_id} cadastrado.")
+
         return db_product
     
 
@@ -33,13 +33,13 @@ class ServicesLivraria:
         products = result.scalars().all()
         
         if products:
-            app_logger.info(msg="Produtos de papelaria sendo listado!")
+            app_logger.info(msg="Produto Library sendo listado!")
             products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
             return products_listed
         
         if not products:
-            app_logger.info(msg="Nenhum produto de papelaria inserido!")
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto de papelaria inserido!")
+            app_logger.info(msg="Nenhum Produto Library inserido!")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum Produto Library inserido!")
         
 
     @staticmethod
@@ -84,11 +84,11 @@ class ServicesLivraria:
 
 
         if products:
-            app_logger.info(msg="Produtos de papelaria sendo listados!")
+            app_logger.info(msg="Produto Library sendo listados!")
             products_listed = [Product_Livros_Papelaria.from_orm(product) for product in products]
             return products_listed
 
-        app_logger.info(msg="Nenhum produto de papelaria encontrado!")
+        app_logger.info(msg="Nenhum Produto Library encontrado!")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum produto papelaria encontrado!")
     
 
@@ -97,7 +97,7 @@ class ServicesLivraria:
         product_data = redis_client.get(f"produto_livraria:{product_id}")
 
         if product_data:
-            app_logger.info(msg="Produto retornado do Redis!")
+            app_logger.info(msg="Produto Library retornado do Redis!")
             return json.loads(product_data)
         
         db_product = select(Product_Livros_Papelaria).filter(Product_Livros_Papelaria.id == product_id)
@@ -107,7 +107,7 @@ class ServicesLivraria:
         db_product = result.scalars().first()
 
         if db_product:
-            app_logger.info(msg="Produto encontrado no banco de dados!")
+            app_logger.info(msg=f"Produto Library de id: {product_id} encontrado no banco de dados!")
             product = Product_Livros_Papelaria.from_orm(db_product)
 
             product_data = {
@@ -123,7 +123,7 @@ class ServicesLivraria:
                 "details": db_product.details,
                 "category": "Livros_Papelaria"
             }
-            app_logger.info(msg="Produto inserido no redis!")
+            app_logger.info(msg=f"Produto Library de id: {product_id} inserido no redis!")
             # Armazena no Redis com um tempo de expiração de 15 horas (54000 segundos)
             redis_client.setex(f"produto_livraria:{db_product.id}", 54000, json.dumps(product_data))
             app_logger.info(msg="Produto armazenado no Redis com expiração de 15 horas.")
@@ -131,7 +131,7 @@ class ServicesLivraria:
             return product
 
         if db_product is None:
-            app_logger.info(msg="Produto nao encontrado!")
+            app_logger.info(msg=f"Produto Library de id: {product_id} nao encontrado!")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
         
 
@@ -144,11 +144,10 @@ class ServicesLivraria:
         product_delete = result.scalars().first()
 
         if product_delete:
-            app_logger.info(msg="Produto encontrado!")
             await db.delete(product_delete)
             await db.commit()
-            print("Produto deletado!!")
-            return f"Product with {product_id} removed succesfull"
+            app_logger.info(msg=f"Produto Library de id: {product_id} encontrado!")
+    
 
         if product_delete is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto nao encontrado!")
@@ -172,6 +171,8 @@ class ServicesLivraria:
             # Salva as alterações no banco de dados
             await db.commit()
             await db.refresh(product)
+            app_logger.info(msg=f"Produto Library de id: {product_id} atualizado.")
+
             return product
 
 
