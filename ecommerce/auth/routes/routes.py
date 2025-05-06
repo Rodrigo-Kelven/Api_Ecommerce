@@ -26,6 +26,7 @@ async def login_for_access_token(
     return await ServicesAuth.login_user_Service(form_data)
 
 
+
 # Rota para obter informações do usuário autenticado
 @routes_auth_auten.get(
     path="/user/me/",
@@ -43,6 +44,8 @@ async def read_users_me(
     check_permissions(current_user, Role.user)
     return current_user
 
+
+
 # Rota para obter itens do usuário autenticado
 # DESATIVADA
 @routes_auth_auten.get(
@@ -55,6 +58,8 @@ async def read_users_me(
 )
 async def read_own_items(current_user: Annotated[User , Depends(get_current_active_user)]):
     return [{"item_id": "Foo", "owner": current_user.username}]
+
+
 
 # Rota para criar um novo usuário
 @routes_auth_auten.post(
@@ -77,6 +82,7 @@ async def create_user(
         username, email, full_name, password)
 
 
+
 # Rota para listar todos os usuários (somente admin)
 # DESATIVADA
 @routes_auth_auten.get(
@@ -90,6 +96,8 @@ async def create_user(
 )
 async def get_users(current_user: Annotated[User , Depends(get_current_active_user)]):
     return await ServicesAuth.get_users_Service(current_user)
+
+
 
 # Rota para atualizar informações do usuário
 @routes_auth_auten.put(
@@ -108,6 +116,8 @@ async def update_user(
     current_user: Annotated[User , Depends(get_current_active_user)]
     ):
     return await ServicesAuth.update_user_Service(email, user, current_user)
+
+
 
 # Rota para deletar a conta do usuário
 @routes_auth_auten.delete(
